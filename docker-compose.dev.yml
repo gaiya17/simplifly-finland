@@ -1,0 +1,44 @@
+# ============================================================
+#  docker-compose.dev.yml — LOCAL DEVELOPMENT Configuration
+#
+#  This is for running the app on YOUR LAPTOP while coding.
+#  Differences from production:
+#  - Database & Redis ports are OPEN (so you can inspect them)
+#  - Hot-reload enabled (code changes appear instantly)
+#  - No nginx needed (we access frontend/backend directly)
+#
+#  HOW TO START: docker compose -f docker-compose.dev.yml up
+# ============================================================
+
+services:
+
+  # ─── Database (same as prod, but port is exposed) ────────
+  db:
+    image: postgres:15-alpine
+    container_name: simplifly_db_dev
+    environment:
+      POSTGRES_DB: simplifly_dev
+      POSTGRES_USER: simplifly
+      POSTGRES_PASSWORD: devpassword123    # Simple password for local dev only
+    ports:
+      - "5432:5432"    # EXPOSED so you can connect with a DB viewer like TablePlus
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U simplifly"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis (exposed for debugging) ───────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: simplifly_redis_dev
+    ports:
+      - "6379:6379"    # EXPOSED so you can use Redis CLI to inspect cache
+    volumes:
+      - redis_dev_data:/data
+
+volumes:
+  postgres_dev_data:
+  redis_dev_data:

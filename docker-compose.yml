@@ -1,0 +1,141 @@
+# ============================================================
+#  docker-compose.yml — PRODUCTION Configuration
+#
+#  WHAT IS THIS FILE?
+#  Think of this as a recipe that starts 5 separate "computers"
+#  (called containers) that all talk to each other.
+#
+#  Container 1: nginx    — The front door (routes traffic)
+#  Container 2: frontend — Your Next.js website
+#  Container 3: backend  — Your Express.js API
+#  Container 4: db       — PostgreSQL database
+#  Container 5: redis    — Speed cache
+#
+#  HOW TO START: docker compose up -d
+#  HOW TO STOP:  docker compose down
+#  HOW TO CHECK: docker compose ps
+# ============================================================
+
+services:
+
+  # ──────────────────────────────────────────────────────────
+  # NGINX — The "Front Door" Reverse Proxy
+  # Everything from the internet hits nginx first.
+  # nginx decides: "Is this for the website? → port 3000"
+  #                "Is this an API call?     → port 5000"
+  # ──────────────────────────────────────────────────────────
+  nginx:
+    image: nginx:alpine              # Lightweight nginx
+    container_name: simplifly_nginx
+    ports:
+      - "80:80"                      # HTTP (internet → nginx)
+      - "443:443"                    # HTTPS (internet → nginx)
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro   # Our config file
+      - ./nginx/ssl:/etc/nginx/ssl:ro                 # SSL certificates
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped          # Auto-restart if it crashes
+
+  # ──────────────────────────────────────────────────────────
+  # FRONTEND — Next.js Website
+  # ──────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: simplifly_frontend
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    expose:
+      - "3000"                       # Only accessible internally (nginx talks to it)
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────────────────
+  # BACKEND — Express.js REST API
+  # ──────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: simplifly_backend
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_URL=${REDIS_URL}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - FRONTEND_URL=https://simpliflyfinland.fi
+    expose:
+      - "5000"                       # Only accessible internally
+    depends_on:
+      db:
+        condition: service_healthy   # Wait for DB to be ready before starting
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────────────────
+  # DATABASE — PostgreSQL
+  # This stores ALL your data: users, packages, bookings, etc.
+  # ──────────────────────────────────────────────────────────
+  db:
+    image: postgres:15-alpine        # PostgreSQL version 15
+    container_name: simplifly_db
+    environment:
+      POSTGRES_DB: simplifly
+      POSTGRES_USER: simplifly
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data    # Data persists even if container restarts
+    expose:
+      - "5432"                       # NOT exposed to internet. Only backend can reach it.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U simplifly"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────────────────
+  # REDIS — Speed Cache
+  # Stores frequently accessed data (tour packages) in memory.
+  # Reading from Redis: ~1ms. Reading from PostgreSQL: ~50ms.
+  # ──────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine            # Lightweight Redis
+    container_name: simplifly_redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data             # Data persists on restart
+    expose:
+      - "6379"                       # NOT exposed to internet
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+# ──────────────────────────────────────────────────────────
+# VOLUMES — Persistent Storage
+# Without these, ALL your data disappears when containers restart!
+# ──────────────────────────────────────────────────────────
+volumes:
+  postgres_data:    # Your database files
+  redis_data:       # Your cache files
+
+# ──────────────────────────────────────────────────────────
+# NETWORKS — Private communication channel
+# Containers can talk to each other, but NOT to the internet
+# ──────────────────────────────────────────────────────────
+networks:
+  default:
+    name: simplifly_network
