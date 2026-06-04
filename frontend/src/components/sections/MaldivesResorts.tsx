@@ -1,6 +1,6 @@
 "use client";
 import { ImageWithFallback } from '../shared/ImageWithFallback';
-const bgImage = '/images/maldivesResortBG.jpg';
+const bgImage = '/images/MaldivesResortBG.jpg';
 const tripAdvisorLogo = '/images/tripadvisor.png';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
