@@ -14,6 +14,6 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --prod --frozen-lockfile
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/dist ./dist
-RUN npx prisma generate
+RUN npx prisma@6 generate
 EXPOSE 5000
 CMD ["npm", "run", "start"]
