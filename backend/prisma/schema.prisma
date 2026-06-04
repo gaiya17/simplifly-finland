@@ -1,0 +1,251 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   // "admin"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TourCategory {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  name        String
+  heroImage   String?
+  subtitle    String?
+  icon        String?
+  desc        String?
+  longDesc    String?
+  packages    TourPackage[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TourPackage {
+  id                    String   @id @default(uuid())
+  slug                  String?  @unique @default(uuid())
+  title                 String
+  heroImage             String?
+  heroImagePublicId     String?
+  packageImage          String?
+  packageImagePublicId  String?
+  summary               String?
+  price                 Float
+  discount              Float?   // E.g., percentage discount
+  offerPoster           String?
+  offerPosterPublicId   String?
+  days                  Int
+  nights                Int
+  status                String   @default("active") // "active" or "inactive"
+  categoryId            String
+  category              TourCategory @relation(fields: [categoryId], references: [id])
+  destinations          String?  // Comma-separated or stringified JSON
+  itinerary             ItineraryDay[]
+  inclusions            TourInclusion[]
+  gallery               GalleryImage[]
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model ItineraryDay {
+  id          String   @id @default(uuid())
+  dayNumber   Int
+  title       String
+  route       String?
+  description String?
+  stay        String?
+  mealPlan    String?  // e.g., BB, HB, FB, AI
+  packageId   String
+  package     TourPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+}
+
+model TourInclusion {
+  id          String   @id @default(uuid())
+  text        String
+  isIncluded  Boolean  @default(true)
+  packageId   String
+  package     TourPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+}
+
+model GalleryImage {
+  id          String   @id @default(uuid())
+  url         String
+  publicId    String
+  order       Int      @default(0)
+  packageId   String
+  package     TourPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+}
+
+model ResortCategory {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  name        String
+  heroImage   String?
+  subtitle    String?
+  icon        String?
+  desc        String?
+  longDesc    String?
+  resorts     Resort[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Resort {
+  id                   String   @id @default(uuid())
+  slug                 String   @unique @default(uuid())
+  title                String
+  summary              String?
+  location             String
+  transfer             String
+  price                Float
+  discount             Float?
+  status               String   @default("active")
+  
+  tripAdvisorRating    Float?
+  tripAdvisorReviews   Int?
+  bookingScore         Float?
+  bookingReviews       Int?
+  
+  heroImage            String?
+  heroImagePublicId    String?
+  packageImage         String?
+  packageImagePublicId String?
+  offerPoster          String?
+  offerPosterPublicId  String?
+  
+  categoryId           String
+  category             ResortCategory @relation(fields: [categoryId], references: [id])
+  
+  gallery              ResortGalleryImage[]
+  villas               ResortVilla[]
+  restaurants          ResortRestaurant[]
+  facilities           String[]
+  factSheets           ResortFactSheet[]
+  offers               String[]
+  
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model ResortGalleryImage {
+  id          String   @id @default(uuid())
+  url         String
+  publicId    String
+  order       Int      @default(0)
+  resortId    String
+  resort      Resort   @relation(fields: [resortId], references: [id], onDelete: Cascade)
+}
+
+model ResortVilla {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  size        String?
+  capacity    String?
+  bedType     String?
+  features    String[] 
+  images      ResortVillaImage[]
+  resortId    String
+  resort      Resort   @relation(fields: [resortId], references: [id], onDelete: Cascade)
+}
+
+model ResortVillaImage {
+  id          String   @id @default(uuid())
+  url         String
+  publicId    String
+  order       Int      @default(0)
+  villaId     String
+  villa       ResortVilla @relation(fields: [villaId], references: [id], onDelete: Cascade)
+}
+
+model ResortRestaurant {
+  id              String   @id @default(uuid())
+  title           String
+  description     String?
+  image           String?
+  imagePublicId   String?
+  schedules       RestaurantSchedule[]
+  resortId        String
+  resort          Resort   @relation(fields: [resortId], references: [id], onDelete: Cascade)
+}
+
+model RestaurantSchedule {
+  id            String   @id @default(uuid())
+  meal          String   
+  time          String   
+  restaurantId  String
+  restaurant    ResortRestaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+}
+
+model ResortFactSheet {
+  id          String   @id @default(uuid())
+  name        String
+  url         String
+  publicId    String
+  resortId    String
+  resort      Resort   @relation(fields: [resortId], references: [id], onDelete: Cascade)
+}
+
+model MediaAsset {
+  id          String   @id @default(uuid())
+  title       String
+  category    String   // e.g., "SRI LANKA", "MALDIVES", etc.
+  url         String
+  publicId    String
+  size        String?
+  format      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BlogPost {
+  id                    String   @id @default(uuid())
+  slug                  String   @unique
+  title                 String
+  excerpt               String?
+  category              String
+  readTime              String?
+  image                 String?
+  imagePublicId         String?
+  featured              Boolean  @default(false)
+  author                String
+  authorRole            String?
+  authorAvatar          String?
+  authorAvatarPublicId  String?
+  tags                  String[]
+  content               Json     @default("[]")
+  status                String   @default("Draft")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model ChatbotNode {
+  id           String   @id
+  from         String   @default("bot")
+  message      String
+  options      Json?    
+  action       String?  
+  whatsappText String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model HomepageConfig {
+  id              String   @id @default("default")
+  featuredTours   String[]
+  featuredResorts String[]
+  galleryImages   String[]
+  featuredBlogs   String[]
+  updatedAt       DateTime @updatedAt
+}
