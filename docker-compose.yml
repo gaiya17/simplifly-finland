@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5000/api # Will be replaced with VPS IP later
+    restart: always
+    depends_on:
+      - backend
