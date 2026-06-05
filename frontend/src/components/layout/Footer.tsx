@@ -1,5 +1,5 @@
 'use client';
-import { MapPin, Phone, Globe, Camera, Video, ArrowRight } from 'lucide-react';
+import { MapPin, Phone, Facebook, Instagram, Youtube, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { ImageWithFallback } from '../shared/ImageWithFallback';
 import { useTranslation } from '../../lib/i18n/LanguageContext';
@@ -60,13 +60,15 @@ export function Footer() {
 
             <div className="flex flex-wrap items-center gap-3">
               {[
-                { icon: Globe, href: '#', label: 'Facebook' },
-                { icon: Camera, href: '#', label: 'Instagram' },
-                { icon: Video, href: '#', label: 'YouTube' },
+                { icon: Facebook, href: 'https://web.facebook.com/simpliflyfinland', label: 'Facebook' },
+                { icon: Instagram, href: 'https://www.instagram.com/simpliflyfinland', label: 'Instagram' },
+                { icon: Youtube, href: 'https://www.youtube.com/@simplflyfinlandOy', label: 'YouTube' },
               ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={label}
                   className="group flex items-center justify-center w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-[#1a84ff] hover:border-[#1a84ff] transition-all duration-300 shadow-[0_4px_12px_rgba(4,29,60,0.2)] hover:-translate-y-1"
                 >
