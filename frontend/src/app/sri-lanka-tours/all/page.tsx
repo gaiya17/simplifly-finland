@@ -26,10 +26,10 @@ export default function AllSriLankaTours() {
           tourApi.getAllTours(),
           tourApi.getCategories()
         ]);
-        
+
         setTours(toursData);
         setCategories(categoriesData);
-        
+
         if (toursData.length > 0) {
           const maxPrice = Math.max(...toursData.map((t: any) => t.price));
           setMaxAvailablePrice(Math.ceil(maxPrice / 100) * 100);
@@ -51,8 +51,8 @@ export default function AllSriLankaTours() {
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase();
       result = result.filter(
-        pkg => 
-          pkg.title.toLowerCase().includes(q) || 
+        pkg =>
+          pkg.title.toLowerCase().includes(q) ||
           (pkg.destinations && pkg.destinations.toLowerCase().includes(q))
       );
     }
@@ -64,8 +64,8 @@ export default function AllSriLankaTours() {
 
     // 3. Price Filter
     result = result.filter(pkg => {
-      const actualPrice = pkg.discount > 0 
-        ? Math.round(pkg.price * (1 - pkg.discount / 100)) 
+      const actualPrice = pkg.discount > 0
+        ? Math.round(pkg.price * (1 - pkg.discount / 100))
         : pkg.price;
       return actualPrice <= priceRange;
     });
@@ -93,7 +93,7 @@ export default function AllSriLankaTours() {
       <section className="relative w-full h-[60vh] min-h-[480px] flex items-end overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
-            src="https://images.unsplash.com/photo-1594805938839-c581da5d8129?auto=format&fit=crop&q=80&w=1920"
+            src="/images/allsltours.webp"
             alt="All Sri Lanka Tours"
             className="w-full h-full object-cover object-center"
           />
@@ -134,7 +134,7 @@ export default function AllSriLankaTours() {
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[radial-gradient(circle,_rgba(4,29,60,0.03)_0%,_transparent_70%)] pointer-events-none" />
 
         <div className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 relative z-10 flex flex-col lg:flex-row gap-10">
-          
+
           {/* SIDEBAR FILTERS */}
           <div className="w-full lg:w-[320px] shrink-0">
             <div className="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgba(4,29,60,0.04)] border border-[#e2e8f0] sticky top-[100px]">
@@ -142,14 +142,14 @@ export default function AllSriLankaTours() {
                 <SlidersHorizontal className="w-5 h-5 text-[#1a84ff]" />
                 <h3 className="text-[#041d3c] font-black text-[18px]">Filter Tours</h3>
               </div>
-              
+
               {/* Search */}
               <div className="mb-6">
                 <label className="text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-2 block">Search</label>
                 <div className="relative">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Search by name or destination..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -161,7 +161,7 @@ export default function AllSriLankaTours() {
               {/* Category */}
               <div className="mb-6">
                 <label className="text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-2 block">Category</label>
-                <select 
+                <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full bg-[#f4f7fb] border border-transparent focus:border-[#1a84ff]/30 focus:bg-white rounded-[12px] px-4 py-3 text-[14px] text-[#041d3c] font-medium outline-none transition-all appearance-none cursor-pointer"
@@ -179,10 +179,10 @@ export default function AllSriLankaTours() {
                   <label className="text-[12px] font-bold text-gray-400 uppercase tracking-wider block">Max Price</label>
                   <span className="text-[#1a84ff] font-bold text-[14px]">€{priceRange}</span>
                 </div>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max={maxAvailablePrice} 
+                <input
+                  type="range"
+                  min="0"
+                  max={maxAvailablePrice}
                   step="50"
                   value={priceRange}
                   onChange={(e) => setPriceRange(Number(e.target.value))}
@@ -197,7 +197,7 @@ export default function AllSriLankaTours() {
               {/* Sort By */}
               <div className="mb-2">
                 <label className="text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-2 block">Sort By</label>
-                <select 
+                <select
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}
                   className="w-full bg-[#f4f7fb] border border-transparent focus:border-[#1a84ff]/30 focus:bg-white rounded-[12px] px-4 py-3 text-[14px] text-[#041d3c] font-medium outline-none transition-all appearance-none cursor-pointer"
@@ -230,7 +230,7 @@ export default function AllSriLankaTours() {
                 </div>
                 <h3 className="text-[18px] font-bold text-[#041d3c] mb-2">No packages match your filters</h3>
                 <p className="text-gray-500 text-[14px]">Try adjusting your search criteria or price range to see more results.</p>
-                <button 
+                <button
                   onClick={() => {
                     setSearchQuery('');
                     setSelectedCategory('all');

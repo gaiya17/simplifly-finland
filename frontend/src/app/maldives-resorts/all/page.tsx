@@ -13,47 +13,47 @@ const BookingComLogo = ({ pkgId }: { pkgId: string }) => (
   <svg width="68" height="12" viewBox="0 0 114 20" xmlns="http://www.w3.org/2000/svg" className="w-auto h-full object-contain">
     <defs>
       <clipPath id={`A-${pkgId}`}>
-        <path d="M578.932 12.395h111v14h-111z"/>
+        <path d="M578.932 12.395h111v14h-111z" />
       </clipPath>
       <clipPath id={`B-${pkgId}`}>
-        <path d="M0 452h734V0H0z"/>
+        <path d="M0 452h734V0H0z" />
       </clipPath>
       <clipPath id={`C-${pkgId}`}>
-        <path d="M642.292 18.644h25.362v8.87h-25.362z"/>
+        <path d="M642.292 18.644h25.362v8.87h-25.362z" />
       </clipPath>
       <clipPath id={`D-${pkgId}`}>
-        <path d="M642.292 18.644h25.362v8.87h-25.362z"/>
+        <path d="M642.292 18.644h25.362v8.87h-25.362z" />
       </clipPath>
       <clipPath id={`E-${pkgId}`}>
-        <path d="M0 452h734V0H0z"/>
+        <path d="M0 452h734V0H0z" />
       </clipPath>
       <clipPath id={`F-${pkgId}`}>
-        <path d="M583.14 11.758h67.51v18.33h-67.51z"/>
+        <path d="M583.14 11.758h67.51v18.33h-67.51z" />
       </clipPath>
       <clipPath id={`G-${pkgId}`}>
-        <path d="M0 452h734V0H0z"/>
+        <path d="M0 452h734V0H0z" />
       </clipPath>
     </defs>
     <g transform="matrix(.05809 0 0 -.05809 -34.141832 2.632382)">
       <g clipPath={`url(#F-${pkgId})`}>
         <g clipPath={`url(#G-${pkgId})`}>
-          <path d="M626.558 27.217a1.436 1.436 0 1 0 2.872 0 1.437 1.437 0 0 0-2.872 0" fill="#003580"/>
-          <path d="M649.215 17.64c0 .797.642 1.44 1.433 1.44a1.44 1.44 0 1 0-1.433-1.44" fill="#00b4f1"/>
-          <path d="M603 18.263c-1.236 0-2.096.982-2.096 2.386s.86 2.384 2.097 2.384c1.243 0 2.112-.98 2.112-2.384 0-1.426-.85-2.386-2.113-2.386zm0 6.867c-2.616 0-4.515-1.885-4.515-4.48s1.9-4.48 4.515-4.48c2.627 0 4.533 1.884 4.533 4.48s-1.906 4.482-4.532 4.482m20.785-4.706a2.136 2.136 0 0 1-.342.483l-.08.083.084.08a3.56 3.56 0 0 1 .36.45l2.3 3.432h-2.804l-1.735-2.685c-.098-.144-.296-.216-.593-.216h-.395v5.076c0 1.015-.633 1.153-1.316 1.153h-1.17l.003-11.98h2.484v3.594h.233c.283 0 .475-.033.564-.187l1.37-2.586c.383-.702.764-.82 1.482-.82h1.903l-1.418 2.344-.94 1.78m12.057 4.726c-1.264 0-2.07-.562-2.522-1.037l-.15-.152-.054.207c-.132.51-.58.788-1.253.788h-1.113l.007-8.653h2.467v3.988c0 .39.05.728.154 1.037.274.935 1.04 1.516 1.997 1.516.77 0 1.07-.407 1.07-1.457v-3.77c0-.896.415-1.315 1.312-1.315h1.174l-.004 5.504c0 2.186-1.067 3.342-3.086 3.342m-7.8-.196h-1.17l.008-8.653h1.247l.044-.002.582.002h.578v.003h.004l.005 7.335c0 .885-.423 1.314-1.298 1.314m-15.345-6.69c-1.236 0-2.097.982-2.097 2.386s.86 2.384 2.098 2.384 2.112-.98 2.112-2.384c0-1.426-.85-2.386-2.112-2.386zm0 6.867c-2.618 0-4.518-1.885-4.518-4.48s1.9-4.48 4.52-4.48 4.533 1.884 4.533 4.48-1.9 4.482-4.533 4.482" fill="#003580"/>
+          <path d="M626.558 27.217a1.436 1.436 0 1 0 2.872 0 1.437 1.437 0 0 0-2.872 0" fill="#003580" />
+          <path d="M649.215 17.64c0 .797.642 1.44 1.433 1.44a1.44 1.44 0 1 0-1.433-1.44" fill="#00b4f1" />
+          <path d="M603 18.263c-1.236 0-2.096.982-2.096 2.386s.86 2.384 2.097 2.384c1.243 0 2.112-.98 2.112-2.384 0-1.426-.85-2.386-2.113-2.386zm0 6.867c-2.616 0-4.515-1.885-4.515-4.48s1.9-4.48 4.515-4.48c2.627 0 4.533 1.884 4.533 4.48s-1.906 4.482-4.532 4.482m20.785-4.706a2.136 2.136 0 0 1-.342.483l-.08.083.084.08a3.56 3.56 0 0 1 .36.45l2.3 3.432h-2.804l-1.735-2.685c-.098-.144-.296-.216-.593-.216h-.395v5.076c0 1.015-.633 1.153-1.316 1.153h-1.17l.003-11.98h2.484v3.594h.233c.283 0 .475-.033.564-.187l1.37-2.586c.383-.702.764-.82 1.482-.82h1.903l-1.418 2.344-.94 1.78m12.057 4.726c-1.264 0-2.07-.562-2.522-1.037l-.15-.152-.054.207c-.132.51-.58.788-1.253.788h-1.113l.007-8.653h2.467v3.988c0 .39.05.728.154 1.037.274.935 1.04 1.516 1.997 1.516.77 0 1.07-.407 1.07-1.457v-3.77c0-.896.415-1.315 1.312-1.315h1.174l-.004 5.504c0 2.186-1.067 3.342-3.086 3.342m-7.8-.196h-1.17l.008-8.653h1.247l.044-.002.582.002h.578v.003h.004l.005 7.335c0 .885-.423 1.314-1.298 1.314m-15.345-6.69c-1.236 0-2.097.982-2.097 2.386s.86 2.384 2.098 2.384 2.112-.98 2.112-2.384c0-1.426-.85-2.386-2.112-2.386zm0 6.867c-2.618 0-4.518-1.885-4.518-4.48s1.9-4.48 4.52-4.48 4.533 1.884 4.533 4.48-1.9 4.482-4.533 4.482" fill="#003580" />
         </g>
       </g>
       <g clipPath={`url(#C-${pkgId})`}>
         <g clipPath={`url(#D-${pkgId})`}>
           <g clipPath={`url(#E-${pkgId})`}>
-            <path d="M665.555 18.263c-1.236 0-2.098.982-2.098 2.386s.862 2.384 2.098 2.384c1.242 0 2.113-.98 2.113-2.384 0-1.426-.85-2.386-2.113-2.386zm0 6.867c-2.618 0-4.517-1.885-4.517-4.48s1.9-4.48 4.517-4.48c2.624 0 4.533 1.884 4.533 4.48s-1.9 4.482-4.533 4.482" fill="#00b4f1"/>
-            <path d="M644.122 18.644c-1.35 0-1.83 1.176-1.83 2.28 0 .486.123 2.07 1.7 2.07.783 0 1.826-.224 1.826-2.15 0-1.817-.923-2.198-1.697-2.198zm2.978 6.332c-.468 0-.828-.187-1-.528l-.068-.132-.114.1c-.398.344-1.112.753-2.27.753-2.307 0-3.86-1.733-3.86-4.31s1.607-4.376 3.906-4.376c.785 0 1.406.184 1.898.556l.2.143v-.24c0-1.156-.747-1.794-2.102-1.794a4.98 4.98 0 0 0-1.66.306c-.522.158-.83.027-1.04-.498l-.196-.484-.277-.708.17-.09c.868-.46 1.997-.735 3.017-.735 2.1 0 4.554 1.075 4.554 4.1l.01 7.937H647.1" fill="#003580"/>
+            <path d="M665.555 18.263c-1.236 0-2.098.982-2.098 2.386s.862 2.384 2.098 2.384c1.242 0 2.113-.98 2.113-2.384 0-1.426-.85-2.386-2.113-2.386zm0 6.867c-2.618 0-4.517-1.885-4.517-4.48s1.9-4.48 4.517-4.48c2.624 0 4.533 1.884 4.533 4.48s-1.9 4.482-4.533 4.482" fill="#00b4f1" />
+            <path d="M644.122 18.644c-1.35 0-1.83 1.176-1.83 2.28 0 .486.123 2.07 1.7 2.07.783 0 1.826-.224 1.826-2.15 0-1.817-.923-2.198-1.697-2.198zm2.978 6.332c-.468 0-.828-.187-1-.528l-.068-.132-.114.1c-.398.344-1.112.753-2.27.753-2.307 0-3.86-1.733-3.86-4.31s1.607-4.376 3.906-4.376c.785 0 1.406.184 1.898.556l.2.143v-.24c0-1.156-.747-1.794-2.102-1.794a4.98 4.98 0 0 0-1.66.306c-.522.158-.83.027-1.04-.498l-.196-.484-.277-.708.17-.09c.868-.46 1.997-.735 3.017-.735 2.1 0 4.554 1.075 4.554 4.1l.01 7.937H647.1" fill="#003580" />
           </g>
         </g>
       </g>
       <g clipPath={`url(#A-${pkgId})`}>
         <g clipPath={`url(#B-${pkgId})`}>
-          <path d="M593.805 18.362l-2.008.002v2.4c0 .514.2.78.638.842h1.37c.977 0 1.6-.616 1.6-1.613-.001-1.024-.617-1.63-1.6-1.63zm-2.008 6.476v.632c0 .553.234.816.747.85h1.028c.88 0 1.4-.527 1.4-1.41 0-.672-.362-1.457-1.377-1.457h-1.807zm4.572-2.396l-.363.204.317.27c.37.317.986 1.03.986 2.26 0 1.884-1.46 3.1-3.72 3.1h-2.874a1.26 1.26 0 0 1-1.214-1.244v-10.69h4.14c2.513 0 4.135 1.368 4.135 3.487 0 1.14-.524 2.116-1.405 2.612" fill="#003580"/>
-          <path d="M681.107 25.12a3.4 3.4 0 0 1-2.648-1.283l-.178-.226-.14.253c-.458.833-1.244 1.256-2.337 1.256-1.147 0-1.916-.64-2.273-1.02l-.234-.253-.1.333c-.13.48-.557.743-1.203.743h-1.037l-.01-8.62h2.355v3.805a4.26 4.26 0 0 0 .125 1.008c.225.92.843 1.91 1.882 1.81.64-.062.954-.557.954-1.513v-5.11h2.372v3.805a3.45 3.45 0 0 0 .133 1.041c.2.878.836 1.778 1.838 1.778.726 0 .994-.41.994-1.514v-3.85c0-.87.388-1.26 1.26-1.26h1.108l.002 5.503c0 2.2-.968 3.314-2.872 3.314m-21.434-5.824c-.007-.01-1.02-1.077-2.355-1.077-1.216 0-2.444.746-2.444 2.41 0 1.438.952 2.443 2.316 2.443.442 0 .946-.158 1.025-.425l.01-.045a.866.866 0 0 1 .84-.637l1.3-.002v1.128c0 1.488-1.893 2.028-3.166 2.028-2.724 0-4.7-1.896-4.7-4.508s1.954-4.504 4.65-4.504c2.338 0 3.6 1.537 3.622 1.552l.068.084-1.022 1.695-.135-.143" fill="#00b4f1"/>
+          <path d="M593.805 18.362l-2.008.002v2.4c0 .514.2.78.638.842h1.37c.977 0 1.6-.616 1.6-1.613-.001-1.024-.617-1.63-1.6-1.63zm-2.008 6.476v.632c0 .553.234.816.747.85h1.028c.88 0 1.4-.527 1.4-1.41 0-.672-.362-1.457-1.377-1.457h-1.807zm4.572-2.396l-.363.204.317.27c.37.317.986 1.03.986 2.26 0 1.884-1.46 3.1-3.72 3.1h-2.874a1.26 1.26 0 0 1-1.214-1.244v-10.69h4.14c2.513 0 4.135 1.368 4.135 3.487 0 1.14-.524 2.116-1.405 2.612" fill="#003580" />
+          <path d="M681.107 25.12a3.4 3.4 0 0 1-2.648-1.283l-.178-.226-.14.253c-.458.833-1.244 1.256-2.337 1.256-1.147 0-1.916-.64-2.273-1.02l-.234-.253-.1.333c-.13.48-.557.743-1.203.743h-1.037l-.01-8.62h2.355v3.805a4.26 4.26 0 0 0 .125 1.008c.225.92.843 1.91 1.882 1.81.64-.062.954-.557.954-1.513v-5.11h2.372v3.805a3.45 3.45 0 0 0 .133 1.041c.2.878.836 1.778 1.838 1.778.726 0 .994-.41.994-1.514v-3.85c0-.87.388-1.26 1.26-1.26h1.108l.002 5.503c0 2.2-.968 3.314-2.872 3.314m-21.434-5.824c-.007-.01-1.02-1.077-2.355-1.077-1.216 0-2.444.746-2.444 2.41 0 1.438.952 2.443 2.316 2.443.442 0 .946-.158 1.025-.425l.01-.045a.866.866 0 0 1 .84-.637l1.3-.002v1.128c0 1.488-1.893 2.028-3.166 2.028-2.724 0-4.7-1.896-4.7-4.508s1.954-4.504 4.65-4.504c2.338 0 3.6 1.537 3.622 1.552l.068.084-1.022 1.695-.135-.143" fill="#00b4f1" />
         </g>
       </g>
     </g>
@@ -71,7 +71,7 @@ export default function AllMaldivesResorts() {
   const [priceRange, setPriceRange] = useState<number>(15000); // max price
   const [maxAvailablePrice, setMaxAvailablePrice] = useState<number>(15000);
   const [sortOrder, setSortOrder] = useState<string>('price-asc');
-  
+
   // Resort specific filters
   const [starRating, setStarRating] = useState<string>('all');
   const [minReviewScore, setMinReviewScore] = useState<number>(0);
@@ -83,10 +83,10 @@ export default function AllMaldivesResorts() {
           resortApi.getPublicResorts(),
           resortApi.getCategories()
         ]);
-        
+
         setResorts(resortsData);
         setCategories(categoriesData);
-        
+
         if (resortsData.length > 0) {
           const maxPrice = Math.max(...resortsData.map((r: any) => r.price));
           setMaxAvailablePrice(Math.ceil(maxPrice / 100) * 100);
@@ -108,8 +108,8 @@ export default function AllMaldivesResorts() {
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase();
       result = result.filter(
-        pkg => 
-          pkg.title.toLowerCase().includes(q) || 
+        pkg =>
+          pkg.title.toLowerCase().includes(q) ||
           (pkg.location && pkg.location.toLowerCase().includes(q))
       );
     }
@@ -121,8 +121,8 @@ export default function AllMaldivesResorts() {
 
     // 3. Price Filter
     result = result.filter(pkg => {
-      const actualPrice = pkg.discount > 0 
-        ? Math.round(pkg.price * (1 - pkg.discount / 100)) 
+      const actualPrice = pkg.discount > 0
+        ? Math.round(pkg.price * (1 - pkg.discount / 100))
         : pkg.price;
       return actualPrice <= priceRange;
     });
@@ -166,7 +166,7 @@ export default function AllMaldivesResorts() {
       <section className="relative w-full h-[60vh] min-h-[480px] flex items-end overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
-            src="https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&q=80&w=1920"
+            src="/images/allmald.webp"
             alt="All Maldives Resorts"
             className="w-full h-full object-cover object-center"
           />
@@ -207,7 +207,7 @@ export default function AllMaldivesResorts() {
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[radial-gradient(circle,_rgba(4,29,60,0.03)_0%,_transparent_70%)] pointer-events-none" />
 
         <div className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 relative z-10 flex flex-col lg:flex-row gap-10">
-          
+
           {/* SIDEBAR FILTERS */}
           <div className="w-full lg:w-[320px] shrink-0">
             <div className="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgba(4,29,60,0.04)] border border-[#e2e8f0] sticky top-[100px]">
@@ -215,14 +215,14 @@ export default function AllMaldivesResorts() {
                 <SlidersHorizontal className="w-5 h-5 text-[#1a84ff]" />
                 <h3 className="text-[#041d3c] font-black text-[18px]">Filter Resorts</h3>
               </div>
-              
+
               {/* Search */}
               <div className="mb-6">
                 <label className="text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-2 block">Search</label>
                 <div className="relative">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Search by name or atoll..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -234,7 +234,7 @@ export default function AllMaldivesResorts() {
               {/* Category */}
               <div className="mb-6">
                 <label className="text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-2 block">Category</label>
-                <select 
+                <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full bg-[#f4f7fb] border border-transparent focus:border-[#1a84ff]/30 focus:bg-white rounded-[12px] px-4 py-3 text-[14px] text-[#041d3c] font-medium outline-none transition-all appearance-none cursor-pointer"
@@ -252,10 +252,10 @@ export default function AllMaldivesResorts() {
                   <label className="text-[12px] font-bold text-gray-400 uppercase tracking-wider block">Max Price</label>
                   <span className="text-[#1a84ff] font-bold text-[14px]">€{priceRange}</span>
                 </div>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max={maxAvailablePrice} 
+                <input
+                  type="range"
+                  min="0"
+                  max={maxAvailablePrice}
                   step="100"
                   value={priceRange}
                   onChange={(e) => setPriceRange(Number(e.target.value))}
@@ -270,7 +270,7 @@ export default function AllMaldivesResorts() {
               {/* Resort Rating */}
               <div className="mb-6">
                 <label className="text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-2 block">Resort Rating</label>
-                <select 
+                <select
                   value={starRating}
                   onChange={(e) => setStarRating(e.target.value)}
                   className="w-full bg-[#f4f7fb] border border-transparent focus:border-[#1a84ff]/30 focus:bg-white rounded-[12px] px-4 py-3 text-[14px] text-[#041d3c] font-medium outline-none transition-all appearance-none cursor-pointer"
@@ -285,7 +285,7 @@ export default function AllMaldivesResorts() {
               {/* Review Score */}
               <div className="mb-6">
                 <label className="text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-2 block">Min Review Score (Out of 10)</label>
-                <select 
+                <select
                   value={minReviewScore}
                   onChange={(e) => setMinReviewScore(Number(e.target.value))}
                   className="w-full bg-[#f4f7fb] border border-transparent focus:border-[#1a84ff]/30 focus:bg-white rounded-[12px] px-4 py-3 text-[14px] text-[#041d3c] font-medium outline-none transition-all appearance-none cursor-pointer"
@@ -300,7 +300,7 @@ export default function AllMaldivesResorts() {
               {/* Sort By */}
               <div className="mb-2">
                 <label className="text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-2 block">Sort By</label>
-                <select 
+                <select
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}
                   className="w-full bg-[#f4f7fb] border border-transparent focus:border-[#1a84ff]/30 focus:bg-white rounded-[12px] px-4 py-3 text-[14px] text-[#041d3c] font-medium outline-none transition-all appearance-none cursor-pointer"
@@ -333,7 +333,7 @@ export default function AllMaldivesResorts() {
                 </div>
                 <h3 className="text-[18px] font-bold text-[#041d3c] mb-2">No resorts match your filters</h3>
                 <p className="text-gray-500 text-[14px]">Try adjusting your search criteria, price, or ratings to see more results.</p>
-                <button 
+                <button
                   onClick={() => {
                     setSearchQuery('');
                     setSelectedCategory('all');
@@ -425,11 +425,10 @@ export default function AllMaldivesResorts() {
                                 {[...Array(5)].map((_, i) => (
                                   <div
                                     key={i}
-                                    className={`w-[11px] h-[11px] rounded-full border-[1.5px] ${
-                                      i < Math.round(pkg.tripAdvisorRating || 0)
+                                    className={`w-[11px] h-[11px] rounded-full border-[1.5px] ${i < Math.round(pkg.tripAdvisorRating || 0)
                                         ? 'bg-[#00aa6c] border-[#00aa6c]'
                                         : 'bg-transparent border-[#00aa6c]'
-                                    }`}
+                                      }`}
                                   />
                                 ))}
                               </div>

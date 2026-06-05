@@ -44,7 +44,7 @@ export default function SriLankaTours() {
       title: dbCat.name,
       slug: dbCat.slug,
       desc: dbCat.desc || 'Experience the wonders of Sri Lanka.',
-      image: dbCat.heroImage || 'https://images.unsplash.com/photo-1594805938839-c581da5d8129?auto=format&fit=crop&q=80&w=1080',
+      image: dbCat.heroImage || '/images/srilankatours.webp',
       icon: resolvedIcon,
       accent: '#1a84ff',
     };
@@ -57,7 +57,7 @@ export default function SriLankaTours() {
       <section className="relative w-full h-[65vh] min-h-[520px] flex items-end overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
-            src="https://images.unsplash.com/photo-1594805938839-c581da5d8129?auto=format&fit=crop&q=80&w=1920"
+            src="/images/srilankatours.webp"
             alt="Sri Lanka Luxury Tour"
             className="w-full h-full object-cover object-center"
           />
@@ -83,7 +83,7 @@ export default function SriLankaTours() {
           {/* Quick stat strip */}
           <div className="flex flex-wrap gap-3 mt-8">
             {STATS.map(({ value, label }) => (
-               <div key={label} className="flex items-center gap-2 bg-white/8 backdrop-blur-sm border border-white/12 rounded-[10px] px-3.5 py-2">
+              <div key={label} className="flex items-center gap-2 bg-white/8 backdrop-blur-sm border border-white/12 rounded-[10px] px-3.5 py-2">
                 <span className="text-white font-black text-[15px]">{value}</span>
                 <span className="text-white/55 font-semibold text-[11px] uppercase tracking-wider">{label}</span>
               </div>

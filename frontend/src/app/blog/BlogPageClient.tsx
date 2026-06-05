@@ -93,7 +93,7 @@ export function BlogPageClient({ initialPosts }: { initialPosts: BlogPostData[] 
       <section className="relative w-full h-[60vh] min-h-[480px] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1672289945029-817528cf089b?auto=format&fit=crop&q=80&w=1920"
+            src="/images/bloghero.webp"
             alt="Blog Hero"
             className="w-full h-full object-cover object-center"
           />
@@ -213,11 +213,10 @@ export function BlogPageClient({ initialPosts }: { initialPosts: BlogPostData[] 
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2.5 rounded-[12px] text-[12.5px] font-extrabold uppercase tracking-wider transition-all duration-300 ${
-                activeCategory === cat
+              className={`px-5 py-2.5 rounded-[12px] text-[12.5px] font-extrabold uppercase tracking-wider transition-all duration-300 ${activeCategory === cat
                   ? 'bg-[#041d3c] text-white shadow-[0_8px_24px_rgba(4,29,60,0.18)] -translate-y-0.5'
                   : 'bg-white text-gray-500 border border-[#041d3c]/8 hover:border-[#041d3c]/20 hover:text-[#041d3c] hover:-translate-y-0.5 shadow-[0_2px_10px_rgba(4,29,60,0.04)]'
-              }`}
+                }`}
             >
               {cat}
             </button>

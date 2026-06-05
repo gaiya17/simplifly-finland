@@ -5,7 +5,7 @@ import { BrandLogos } from '../../components/sections/BrandLogos';
 const ceoImg = '/images/CEO.png';
 const buddhikaImg = '/images/Buddika_Gamage.png';
 const primalImg = '/images/Primal_Gamage.png';
-const maldivesHero = '/images/sl_2.png';
+const maldivesHero = '/images/WhoWeAre.webp';
 
 const stats = [
   { value: '16+', label: 'Years of Experience', icon: Clock },

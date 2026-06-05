@@ -40,7 +40,7 @@ export default function MaldivesResorts() {
       title: dbCat.name,
       slug: dbCat.slug,
       desc: dbCat.desc || 'Discover an unforgettable luxury experience curated just for you.',
-      image: dbCat.heroImage || 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&q=80&w=1080',
+      image: dbCat.heroImage || '/images/maldivesResort.webp',
       icon: resolvedIcon,
       accent: '#1a84ff',
     };
@@ -53,7 +53,7 @@ export default function MaldivesResorts() {
       <section className="relative w-full h-[65vh] min-h-[520px] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&q=80&w=1920"
+            src="/images/maldivesResort.webp"
             alt="Maldives Luxury Resort"
             className="w-full h-full object-cover object-center"
           />
