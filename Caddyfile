@@ -1,0 +1,7 @@
+simpliflyfinland.cloud, www.simpliflyfinland.cloud {
+    reverse_proxy frontend:5173
+}
+
+api.simpliflyfinland.cloud {
+    reverse_proxy backend:5000
+}
