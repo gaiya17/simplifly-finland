@@ -1,6 +1,5 @@
 "use client";
 import { ImageWithFallback } from '../shared/ImageWithFallback';
-const bgImage = '/images/MaldivesResortBG.jpg';
 const tripAdvisorLogo = '/images/tripadvisor.png';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -8,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { ChevronLeft, ChevronRight, MapPin, Users, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
+import { useSiteAssets } from '../providers/SiteAssetsProvider';
 
 // Custom Next Arrow
 const NextArrow = (props: any) => {
@@ -76,6 +76,8 @@ const BookingComLogo = ({ pkgId }: { pkgId: string }) => (
 
 export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
   const sliderRef = React.useRef<Slider>(null);
+  const { getAssetUrl } = useSiteAssets();
+  const bgImage = getAssetUrl('homepage_maldives_bg', '/images/MaldivesResortBG.jpg');
 
   const sliderSettings = {
     dots: true,
@@ -110,7 +112,7 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <ImageWithFallback
-          src={(bgImage as any)?.src || (bgImage as any) || ''}
+          src={bgImage}
           alt="Maldives Background"
           className="w-full h-full object-cover object-center"
         />

@@ -6,10 +6,9 @@ import { ImageWithFallback } from '../../components/shared/ImageWithFallback';
 import { ServicesSection } from '../../components/sections/ServicesSection';
 import { ReviewsSection } from '../../components/sections/ReviewsSection';
 import { Waves, Heart, Users, Compass, ArrowRight, MapPin, Star, Leaf, Sparkles, Globe, Binoculars, Anchor, Sun, UtensilsCrossed, Ship } from 'lucide-react';
+import { useSiteAssets } from '../../components/providers/SiteAssetsProvider';
 
 const iconMap: Record<string, any> = { Waves, MapPin, Heart, Compass, Users, Leaf, Sparkles, Globe, Binoculars, Star, Anchor, Sun, UtensilsCrossed, Ship };
-
-
 
 const highlights = [
   { value: '50+', label: 'Luxury Resorts' },
@@ -19,6 +18,9 @@ const highlights = [
 ];
 
 export default function MaldivesResorts() {
+  const { getAssetUrl } = useSiteAssets();
+  const maldivesHero = getAssetUrl('maldives_resorts_hero', '/images/maldivesResort.webp');
+
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,7 +55,7 @@ export default function MaldivesResorts() {
       <section className="relative w-full h-[65vh] min-h-[520px] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/maldivesResort.webp"
+            src={maldivesHero}
             alt="Maldives Luxury Resort"
             className="w-full h-full object-cover object-center"
           />

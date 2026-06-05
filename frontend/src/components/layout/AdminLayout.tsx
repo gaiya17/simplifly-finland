@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import {
   LayoutDashboard, Map, Hotel, CalendarCheck, FileText,
-  Image, Shield, Bell, Search, LogOut, ChevronDown, User, X, MessageCircle, LayoutTemplate
+  Image, Shield, Bell, Search, LogOut, ChevronDown, User, X, MessageCircle, LayoutTemplate, MapPin, Palmtree, BookOpen, MessageSquare, BotMessageSquare, Globe
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -17,6 +17,7 @@ const menuItems = [
   { name: "Category Manager", path: "/admin/categories", icon: CalendarCheck },
   { name: "Blog Hub", path: "/admin/blogs", icon: FileText },
   { name: "Gallery Manager", path: "/admin/gallery", icon: Image },
+  { name: "Global Assets", path: "/admin/global-assets", icon: Globe },
   { name: "Chatbot Manager", path: "/admin/chatbot", icon: MessageCircle },
   { name: "User Management", path: "/admin/users", icon: Shield },
 ];

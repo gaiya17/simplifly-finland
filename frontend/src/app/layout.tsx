@@ -16,6 +16,8 @@ import { Toaster } from "sonner";
 import { ClientLayout } from "../components/layout/ClientLayout";
 import "./globals.css";
 
+import { SiteAssetsProvider } from '../components/providers/SiteAssetsProvider';
+
 // ─── Font Loading ──────────────────────────────────────────────────────────────
 // next/font automatically downloads and self-hosts Poppins at build time.
 // This avoids an extra network round-trip to Google Fonts and prevents
@@ -77,19 +79,21 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${poppins.variable} font-sans min-h-full flex flex-col antialiased`}
       >
-        {/*
-         * Toaster — global toast notification system (sonner library).
-         * Rendered here so toasts are available across all pages, including
-         * admin and public routes without needing to re-mount the provider.
-         */}
-        <Toaster position="top-center" richColors />
+        <SiteAssetsProvider>
+          {/*
+           * Toaster — global toast notification system (sonner library).
+           * Rendered here so toasts are available across all pages, including
+           * admin and public routes without needing to re-mount the provider.
+           */}
+          <Toaster position="top-center" richColors />
 
-        {/*
-         * ClientLayout — detects whether the current route is an admin portal
-         * page (/admin, /login) or a public page and renders the appropriate
-         * shell (Header + Footer vs. bare main).
-         */}
-        <ClientLayout>{children}</ClientLayout>
+          {/*
+           * ClientLayout — detects whether the current route is an admin portal
+           * page (/admin, /login) or a public page and renders the appropriate
+           * shell (Header + Footer vs. bare main).
+           */}
+          <ClientLayout>{children}</ClientLayout>
+        </SiteAssetsProvider>
       </body>
     </html>
   );

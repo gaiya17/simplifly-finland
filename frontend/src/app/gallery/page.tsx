@@ -5,12 +5,16 @@ import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { ImageWithFallback } from '../../components/shared/ImageWithFallback';
 import { X, ZoomIn, MapPin, Loader2 } from 'lucide-react';
 import { galleryApi } from '../../lib/galleryApi';
+import { useSiteAssets } from '../../components/providers/SiteAssetsProvider';
 
 type Category = 'All' | 'Maldives' | 'Sri Lanka' | 'Experiences';
 
 const categories: Category[] = ['All', 'Experiences', 'Maldives', 'Sri Lanka'];
 
 export default function GalleryPage() {
+  const { getAssetUrl } = useSiteAssets();
+  const galleryHero = getAssetUrl('gallery_hero', '/images/galleryhero.webp');
+  
   const [activeCategory, setActiveCategory] = useState<Category>('All');
   const [lightbox, setLightbox] = useState<{ url: string; title: string; category: string } | null>(null);
   const [galleryImages, setGalleryImages] = useState<any[]>([]);
@@ -44,7 +48,7 @@ export default function GalleryPage() {
         {/* Background image */}
         <div className="absolute inset-0">
           <img
-            src="/images/galleryhero.webp"
+            src={galleryHero}
             alt="Gallery Hero"
             className="w-full h-full object-cover object-center scale-105"
           />

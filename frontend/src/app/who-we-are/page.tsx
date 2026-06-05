@@ -1,11 +1,7 @@
 import { Quote, Award, Globe, Users, Clock, CheckCircle } from 'lucide-react';
 import { ImageWithFallback } from '../../components/shared/ImageWithFallback';
 import { BrandLogos } from '../../components/sections/BrandLogos';
-
-const ceoImg = '/images/CEO.webp';
-const buddhikaImg = '/images/BuddikaGamage.webp';
-const primalImg = '/images/PrimalGamage.webp';
-const maldivesHero = '/images/whoWeAre.webp';
+import { siteAssetsApi } from '../../lib/siteAssetsApi';
 
 const stats = [
   { value: '16+', label: 'Years of Experience', icon: Clock },
@@ -33,12 +29,20 @@ const values = [
   },
 ];
 
-const teamLeaders = [
-  { name: 'Buddhika Gamage', role: 'Chief Executive Officer', image: buddhikaImg },
-  { name: 'Primal Gamage', role: 'Operations Manager', image: primalImg },
-];
+export default async function WhoWeAre() {
+  const assets = await siteAssetsApi.getAssets();
+  const getAssetUrl = (key: string, fallback: string) => assets[key]?.url || fallback;
+  
+  const maldivesHero = getAssetUrl('who_we_are_hero', '/images/whoWeAre.webp');
+  const ceoImg = getAssetUrl('who_we_are_ceo', '/images/CEO.webp');
+  const buddhikaImg = getAssetUrl('who_we_are_buddhika', '/images/BuddikaGamage.webp');
+  const primalImg = getAssetUrl('who_we_are_primal', '/images/PrimalGamage.webp');
 
-export default function WhoWeAre() {
+  const teamLeaders = [
+    { name: 'Buddhika Gamage', role: 'Chief Executive Officer', image: buddhikaImg },
+    { name: 'Primal Gamage', role: 'Operations Manager', image: primalImg },
+  ];
+
   return (
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
 

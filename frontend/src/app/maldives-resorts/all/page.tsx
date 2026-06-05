@@ -1,11 +1,16 @@
 "use client";
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import {
+  MapPin, Clock, Users, ArrowRight, Loader2, Leaf, Star, Anchor,
+  Calendar, Globe, ArrowLeft, Heart, Binoculars, Zap, Sparkles, Waves, Compass,
+  Search, SlidersHorizontal
+} from 'lucide-react';
+import { resortApi } from '../../../lib/resortApi';
 import { ImageWithFallback } from '../../../components/shared/ImageWithFallback';
+import { useSiteAssets } from '../../../components/providers/SiteAssetsProvider';
 import { ServicesSection } from '../../../components/sections/ServicesSection';
 import { ReviewsSection } from '../../../components/sections/ReviewsSection';
-import { MapPin, ArrowLeft, Users, ArrowRight, Search, SlidersHorizontal, Loader2 } from 'lucide-react';
-import { resortApi } from '../../../lib/resortApi';
 const tripAdvisorLogo = '/images/tripadvisor.png';
 
 // Inlined Booking.com logo component
@@ -61,6 +66,9 @@ const BookingComLogo = ({ pkgId }: { pkgId: string }) => (
 );
 
 export default function AllMaldivesResorts() {
+  const { getAssetUrl } = useSiteAssets();
+  const allResortsHero = getAssetUrl('maldives_resorts_all_hero', '/images/allmald.webp');
+  
   const [resorts, setResorts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -166,7 +174,7 @@ export default function AllMaldivesResorts() {
       <section className="relative w-full h-[60vh] min-h-[480px] flex items-end overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
-            src="/images/allmald.webp"
+            src={allResortsHero}
             alt="All Maldives Resorts"
             className="w-full h-full object-cover object-center"
           />

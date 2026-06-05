@@ -75,7 +75,12 @@ function BlogCard({ post }: { post: BlogPostData }) {
   );
 }
 
+import { useSiteAssets } from '../../components/providers/SiteAssetsProvider';
+
 export function BlogPageClient({ initialPosts }: { initialPosts: BlogPostData[] }) {
+  const { getAssetUrl } = useSiteAssets();
+  const blogHero = getAssetUrl('blog_hero', '/images/bloghero.webp');
+  
   const [activeCategory, setActiveCategory] = useState<Category>('All');
   const allBlogPosts = initialPosts;
 
@@ -93,7 +98,7 @@ export function BlogPageClient({ initialPosts }: { initialPosts: BlogPostData[] 
       <section className="relative w-full h-[60vh] min-h-[480px] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/bloghero.webp"
+            src={blogHero}
             alt="Blog Hero"
             className="w-full h-full object-cover object-center"
           />

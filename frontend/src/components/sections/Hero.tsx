@@ -1,16 +1,20 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '../../lib/i18n/LanguageContext';
-const imgSriLanka = '/images/heroSL.webp';
-const imgMaldives = '/images/heroMALD.webp';
-
-const HERO_IMAGES = [
-  { src: typeof imgSriLanka === 'object' ? (imgSriLanka as any).src : imgSriLanka, title: 'Sri Lanka' },
-  { src: typeof imgMaldives === 'object' ? (imgMaldives as any).src : imgMaldives, title: 'Maldives' },
-];
+import { useSiteAssets } from '../providers/SiteAssetsProvider';
 
 export function Hero() {
   const { t } = useTranslation();
+  const { getAssetUrl } = useSiteAssets();
+  
+  const sriLankaHero = getAssetUrl('homepage_hero_srilanka', '/images/heroSL.webp');
+  const maldivesHero = getAssetUrl('homepage_hero_maldives', '/images/heroMALD.webp');
+  
+  const HERO_IMAGES = [
+    { src: sriLankaHero, title: 'Sri Lanka' },
+    { src: maldivesHero, title: 'Maldives' },
+  ];
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [targetIndex, setTargetIndex] = useState(0);
   const [displayText, setDisplayText] = useState(HERO_IMAGES[0].title);

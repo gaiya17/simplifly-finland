@@ -9,6 +9,7 @@ import {
   Sparkles, Globe, ArrowRight, Star, Loader2, Waves, Anchor, Sun
 } from 'lucide-react';
 import { tourApi } from '../../lib/tourApi';
+import { useSiteAssets } from '../../components/providers/SiteAssetsProvider';
 
 const iconMap: Record<string, any> = { Waves, MapPin, Heart, Compass, Users, Leaf, Sparkles, Globe, Binoculars, Star, Anchor, Sun, Zap };
 
@@ -19,9 +20,10 @@ const STATS = [
   { value: '5★', label: 'Rating' },
 ];
 
-
-
 export default function SriLankaTours() {
+  const { getAssetUrl } = useSiteAssets();
+  const sriLankaHero = getAssetUrl('sri_lanka_tours_hero', '/images/srilankatours.webp');
+
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,7 +59,7 @@ export default function SriLankaTours() {
       <section className="relative w-full h-[65vh] min-h-[520px] flex items-end overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
-            src="/images/srilankatours.webp"
+            src={sriLankaHero}
             alt="Sri Lanka Luxury Tour"
             className="w-full h-full object-cover object-center"
           />

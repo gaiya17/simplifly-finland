@@ -6,8 +6,12 @@ import { ServicesSection } from '../../../components/sections/ServicesSection';
 import { ReviewsSection } from '../../../components/sections/ReviewsSection';
 import { MapPin, ArrowLeft, Clock, ArrowRight, Search, Filter, SlidersHorizontal, Loader2 } from 'lucide-react';
 import { tourApi } from '../../../lib/tourApi';
+import { useSiteAssets } from '../../../components/providers/SiteAssetsProvider';
 
 export default function AllSriLankaTours() {
+  const { getAssetUrl } = useSiteAssets();
+  const allToursHero = getAssetUrl('sri_lanka_tours_all_hero', '/images/allsltours.webp');
+
   const [tours, setTours] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -90,12 +94,12 @@ export default function AllSriLankaTours() {
   return (
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
       {/* ── HERO ── */}
-      <section className="relative w-full h-[60vh] min-h-[480px] flex items-end overflow-hidden">
+      <section className="relative w-full h-[55vh] min-h-[450px] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
-            src="/images/allsltours.webp"
+            src={allToursHero}
             alt="All Sri Lanka Tours"
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-center scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#041d3c]/90 via-[#041d3c]/55 to-[#041d3c]/20" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/80 via-transparent to-[#041d3c]/20" />

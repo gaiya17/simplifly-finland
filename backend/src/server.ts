@@ -15,6 +15,7 @@ import chatbotRoutes from "./routes/chatbotRoutes";
 import homepageRoutes from "./routes/homepageRoutes";
 import adminHomepageRoutes from "./routes/adminHomepageRoutes";
 import inquiryRoutes from "./routes/inquiryRoutes";
+import siteAssetRoutes from "./routes/siteAssetRoutes";
 import { prisma } from "./config/db";
 
 const app = express();
@@ -39,6 +40,7 @@ app.use("/api/chatbot", chatbotRoutes);
 app.use("/api/homepage", homepageRoutes);
 app.use("/api/admin/homepage", adminHomepageRoutes);
 app.use("/api/inquiries", inquiryRoutes);
+app.use("/api/assets", siteAssetRoutes);
 
 // General Health Check
 app.get("/api/health", async (req, res) => {
