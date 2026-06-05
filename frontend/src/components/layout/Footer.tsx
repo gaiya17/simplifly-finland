@@ -1,5 +1,5 @@
 'use client';
-import { MapPin, Phone, Facebook, Instagram, Youtube, ArrowRight } from 'lucide-react';
+import { MapPin, Phone, Globe, Camera, Video, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { ImageWithFallback } from '../shared/ImageWithFallback';
 import { useTranslation } from '../../lib/i18n/LanguageContext';
@@ -60,9 +60,9 @@ export function Footer() {
 
             <div className="flex flex-wrap items-center gap-3">
               {[
-                { icon: Facebook, href: 'https://web.facebook.com/simpliflyfinland', label: 'Facebook' },
-                { icon: Instagram, href: 'https://www.instagram.com/simpliflyfinland', label: 'Instagram' },
-                { icon: Youtube, href: 'https://www.youtube.com/@simplflyfinlandOy', label: 'YouTube' },
+                { icon: Globe, href: 'https://web.facebook.com/simpliflyfinland', label: 'Facebook' },
+                { icon: Camera, href: 'https://www.instagram.com/simpliflyfinland', label: 'Instagram' },
+                { icon: Video, href: 'https://www.youtube.com/@simplflyfinlandOy', label: 'YouTube' },
               ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
