@@ -58,6 +58,21 @@ const logos = [
   { type: "image", src: tripadvisorLogo, alt: "Tripadvisor" },
   { type: "booking", alt: "Booking.com" },
   { type: "image", src: pataLogo, alt: "PATA Finland Chapter" },
+  { type: "image", src: '/images/partners/Accor Hotels.png', alt: "Accor Hotels" },
+  { type: "image", src: '/images/partners/Crossroads Maldives.png', alt: "Crossroads Maldives" },
+  { type: "image", src: '/images/partners/Emerald Faarufushi Resort & Spa.png', alt: "Emerald Faarufushi Resort & Spa" },
+  { type: "image", src: '/images/partners/JW Mariott Maldives.png', alt: "JW Mariott Maldives" },
+  { type: "image", src: '/images/partners/Joali Maldives.png', alt: "Joali Maldives" },
+  { type: "image", src: '/images/partners/Marriott Resort Weligama Bay.png', alt: "Marriott Resort Weligama Bay" },
+  { type: "image", src: '/images/partners/One&Only Reethi Rah Malidives.png', alt: "One&Only Reethi Rah Malidives" },
+  { type: "image", src: '/images/partners/Patina Maldives Fari ISland.png', alt: "Patina Maldives Fari ISland" },
+  { type: "image", src: '/images/partners/Shangri-La Hotels & Resorts.png', alt: "Shangri-La Hotels & Resorts" },
+  { type: "image", src: '/images/partners/St. Regis.png', alt: "St. Regis" },
+  { type: "image", src: '/images/partners/Sun Siyam Resorts.png', alt: "Sun Siyam Resorts" },
+  { type: "image", src: '/images/partners/The RITZ Carlton Maldives.png', alt: "The RITZ Carlton Maldives" },
+  { type: "image", src: '/images/partners/Universal Resorts.png', alt: "Universal Resorts" },
+  { type: "image", src: '/images/partners/Villa Hotels & Resorts Maldives.png', alt: "Villa Hotels & Resorts Maldives" },
+  { type: "image", src: '/images/partners/Waldorf Astoria Maldives Ithafushi.png', alt: "Waldorf Astoria Maldives Ithafushi" },
 ];
 
 export function BrandLogos() {
