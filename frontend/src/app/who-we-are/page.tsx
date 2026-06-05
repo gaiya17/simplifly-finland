@@ -2,10 +2,10 @@ import { Quote, Award, Globe, Users, Clock, CheckCircle } from 'lucide-react';
 import { ImageWithFallback } from '../../components/shared/ImageWithFallback';
 import { BrandLogos } from '../../components/sections/BrandLogos';
 
-const ceoImg = '/images/CEO.png';
-const buddhikaImg = '/images/Buddika_Gamage.png';
-const primalImg = '/images/Primal_Gamage.png';
-const maldivesHero = '/images/WhoWeAre.webp';
+const ceoImg = '/images/CEO.webp';
+const buddhikaImg = '/images/BuddikaGamage.webp';
+const primalImg = '/images/PrimalGamage.webp';
+const maldivesHero = '/images/whoWeAre.webp';
 
 const stats = [
   { value: '16+', label: 'Years of Experience', icon: Clock },
