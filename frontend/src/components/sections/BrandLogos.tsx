@@ -16,7 +16,7 @@ const logos = [
   { type: "image", src: '/images/partners/Sun Siyam Resorts.png', alt: "Sun Siyam Resorts" },
   { type: "image", src: '/images/partners/The RITZ Carlton Maldives.png', alt: "The RITZ Carlton Maldives" },
   { type: "image", src: '/images/partners/Universal Resorts.png', alt: "Universal Resorts" },
-  { type: "image", src: '/images/partners/Villa Hotels & Resorts Maldives.png', alt: "Villa Hotels & Resorts Maldives" },
+  { type: "image", src: '/images/partners/Villa-Hotels-and-Resorts-Maldives.png', alt: "Villa Hotels & Resorts Maldives" },
   { type: "image", src: '/images/partners/Waldorf Astoria Maldives Ithafushi.png', alt: "Waldorf Astoria Maldives Ithafushi" },
 ];
 
