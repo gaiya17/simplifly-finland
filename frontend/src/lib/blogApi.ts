@@ -1,4 +1,10 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const getApiUrl = () => {
+  if (typeof window === 'undefined') {
+    return process.env.INTERNAL_API_URL || 'http://backend:5000/api';
+  }
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+};
+const API_URL = getApiUrl();
 
 export type Category = 'All' | 'Destinations' | 'Travel Tips' | 'Guides' | 'Food' | 'Experiences';
 
