@@ -72,7 +72,7 @@ export default function AdminLogin() {
         {/* Content */}
         <div className="relative z-10 px-16 flex flex-col items-start max-w-[520px]">
           <div className="mb-12 h-12 w-auto relative">
-             <img src="/simplifly-logo-new.png" alt="Simplifly Finland" className="h-12 w-auto opacity-90" />
+             <img src="/simplifly-logo.svg" alt="Simplifly Finland" className="h-12 w-auto opacity-90" />
           </div>
 
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/15 bg-white/8 text-white/60 text-[10px] font-extrabold tracking-[0.18em] uppercase mb-6">
