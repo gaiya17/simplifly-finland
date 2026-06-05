@@ -417,8 +417,8 @@ export default function AdminResorts() {
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <div className="p-6 bg-emerald-50 rounded-[16px] border border-emerald-100">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                        <svg className="w-6 h-6 text-emerald-600" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.5a6.5 6.5 0 110-13 6.5 6.5 0 010 13zm3.5-9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm-7 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
+                      <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center p-1.5 overflow-hidden border border-emerald-100">
+                        <img src="/images/tripadvisor.png" alt="TripAdvisor" className="w-full h-full object-contain" />
                       </div>
                       <h4 className="text-emerald-800 font-extrabold text-[15px]">TripAdvisor Ratings</h4>
                     </div>
@@ -436,8 +436,8 @@ export default function AdminResorts() {
 
                   <div className="p-6 bg-blue-50 rounded-[16px] border border-blue-100">
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                        <svg className="w-6 h-6 text-blue-700" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 0H2.4C1.08 0 0 1.08 0 2.4v19.2C0 22.92 1.08 24 2.4 24h19.2c1.32 0 2.4-1.08 2.4-2.4V2.4C24 1.08 22.92 0 21.6 0zM7.2 18H3.6V6h3.6c1.98 0 3.6 1.62 3.6 3.6 0 1.26-.63 2.34-1.62 2.97C10.35 13.2 10.8 14.28 10.8 15.6c0 1.32-1.08 2.4-2.4 2.4zm10.8 0h-3.6V6H18c1.98 0 3.6 1.62 3.6 3.6v4.8c0 1.98-1.62 3.6-3.6 3.6z"/></svg>
+                      <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center p-1.5 overflow-hidden border border-blue-100">
+                        <img src="/images/booking.com.png" alt="Booking.com" className="w-full h-full object-contain" />
                       </div>
                       <h4 className="text-blue-800 font-extrabold text-[15px]">Booking.com Ratings</h4>
                     </div>
