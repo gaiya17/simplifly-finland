@@ -572,7 +572,7 @@ export function TourPackageClient({ data }: { data: any }) {
 
                   {/* CTA button */}
                   <a
-                    href={`https://wa.me/358408192758?text=Hi! I'm interested in the ${encodeURIComponent(data.title)} tour package.`}
+                    href={`https://wa.me/94715233845?text=Hi! I'm interested in the ${encodeURIComponent(data.title)} tour package.`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full flex items-center justify-center gap-2.5 bg-[#128c7e] hover:bg-[#075e54] text-white rounded-[14px] py-4 font-extrabold text-[13px] tracking-wider uppercase transition-colors shadow-sm"

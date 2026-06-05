@@ -13,7 +13,7 @@ interface FlowNode {
   whatsappText?: string;
 }
 
-const WA_NUMBER = '358408192758';
+const WA_NUMBER = '94715233845';
 
 const FLOW: Record<string, FlowNode> = {
   start: {

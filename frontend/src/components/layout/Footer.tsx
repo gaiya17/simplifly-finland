@@ -9,7 +9,7 @@ const offices = [
   {
     region: 'Finland',
     address: 'Kardinaalinkatu 4C 20, 20540, Turku, Finland',
-    phones: ['+358 40 8193030', '+358 40 819 2758'],
+    phones: ['+358 40 8193030', '+94 71 523 3845'],
   },
   {
     region: 'Sri Lanka',

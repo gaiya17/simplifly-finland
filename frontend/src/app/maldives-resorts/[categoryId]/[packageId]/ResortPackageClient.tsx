@@ -368,7 +368,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
 
           {/* WhatsApp CTA */}
           <a
-            href="https://wa.me/358408192758"
+            href="https://wa.me/94715233845"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[14px] py-3.5 font-extrabold text-[14px] flex items-center justify-center gap-2.5 hover:shadow-[0_12px_28px_rgba(7,94,84,0.30)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
@@ -851,7 +851,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                         <button onClick={() => document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' })} className="flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-[#041d3c] hover:bg-[#1a84ff] text-white rounded-[14px] font-extrabold text-[13px] uppercase tracking-wider transition-all duration-300 hover:shadow-[0_8px_24px_rgba(26,132,255,0.25)] hover:-translate-y-0.5">
                           Book Now
                         </button>
-                        <a href="https://wa.me/358408192758" target="_blank" rel="noopener noreferrer" className="flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[14px] font-extrabold text-[13px] uppercase tracking-wider transition-all duration-300 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 group relative overflow-hidden">
+                        <a href="https://wa.me/94715233845" target="_blank" rel="noopener noreferrer" className="flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[14px] font-extrabold text-[13px] uppercase tracking-wider transition-all duration-300 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 group relative overflow-hidden">
                           <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
                           <WaIcon /><span className="relative z-10">WhatsApp Us</span>
                         </a>

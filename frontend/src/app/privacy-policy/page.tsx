@@ -71,7 +71,7 @@ export default function PrivacyPolicyPage() {
             {/* Introduction */}
             <div id="introduction" className="scroll-mt-[120px]">
               <p>
-                This Privacy Policy describes the policies of <strong>Simplifly Finland Oy</strong>, Kardinaalinkatu 4C 20, Turku, Southern Finland 20540, Finland, email: <strong>buddhika.simpliflyfinland@gmail.com</strong>, phone: <strong>+358 40 819 2758</strong>, on the collection, use and disclosure of your information that we collect when you use our website (<a href="https://simpliflyfinland.fi">https://simpliflyfinland.fi</a>) (the "Service").
+                This Privacy Policy describes the policies of <strong>Simplifly Finland Oy</strong>, Kardinaalinkatu 4C 20, Turku, Southern Finland 20540, Finland, email: <strong>buddhika.simpliflyfinland@gmail.com</strong>, phone: <strong>+94 71 523 3845</strong>, on the collection, use and disclosure of your information that we collect when you use our website (<a href="https://simpliflyfinland.fi">https://simpliflyfinland.fi</a>) (the "Service").
               </p>
               <p>
                 By accessing or using the Service, you are consenting to the collection, use and disclosure of your information in accordance with this Privacy Policy. If you do not consent to the same, please do not access or use the Service.
