@@ -24,8 +24,6 @@ services:
   frontend:
     build:
       context: ./frontend
-    environment:
-      - NEXT_PUBLIC_API_URL=https://api.simpliflyfinland.cloud
     restart: always
     depends_on:
       - backend
