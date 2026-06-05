@@ -14,7 +14,7 @@ const storage = new CloudinaryStorage({
     const folder = (req.body.folder as string) || 'simplifly/general';
     return {
       folder,
-      allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+      allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'pdf'],
       transformation: [{ quality: 'auto', fetch_format: 'auto' }],
     };
   },

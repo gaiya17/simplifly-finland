@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Upload, X, Loader2, Pencil } from 'lucide-react';
+import { Upload, X, Loader2, Pencil, FileText } from 'lucide-react';
 import { cloudinaryUrl } from '../../lib/cloudinary';
 
 interface ImageUploadProps {
@@ -9,14 +9,16 @@ interface ImageUploadProps {
   onChange: (url: string, publicId: string) => void;
   onRemove?: () => void;
   className?: string;
+  acceptPdf?: boolean;      // allows PDF
 }
 
-export function ImageUpload({ value, publicId, folder = 'simplifly/general', onChange, onRemove, className = '' }: ImageUploadProps) {
+export function ImageUpload({ value, publicId, folder = 'simplifly/general', onChange, onRemove, className = '', acceptPdf = true }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const displayUrl = publicId && !value?.startsWith('http') ? cloudinaryUrl(publicId, { width: 800 }) : value;
+  const isPdf = displayUrl?.toLowerCase().endsWith('.pdf');
 
   const handleUpload = async (file: File) => {
     if (!file) return;
@@ -58,8 +60,15 @@ export function ImageUpload({ value, publicId, folder = 'simplifly/general', onC
   return (
     <div className={`space-y-2 ${className}`}>
       {displayUrl ? (
-        <div className="relative rounded-[16px] overflow-hidden border border-[#e4eaf2] group">
-          <img src={displayUrl} alt="Uploaded" className="w-full h-[200px] object-cover transition-transform duration-500 group-hover:scale-105" />
+        <div className="relative rounded-[16px] overflow-hidden border border-[#e4eaf2] group h-[200px] flex items-center justify-center bg-[#f8fafc]">
+          {isPdf ? (
+            <div className="flex flex-col items-center gap-3 text-[#041d3c]">
+              <FileText className="w-16 h-16 text-rose-500" />
+              <span className="text-[13px] font-bold max-w-[80%] text-center truncate">Document (PDF)</span>
+            </div>
+          ) : (
+            <img src={displayUrl} alt="Uploaded" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          )}
           
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
             <button
@@ -106,9 +115,9 @@ export function ImageUpload({ value, publicId, folder = 'simplifly/general', onC
                 <Upload className="w-5 h-5 text-[#1a84ff]" />
               </div>
               <p className="text-[#041d3c] font-bold text-[13px]">
-                Drop image here or <span className="text-[#1a84ff]">browse</span>
+                Drop {acceptPdf ? 'file' : 'image'} here or <span className="text-[#1a84ff]">browse</span>
               </p>
-              <p className="text-gray-400 text-[11px]">JPG, WebP, PNG · Max 10MB</p>
+              <p className="text-gray-400 text-[11px]">JPG, WebP, PNG{acceptPdf ? ', PDF' : ''} · Max 10MB</p>
             </div>
           )}
         </div>
@@ -117,7 +126,7 @@ export function ImageUpload({ value, publicId, folder = 'simplifly/general', onC
       <input
         ref={inputRef}
         type="file"
-        accept="image/jpeg,image/jpg,image/webp,image/png"
+        accept={`image/jpeg,image/jpg,image/webp,image/png${acceptPdf ? ',application/pdf' : ''}`}
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
