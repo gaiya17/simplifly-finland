@@ -416,11 +416,8 @@ export default function AdminResorts() {
               {step === 2 && (
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <div className="p-6 bg-emerald-50 rounded-[16px] border border-emerald-100">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center p-1.5 overflow-hidden border border-emerald-100">
-                        <img src="/images/tripadvisor.png" alt="TripAdvisor" className="w-full h-full object-contain" />
-                      </div>
-                      <h4 className="text-emerald-800 font-extrabold text-[15px]">TripAdvisor Ratings</h4>
+                    <div className="mb-5">
+                      <img src="/images/tripadvisor.png" alt="TripAdvisor Ratings" className="h-8 w-auto object-contain" />
                     </div>
                     <div className="grid grid-cols-2 gap-5">
                       <div>
@@ -435,11 +432,8 @@ export default function AdminResorts() {
                   </div>
 
                   <div className="p-6 bg-blue-50 rounded-[16px] border border-blue-100">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center p-1.5 overflow-hidden border border-blue-100">
-                        <img src="/images/booking.com.png" alt="Booking.com" className="w-full h-full object-contain" />
-                      </div>
-                      <h4 className="text-blue-800 font-extrabold text-[15px]">Booking.com Ratings</h4>
+                    <div className="mb-5">
+                      <img src="/images/booking.com.png" alt="Booking.com Ratings" className="h-8 w-auto object-contain" />
                     </div>
                     <div className="grid grid-cols-2 gap-5">
                       <div>
