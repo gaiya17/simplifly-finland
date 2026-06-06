@@ -459,6 +459,7 @@ export default function AdminResorts() {
                         onChange={(url, publicId) => setForm({...form, heroImage: url, heroImagePublicId: publicId})}
                         onRemove={() => setForm({...form, heroImage: "", heroImagePublicId: ""})}
                         folder="simplifly/resorts/hero"
+                        requireLandscape={true}
                       />
                     </div>
                     <div>
@@ -468,6 +469,7 @@ export default function AdminResorts() {
                         onChange={(url, publicId) => setForm({...form, packageImage: url, packageImagePublicId: publicId})}
                         onRemove={() => setForm({...form, packageImage: "", packageImagePublicId: ""})}
                         folder="simplifly/resorts/cards"
+                        requireLandscape={true}
                       />
                     </div>
                   </div>

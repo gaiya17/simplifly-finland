@@ -347,6 +347,7 @@ export default function AdminTours() {
                         value={form.heroImage} publicId={form.heroImagePublicId} folder="simplifly/tours"
                         onChange={(url, id) => setForm({...form, heroImage: url, heroImagePublicId: id})}
                         onRemove={() => setForm({...form, heroImage: "", heroImagePublicId: ""})}
+                        requireLandscape={true}
                       />
                     </div>
                     <div>
@@ -355,6 +356,7 @@ export default function AdminTours() {
                         value={form.packageImage} publicId={form.packageImagePublicId} folder="simplifly/tours"
                         onChange={(url, id) => setForm({...form, packageImage: url, packageImagePublicId: id})}
                         onRemove={() => setForm({...form, packageImage: "", packageImagePublicId: ""})}
+                        requireLandscape={true}
                       />
                     </div>
                   </div>

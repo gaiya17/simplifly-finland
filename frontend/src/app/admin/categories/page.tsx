@@ -344,6 +344,9 @@ export default function CategoryManager() {
                   <ImageUpload
                     value={form.heroImage}
                     onChange={(url, publicId) => setForm({ ...form, heroImage: url })}
+                    onRemove={() => setForm({ ...form, heroImage: "" })}
+                    folder={`simplifly/categories/${activeTab}`}
+                    requireLandscape={true}
                   />
                 </div>
               </div>

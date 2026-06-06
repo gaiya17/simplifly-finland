@@ -2,6 +2,8 @@ import { useState, useRef } from 'react';
 import { Upload, X, Loader2, Pencil, FileText } from 'lucide-react';
 import { cloudinaryUrl } from '../../lib/cloudinary';
 
+import { toast } from 'sonner';
+
 interface ImageUploadProps {
   value?: string;           // full url or publicId depending on usage, but we'll accept publicId or URL
   publicId?: string;        // publicId for display
@@ -10,9 +12,10 @@ interface ImageUploadProps {
   onRemove?: () => void;
   className?: string;
   acceptPdf?: boolean;      // allows PDF
+  requireLandscape?: boolean; // strictly landscape images only
 }
 
-export function ImageUpload({ value, publicId, folder = 'simplifly/general', onChange, onRemove, className = '', acceptPdf = true }: ImageUploadProps) {
+export function ImageUpload({ value, publicId, folder = 'simplifly/general', onChange, onRemove, className = '', acceptPdf = true, requireLandscape = false }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -22,6 +25,26 @@ export function ImageUpload({ value, publicId, folder = 'simplifly/general', onC
 
   const handleUpload = async (file: File) => {
     if (!file) return;
+
+    if (requireLandscape && file.type.startsWith('image/')) {
+      const isLandscape = await new Promise<boolean>((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          URL.revokeObjectURL(img.src);
+          resolve(img.width > img.height);
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(img.src);
+          resolve(true); // if it fails to load here, let server handle or fail later
+        };
+        img.src = URL.createObjectURL(file);
+      });
+
+      if (!isLandscape) {
+        toast.error("Please upload a landscape image (width must be greater than height).");
+        return;
+      }
+    }
 
     setUploading(true);
     const formData = new FormData();
