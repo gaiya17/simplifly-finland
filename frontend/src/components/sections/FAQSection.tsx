@@ -78,7 +78,7 @@ export function FAQSection() {
             <div className="h-[1px] bg-white/8 w-full relative z-10" />
 
             <a
-              href="https://wa.me/94715233845"
+              href="https://wa.me/358408192758"
               target="_blank"
               rel="noopener noreferrer"
               className="relative z-10 inline-flex items-center justify-center gap-2.5 bg-[#25d366] hover:bg-[#1ebe5d] text-white font-extrabold px-6 py-3.5 rounded-[14px] text-[13px] uppercase tracking-wider shadow-[0_8px_24px_rgba(37,211,102,0.35)] hover:shadow-[0_12px_32px_rgba(37,211,102,0.45)] hover:-translate-y-0.5 transition-all duration-300 group w-full text-center"

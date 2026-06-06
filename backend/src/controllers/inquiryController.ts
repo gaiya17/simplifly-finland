@@ -93,9 +93,9 @@ const generateCustomerEmailHtml = (data: any) => `
       <div style="margin-top: 40px; padding: 20px; background-color: #f4f7fb; border-radius: 8px; border-left: 4px solid #1a84ff;">
         <h4 style="margin-top: 0; color: #041d3c; margin-bottom: 10px;">Our Contact Details</h4>
         <p style="margin: 0; font-size: 14px; color: #4b5563; line-height: 1.5;">
-          <strong>Email:</strong> info@simpliflyfinland.com<br/>
-          <strong>Phone:</strong> +358 40 123 4567<br/>
-          <strong>Address:</strong> Helsinki, Finland
+          <strong>Email:</strong> sales@simpliflyfinland.fi<br/>
+          <strong>Phone:</strong> +358 40 819 2758<br/>
+          <strong>Address:</strong> Kardinaalinkatu 4C 20, 20540, Turku, Finland
         </p>
       </div>
 

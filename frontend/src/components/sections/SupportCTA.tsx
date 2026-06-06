@@ -80,7 +80,7 @@ export function SupportCTA() {
 
               {/* Compact WhatsApp Button - Centered on mobile */}
               <a 
-                href="https://wa.me/94715233845"
+                href="https://wa.me/358408192758"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative flex items-center justify-center gap-2.5 px-6 py-2.5 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] shadow-[0_8px_20px_rgba(7,94,84,0.2)] hover:shadow-[0_12px_28px_rgba(7,94,84,0.3)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 w-fit overflow-hidden"
