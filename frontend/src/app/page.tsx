@@ -10,6 +10,8 @@ import { FAQSection } from '../components/sections/FAQSection';
 import { ReviewsSection } from '../components/sections/ReviewsSection';
 import { homepageApi } from '../lib/homepageApi';
 
+export const revalidate = 60;
+
 export default async function Home() {
   let homepageData: { tours: any[]; resorts: any[]; gallery: any[]; blogs: any[] } = { tours: [], resorts: [], gallery: [], blogs: [] };
   

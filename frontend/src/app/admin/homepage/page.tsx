@@ -126,10 +126,16 @@ function AdminHomepageManagerContent() {
       setAvailableBlogs(blogs);
       setAvailableGallery(gallery);
 
-      setSelectedTours(config.featuredTours || []);
-      setSelectedResorts(config.featuredResorts || []);
-      setSelectedBlogs(config.featuredBlogs || []);
-      setSelectedGallery(config.galleryImages || []);
+      // Clean up any invalid IDs that might have been deleted from the database
+      const validTours = (config.featuredTours || []).filter((id: string) => tours.some((t: any) => t.id === id));
+      const validResorts = (config.featuredResorts || []).filter((id: string) => resorts.some((r: any) => r.id === id));
+      const validBlogs = (config.featuredBlogs || []).filter((id: string) => blogs.some((b: any) => b.id === id));
+      const validGallery = (config.galleryImages || []).filter((id: string) => gallery.some((g: any) => g.id === id));
+
+      setSelectedTours(validTours);
+      setSelectedResorts(validResorts);
+      setSelectedBlogs(validBlogs);
+      setSelectedGallery(validGallery);
       
     } catch (error) {
       console.error(error);
