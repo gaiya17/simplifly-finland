@@ -44,7 +44,7 @@ export default function GalleryPage() {
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
 
       {/* ── HERO ── */}
-      <section className="relative w-full h-[60vh] min-h-[480px] flex items-center justify-center overflow-hidden bg-[#041d3c]">
+      <section className="relative w-full aspect-video min-h-[400px] max-h-[70vh] flex items-center justify-center overflow-hidden bg-[#041d3c]">
         <div className="absolute inset-0">
           <ImageWithFallback
             src={galleryHero}

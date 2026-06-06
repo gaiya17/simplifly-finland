@@ -94,12 +94,12 @@ export default function AllSriLankaTours() {
   return (
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
       {/* ── HERO ── */}
-      <section className="relative w-full h-[55vh] min-h-[450px] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full aspect-video min-h-[400px] max-h-[70vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
             src={allToursHero}
             alt="All Sri Lanka Tours"
-            className="w-full h-full object-cover object-center scale-105"
+            className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#041d3c]/90 via-[#041d3c]/55 to-[#041d3c]/20" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/80 via-transparent to-[#041d3c]/20" />

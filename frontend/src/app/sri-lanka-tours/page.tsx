@@ -56,7 +56,7 @@ export default function SriLankaTours() {
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
 
       {/* ── HERO ── */}
-      <section className="relative w-full h-[65vh] min-h-[520px] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full aspect-video min-h-[400px] max-h-[70vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
             src={sriLankaHero}
