@@ -141,18 +141,18 @@ export default async function MaldivesResortsCategory({ params }: { params: Prom
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
 
       {/* ── HERO ── */}
-      <section className="relative w-full h-[60vh] min-h-[480px] flex items-center overflow-hidden">
+      <section className="relative w-full h-[60vh] min-h-[480px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
-          <img
-            src={data.heroImage}
+          <ImageWithFallback
+            src={data.heroImage || 'https://images.unsplash.com/photo-1514282401047-d79b71a640f5'}
             alt={data.title}
             className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#041d3c]/90 via-[#041d3c]/55 to-[#041d3c]/20" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/70 via-transparent to-[#041d3c]/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/80 via-transparent to-[#041d3c]/20" />
         </div>
 
-        <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 pt-20 flex flex-col items-start">
+        <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 flex flex-col items-start text-left">
           {/* Breadcrumb back */}
           <Link
             href="/maldives-resorts"

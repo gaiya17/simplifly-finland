@@ -52,18 +52,18 @@ export default function MaldivesResorts() {
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
 
       {/* ── HERO ── */}
-      <section className="relative w-full h-[65vh] min-h-[520px] flex items-center overflow-hidden">
+      <section className="relative w-full h-[65vh] min-h-[520px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
-          <img
+          <ImageWithFallback
             src={maldivesHero}
             alt="Maldives Luxury Resort"
             className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#041d3c]/90 via-[#041d3c]/55 to-[#041d3c]/20" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/70 via-transparent to-[#041d3c]/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#041d3c]/95 via-[#041d3c]/60 to-[#041d3c]/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/80 via-transparent to-[#041d3c]/20" />
         </div>
 
-        <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 pt-20">
+        <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 flex flex-col items-start text-left">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/8 border border-white/14 text-white/75 font-extrabold text-[10px] lg:text-[11px] tracking-wider uppercase mb-5 backdrop-blur-sm">
             <MapPin className="w-3 h-3 text-[#D4AF37]" />
             <span>ESCAPE TO TROPICAL PERFECTION</span>

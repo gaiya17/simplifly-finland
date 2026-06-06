@@ -94,7 +94,7 @@ export default function AllSriLankaTours() {
   return (
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
       {/* ── HERO ── */}
-      <section className="relative w-full h-[55vh] min-h-[450px] flex items-center overflow-hidden">
+      <section className="relative w-full h-[55vh] min-h-[450px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
             src={allToursHero}
@@ -105,7 +105,7 @@ export default function AllSriLankaTours() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/80 via-transparent to-[#041d3c]/20" />
         </div>
 
-        <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 pb-12 lg:pb-16 flex flex-col items-start">
+        <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 flex flex-col items-start text-left">
           <Link
             href="/sri-lanka-tours"
             className="flex items-center gap-1.5 text-white/45 hover:text-white text-[11.5px] font-semibold uppercase tracking-wider mb-6 transition-colors duration-200"

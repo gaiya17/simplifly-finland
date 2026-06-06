@@ -52,14 +52,14 @@ function RenderBlock({ block }: { block: ContentBlock }) {
   switch (block.type) {
     case 'paragraph':
       return (
-        <p className="text-[#374151] text-[17px] leading-[1.9] font-normal mb-7">
+        <p className="text-gray-500 text-[15px] lg:text-[16px] leading-[1.85] font-normal mb-7">
           {block.text}
         </p>
       );
 
     case 'heading':
       return (
-        <h2 className="text-[#041d3c] font-black text-[22px] sm:text-[26px] leading-tight  mt-12 mb-5 flex items-start gap-3">
+        <h2 className="text-[#041d3c] font-black text-2xl sm:text-2xl sm:text-3xl lg:text-[42px] leading-tight mt-12 mb-5 flex items-start gap-3">
           <span className="mt-1 shrink-0 w-[5px] h-[28px] bg-gradient-to-b from-[#1a84ff] to-[#D4AF37] rounded-full" />
           {block.text}
         </h2>
@@ -210,7 +210,7 @@ export function ArticlePageClient({ initialPost, initialRelated }: { initialPost
             </div>
 
             {/* Title */}
-            <h1 className="text-white font-black text-[28px] sm:text-[36px] lg:text-[48px] leading-tight  drop-shadow-lg max-w-4xl mb-6">
+            <h1 className="text-white font-black text-2xl sm:text-2xl sm:text-3xl lg:text-[42px] leading-tight drop-shadow-lg mb-4">
               {post.title}
             </h1>
 
@@ -237,7 +237,7 @@ export function ArticlePageClient({ initialPost, initialRelated }: { initialPost
           {/* ── ARTICLE BODY ── */}
           <article className="flex-1 min-w-0">
             {/* Excerpt lead */}
-            <p className="text-[#374151] text-[17px] leading-[1.9] font-normal mb-10 pb-10 border-b border-[#041d3c]/8">
+            <p className="text-gray-500 text-[15px] lg:text-[16px] leading-[1.85] font-normal mb-10 pb-10 border-b border-[#041d3c]/8">
               {post.excerpt}
             </p>
 
@@ -398,7 +398,7 @@ export function ArticlePageClient({ initialPost, initialRelated }: { initialPost
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1a84ff]/8 text-[#1a84ff] font-extrabold text-[10px] tracking-wider uppercase mb-3 border border-[#1a84ff]/10">
                 ✦ KEEP READING
               </div>
-              <h2 className="text-[#041d3c] font-black text-[28px] sm:text-[34px] leading-tight  mb-2">
+              <h2 className="text-[#041d3c] font-black text-2xl sm:text-2xl sm:text-3xl lg:text-[42px] leading-tight mb-2">
                 Related Articles
               </h2>
               <div className="w-14 h-1 bg-[#1a84ff] rounded-full" />

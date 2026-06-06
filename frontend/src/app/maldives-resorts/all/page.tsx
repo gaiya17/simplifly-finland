@@ -171,7 +171,7 @@ export default function AllMaldivesResorts() {
   return (
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
       {/* ── HERO ── */}
-      <section className="relative w-full h-[60vh] min-h-[480px] flex items-end overflow-hidden">
+      <section className="relative w-full h-[60vh] min-h-[480px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
             src={allResortsHero}
@@ -182,7 +182,7 @@ export default function AllMaldivesResorts() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/80 via-transparent to-[#041d3c]/20" />
         </div>
 
-        <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 pb-12 lg:pb-16 flex flex-col items-start">
+        <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 flex flex-col items-start text-left">
           <Link
             href="/maldives-resorts"
             className="flex items-center gap-1.5 text-white/45 hover:text-white text-[11.5px] font-semibold uppercase tracking-wider mb-6 transition-colors duration-200"

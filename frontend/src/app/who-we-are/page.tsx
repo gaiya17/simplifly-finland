@@ -224,7 +224,7 @@ export default async function WhoWeAre() {
 
           <div className="relative w-full rounded-[24px] overflow-hidden shadow-[0_30px_70px_rgba(4,29,60,0.15)] aspect-video bg-[#041d3c] max-w-5xl mx-auto">
             <iframe
-              src="https://www.youtube.com/embed/w9tzrtut3Wc?autoplay=0&rel=0&showinfo=0"
+              src="https://www.youtube.com/embed/V9F-IldKm8w?autoplay=0&rel=0&showinfo=0"
               title="Simplifly Finland Oy"
               className="absolute top-0 left-0 w-full h-full border-0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
