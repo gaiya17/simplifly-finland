@@ -317,10 +317,10 @@ export class TourController {
   // --- CATEGORY CRUD ---
 
   static async createCategory(req: AuthenticatedRequest, res: Response) {
-    const { name, slug, heroImage, subtitle, icon, desc, longDesc } = req.body;
+    const { name, slug, heroImage, subtitle, icon, longDesc } = req.body;
     try {
       const category = await prisma.tourCategory.create({
-        data: { name, slug, heroImage, subtitle, icon, desc, longDesc }
+        data: { name, slug, heroImage, subtitle, icon, longDesc }
       });
       res.status(201).json({ message: 'Category created successfully!', category });
     } catch (error) {
@@ -331,11 +331,11 @@ export class TourController {
 
   static async updateCategory(req: AuthenticatedRequest, res: Response) {
     const { id } = req.params;
-    const { name, slug, heroImage, subtitle, icon, desc, longDesc } = req.body;
+    const { name, slug, heroImage, subtitle, icon, longDesc } = req.body;
     try {
       const category = await prisma.tourCategory.update({
         where: { id },
-        data: { name, slug, heroImage, subtitle, icon, desc, longDesc }
+        data: { name, slug, heroImage, subtitle, icon, longDesc }
       });
       res.status(200).json({ message: 'Category updated successfully!', category });
     } catch (error) {

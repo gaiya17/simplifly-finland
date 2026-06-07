@@ -40,7 +40,6 @@ export default function CategoryManager() {
     subtitle: "",
     icon: "",
     heroImage: "",
-    desc: "",
     longDesc: "",
   });
 
@@ -74,13 +73,12 @@ export default function CategoryManager() {
         subtitle: category.subtitle || "",
         icon: category.icon || "",
         heroImage: category.heroImage || "",
-        desc: category.desc || "",
         longDesc: category.longDesc || "",
       });
     } else {
       setEditMode(false);
       setCurrentId("");
-      setForm({ name: "", slug: "", subtitle: "", icon: "", heroImage: "", desc: "", longDesc: "" });
+      setForm({ name: "", slug: "", subtitle: "", icon: "", heroImage: "", longDesc: "" });
     }
     setIsModalOpen(true);
   };
@@ -219,11 +217,7 @@ export default function CategoryManager() {
                 </h4>
                 <p className="text-gray-400 font-medium text-[12px] mb-4">/{cat.slug}</p>
                 
-                <p className="text-gray-600 text-[13px] line-clamp-2 mb-5 flex-1">
-                  {cat.desc || "No description provided."}
-                </p>
-
-                <div className="h-px bg-[#041d3c]/5 w-full mb-4" />
+                <div className="h-px bg-[#041d3c]/5 w-full mb-4 mt-auto" />
 
                 {/* Actions */}
                 <div className="flex items-center justify-between mt-auto">
@@ -302,16 +296,7 @@ export default function CategoryManager() {
                 />
               </div>
 
-              <div>
-                <label className="block text-[12px] font-extrabold text-[#041d3c] uppercase tracking-wider mb-2">Short Description</label>
-                <textarea
-                  value={form.desc}
-                  onChange={e => setForm({ ...form, desc: e.target.value })}
-                  placeholder="Brief summary of this category"
-                  rows={2}
-                  className="w-full px-4 py-3 bg-[#f4f7fb] border border-[#e2e8f0] rounded-[12px] text-[13px] font-medium text-[#041d3c] placeholder:text-gray-300 focus:outline-none focus:border-[#1a84ff]/60 focus:ring-2 focus:ring-[#1a84ff]/10 transition-all resize-none"
-                />
-              </div>
+
 
               <div>
                 <label className="block text-[12px] font-extrabold text-[#041d3c] uppercase tracking-wider mb-2">Long Description</label>

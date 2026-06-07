@@ -60,9 +60,6 @@ export default async function SriLankaTourCategory({ params }: { params: Promise
             {data.name}
           </h1>
           <div className="w-20 h-1.5 bg-[#D4AF37] rounded-full mb-5" />
-          <p className="text-white/70 text-[15px] lg:text-[16px] font-medium max-w-xl leading-relaxed break-words whitespace-pre-wrap">
-            {data.desc}
-          </p>
         </div>
       </section>
 

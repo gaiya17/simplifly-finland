@@ -45,7 +45,6 @@ export default function SriLankaTours() {
     return {
       title: dbCat.name,
       slug: dbCat.slug,
-      desc: dbCat.desc || 'Experience the wonders of Sri Lanka.',
       image: dbCat.heroImage || '/images/srilankatours.webp',
       icon: resolvedIcon,
       accent: '#1a84ff',
@@ -224,12 +223,9 @@ export default function SriLankaTours() {
                   {/* Bottom content */}
                   <div className="absolute bottom-0 left-0 right-0 p-5 flex flex-col">
                     <h3 className="text-white font-black text-[18px] leading-tight mb-2">{cat.title}</h3>
-                    <p className="text-white/65 text-[13px] font-medium leading-relaxed line-clamp-2 mb-4 group-hover:text-white/80 transition-colors duration-300">
-                      {cat.desc}
-                    </p>
 
                     {/* CTA row */}
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mt-6">
                       <span className="text-white group-hover:text-[#1a84ff] text-[11.5px] font-extrabold uppercase tracking-wider transition-colors duration-300">
                         Explore Tours
                       </span>

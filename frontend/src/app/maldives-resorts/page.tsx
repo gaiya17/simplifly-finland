@@ -41,7 +41,7 @@ export default function MaldivesResorts() {
     return {
       title: dbCat.name,
       slug: dbCat.slug,
-      desc: dbCat.desc || 'Discover an unforgettable luxury experience curated just for you.',
+      name: dbCat.name,
       image: dbCat.heroImage || '/images/maldivesResort.webp',
       icon: resolvedIcon,
       accent: '#1a84ff',
@@ -198,7 +198,7 @@ export default function MaldivesResorts() {
                     {/* Content overlay at bottom */}
                     <div className="absolute bottom-0 left-0 right-0 p-5">
                       <h3 className="text-white font-black text-[16px] leading-snug mb-1.5">{cat.title}</h3>
-                      <p className="text-white/60 text-[12.5px] font-normal leading-[1.65] line-clamp-2 mb-4">{cat.desc}</p>
+
 
                       {/* CTA row */}
                       <div className="flex items-center gap-1.5 text-white group-hover:text-[#1a84ff] text-[11.5px] font-extrabold uppercase tracking-wider transition-colors duration-300">

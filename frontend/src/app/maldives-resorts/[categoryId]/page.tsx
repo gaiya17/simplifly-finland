@@ -133,7 +133,6 @@ export default async function MaldivesResortsCategory({ params }: { params: Prom
     title: dbCategory?.name || hardcoded.title,
     subtitle: dbCategory?.subtitle || hardcoded.subtitle,
     heroImage: dbCategory?.heroImage || hardcoded.heroImage,
-    desc: dbCategory?.desc || hardcoded.desc,
     longDesc: dbCategory?.longDesc || hardcoded.longDesc,
   };
 
@@ -170,9 +169,6 @@ export default async function MaldivesResortsCategory({ params }: { params: Prom
             {data.title}
           </h1>
           <div className="w-20 h-1.5 bg-[#D4AF37] rounded-full mb-5" />
-          <p className="text-white/70 text-[15px] lg:text-[16px] font-medium max-w-xl leading-relaxed break-words whitespace-pre-wrap">
-            {data.desc}
-          </p>
         </div>
       </section>
 
