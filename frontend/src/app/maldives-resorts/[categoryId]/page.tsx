@@ -140,7 +140,7 @@ export default async function MaldivesResortsCategory({ params }: { params: Prom
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
 
       {/* ── HERO ── */}
-      <section className="relative w-full aspect-video min-h-[400px] max-h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full aspect-video min-h-[400px] max-h-[70vh] flex items-end pb-12 md:pb-16 justify-start overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
             src={data.heroImage || 'https://images.unsplash.com/photo-1514282401047-d79b71a640f5'}

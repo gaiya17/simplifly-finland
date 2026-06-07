@@ -17,11 +17,6 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
   "Wellness & Ayurveda Tours":      { bg: "bg-lime-50",    text: "text-lime-700"    },
 };
 
-const SRI_LANKA_DESTINATIONS = [
-  "Colombo", "Negombo", "Kandy", "Nuwara Eliya", "Ella", "Galle", "Mirissa",
-  "Yala", "Udawalawe", "Sigiriya", "Dambulla", "Polonnaruwa", "Anuradhapura",
-  "Trincomalee", "Arugam Bay", "Jaffna", "Bentota", "Hikkaduwa", "Airport"
-];
 
 const inputCls = "w-full px-4 py-3 bg-[#f4f7fb] border border-[#e2e8f0] rounded-[12px] text-[13px] font-medium text-[#041d3c] placeholder:text-gray-300 focus:outline-none focus:border-[#1a84ff]/60 focus:ring-2 focus:ring-[#1a84ff]/10 transition-all";
 
@@ -32,6 +27,8 @@ export default function AdminTours() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
+  const [availableDestinations, setAvailableDestinations] = useState<string[]>([]);
+  const [newDestination, setNewDestination] = useState("");
 
   // Modals
   const [isWizardOpen, setIsWizardOpen] = useState(false);
@@ -58,16 +55,31 @@ export default function AdminTours() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [fetchedTours, fetchedCategories] = await Promise.all([
+      const [fetchedTours, fetchedCategories, fetchedDestinations] = await Promise.all([
         tourApi.getAdminTours(token),
-        tourApi.getCategories()
+        tourApi.getCategories(),
+        tourApi.getDestinations()
       ]);
       setTours(fetchedTours);
       setCategories(fetchedCategories);
+      setAvailableDestinations(fetchedDestinations.map((d: any) => d.name));
     } catch (err) {
       toast.error("Failed to load tour data");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAddDestination = async () => {
+    if (!newDestination.trim()) return;
+    try {
+      const res = await tourApi.createDestination(token, newDestination);
+      setAvailableDestinations([...availableDestinations, res.destination.name].sort());
+      setForm({ ...form, destinations: [...form.destinations, res.destination.name] });
+      setNewDestination("");
+      toast.success("Destination added");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to add destination");
     }
   };
 
@@ -392,8 +404,8 @@ export default function AdminTours() {
                   <h4 className="text-[15px] font-bold text-[#041d3c] border-b pb-2">3. Tour Content</h4>
                   <div>
                     <label className="block text-[11px] font-bold text-gray-500 uppercase mb-2">Destinations Overview</label>
-                    <div className="flex flex-wrap gap-2">
-                      {SRI_LANKA_DESTINATIONS.map(dest => {
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {availableDestinations.map(dest => {
                         const isSelected = form.destinations.includes(dest);
                         return (
                           <button
@@ -414,6 +426,22 @@ export default function AdminTours() {
                           </button>
                         );
                       })}
+                    </div>
+                    <div className="flex items-center gap-2 max-w-[300px]">
+                      <input 
+                        type="text" 
+                        value={newDestination}
+                        onChange={e => setNewDestination(e.target.value)}
+                        placeholder="Add new destination..."
+                        className="flex-1 px-3 py-2 bg-[#f4f7fb] border border-[#e2e8f0] rounded-[8px] text-[12px] font-medium"
+                      />
+                      <button 
+                        type="button"
+                        onClick={handleAddDestination}
+                        className="px-3 py-2 bg-[#041d3c] text-white rounded-[8px] text-[12px] font-bold hover:bg-[#1a84ff] transition-colors"
+                      >
+                        Add
+                      </button>
                     </div>
                   </div>
                   <div>
@@ -456,7 +484,7 @@ export default function AdminTours() {
                                   className={`${inputCls} w-auto py-2 pr-8`}
                                 >
                                   <option value="">Select Location...</option>
-                                  {SRI_LANKA_DESTINATIONS.map(d => <option key={d} value={d}>{d}</option>)}
+                                  {form.destinations.map((d: string) => <option key={d} value={d}>{d}</option>)}
                                 </select>
                                 <button type="button" onClick={() => {
                                   const ni = [...form.itinerary];

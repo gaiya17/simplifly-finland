@@ -6,6 +6,52 @@ import { cloudinary, deleteCloudinaryImage } from '../config/cloudinary';
 const generateSlug = (title: string) => title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
 export class TourController {
+  // --- DESTINATIONS ---
+
+  static async getDestinations(req: Request, res: Response) {
+    try {
+      let destinations = await prisma.tourDestination.findMany({ orderBy: { name: 'asc' } });
+      
+      // Auto-seed if empty
+      if (destinations.length === 0) {
+        const defaultDestinations = [
+          "Colombo", "Negombo", "Kandy", "Nuwara Eliya", "Ella", "Galle", "Mirissa",
+          "Yala", "Udawalawe", "Sigiriya", "Dambulla", "Polonnaruwa", "Anuradhapura",
+          "Trincomalee", "Arugam Bay", "Jaffna", "Bentota", "Hikkaduwa", "Airport"
+        ];
+        await prisma.tourDestination.createMany({
+          data: defaultDestinations.map(name => ({ name })),
+          skipDuplicates: true
+        });
+        destinations = await prisma.tourDestination.findMany({ orderBy: { name: 'asc' } });
+      }
+      
+      res.status(200).json(destinations);
+    } catch (error) {
+      console.error('Fetch destinations error:', error);
+      res.status(500).json({ error: 'Failed to retrieve destinations.' });
+    }
+  }
+
+  static async createDestination(req: AuthenticatedRequest, res: Response) {
+    const { name } = req.body;
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ error: 'Destination name is required.' });
+    }
+    try {
+      const newDest = await prisma.tourDestination.create({
+        data: { name: name.trim() }
+      });
+      res.status(201).json({ message: 'Destination created successfully!', destination: newDest });
+    } catch (error: any) {
+      console.error('Create destination error:', error);
+      if (error.code === 'P2002') {
+         return res.status(400).json({ error: 'Destination already exists.' });
+      }
+      res.status(500).json({ error: 'Failed to create destination.' });
+    }
+  }
+
   // --- PUBLIC ENDPOINTS ---
 
   static async getCategories(req: Request, res: Response) {

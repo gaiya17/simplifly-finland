@@ -148,4 +148,19 @@ export const tourApi = {
     });
     return handleRes(res);
   },
+  getDestinations: async () => {
+    const res = await fetch(`${API_URL}/tours/destinations`);
+    if (!res.ok) throw new Error('Failed to fetch destinations');
+    return res.json();
+  },
+  createDestination: async (token: string, name: string) => {
+    const res = await fetch(`${API_URL}/tours/destinations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ name })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to create destination');
+    return data;
+  }
 };

@@ -31,7 +31,7 @@ export default async function SriLankaTourCategory({ params }: { params: Promise
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
 
       {/* ── HERO ── */}
-      <section className="relative w-full aspect-video min-h-[400px] max-h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full aspect-video min-h-[400px] max-h-[70vh] flex items-end pb-12 md:pb-16 justify-start overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
             src={data.heroImage || 'https://images.unsplash.com/photo-1594805938839-c581da5d8129'}

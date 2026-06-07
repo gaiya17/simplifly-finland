@@ -95,7 +95,7 @@ export function BlogPageClient({ initialPosts }: { initialPosts: BlogPostData[] 
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
 
       {/* ── HERO ── */}
-      <section className="relative w-full h-[60vh] min-h-[480px] flex items-center overflow-hidden">
+      <section className="relative w-full h-[60vh] min-h-[480px] flex items-end pb-12 md:pb-16 justify-start overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={blogHero}

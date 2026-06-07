@@ -23,7 +23,7 @@ export default function PrivacyPolicyPage() {
   return (
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
       {/* ── HERO SECTION ── */}
-      <section className="relative w-full h-[40vh] min-h-[350px] flex items-center justify-center overflow-hidden bg-[#041d3c]">
+      <section className="relative w-full h-[40vh] min-h-[350px] flex items-end pb-12 md:pb-16 justify-start overflow-hidden bg-[#041d3c]">
         {/* Ambient glows */}
         <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-[radial-gradient(circle,_rgba(26,132,255,0.15)_0%,_transparent_65%)] pointer-events-none" />
         <div className="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-[radial-gradient(circle,_rgba(26,132,255,0.1)_0%,_transparent_65%)] pointer-events-none" />

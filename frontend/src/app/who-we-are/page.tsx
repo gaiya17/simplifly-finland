@@ -47,7 +47,7 @@ export default async function WhoWeAre() {
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
 
       {/* ── HERO SECTION ── */}
-      <section className="relative w-full aspect-video min-h-[400px] max-h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full aspect-video min-h-[400px] max-h-[70vh] flex items-end pb-12 md:pb-16 justify-start overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
           <ImageWithFallback

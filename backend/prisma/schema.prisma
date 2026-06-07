@@ -58,6 +58,12 @@ model TourPackage {
   updatedAt             DateTime @updatedAt
 }
 
+model TourDestination {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+}
+
 model ItineraryDay {
   id          String   @id @default(uuid())
   dayNumber   Int
