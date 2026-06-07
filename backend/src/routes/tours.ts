@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { TourController } from '../controllers/tourController';
-import { authenticate } from '../middleware/auth';
+import { authenticateJWT } from '../middleware/auth';
 
 const router = Router();
 
 router.get('/destinations', TourController.getDestinations);
-router.post('/destinations', authenticate, TourController.createDestination);
+router.post('/destinations', authenticateJWT, TourController.createDestination);
 
 router.get('/', TourController.getAllTours);
 router.get('/categories', TourController.getCategories);

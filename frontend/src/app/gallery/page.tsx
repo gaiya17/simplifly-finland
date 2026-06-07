@@ -138,7 +138,7 @@ export default function GalleryPage() {
 
                     {/* Bottom info */}
                     <div className="translate-y-3 group-hover:translate-y-0 transition-transform duration-400">
-                      <h3 className="text-white font-black text-[15px] leading-tight mb-1.5">{img.title}</h3>
+                      <h3 className="text-white font-semibold text-[14px] leading-snug mb-1.5">{img.title}</h3>
                       <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-[6px] px-2.5 py-1 w-fit">
                         <MapPin className="w-3 h-3 text-[#D4AF37]" />
                         <span className="text-white/85 text-[11px] font-extrabold uppercase tracking-wide">{img.category}</span>

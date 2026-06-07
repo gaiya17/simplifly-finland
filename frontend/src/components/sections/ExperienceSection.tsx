@@ -58,7 +58,7 @@ export function ExperienceSection({ gallery = [] }: { gallery?: any[] }) {
               
               {/* Content Overlay - Text elements lift smoothly on card hover */}
               <div className="absolute bottom-0 left-0 w-full p-6 sm:p-7 translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out z-20 flex flex-col items-start text-left">
-                <h3 className="text-white font-black text-lg sm:text-xl lg:text-[22px] mb-2 leading-tight drop-shadow-md">
+                <h3 className="text-white font-semibold text-base sm:text-lg lg:text-[18px] mb-2 leading-snug drop-shadow-md">
                   {img.title || img.category}
                 </h3>
                 <div className="flex items-center gap-1.5 text-white/90 bg-white/10 backdrop-blur-sm px-2.5 py-1 rounded-[6px] border border-white/10 shadow-sm">
