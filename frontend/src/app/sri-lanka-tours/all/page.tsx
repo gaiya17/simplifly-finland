@@ -287,7 +287,7 @@ export default function AllSriLankaTours() {
                           </span>
                         </div>
 
-                        <h3 className="text-[#041d3c] font-black text-[18px] leading-[1.3] line-clamp-2 mb-3 min-h-[46px]">
+                        <h3 className="text-[#041d3c] font-extrabold text-[18px] leading-[1.3] line-clamp-2 mb-3 min-h-[46px]">
                           {pkg.title}
                         </h3>
 

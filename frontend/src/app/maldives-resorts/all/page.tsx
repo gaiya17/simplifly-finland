@@ -392,7 +392,7 @@ export default function AllMaldivesResorts() {
                       </div>
 
                       <div className="p-4 flex flex-col flex-grow text-left">
-                        <h3 className="text-[#041d3c] font-black text-[18px] sm:text-[20px] leading-[1.25] line-clamp-2 mb-1.5 min-h-[44px]">
+                        <h3 className="text-[#041d3c] font-extrabold text-[18px] sm:text-[20px] leading-[1.25] line-clamp-2 mb-1.5 min-h-[44px]">
                           {pkg.title}
                         </h3>
 

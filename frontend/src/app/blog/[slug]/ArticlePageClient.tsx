@@ -421,7 +421,7 @@ export function ArticlePageClient({ initialPost, initialRelated }: { initialPost
                       <Calendar className="w-3 h-3" />
                       {p.createdAt ? new Date(p.createdAt).toLocaleDateString() : ''}
                     </div>
-                    <h3 className="text-[#041d3c] font-black text-[16px] leading-snug line-clamp-2 mb-3 group-hover:text-[#1a84ff] transition-colors">
+                    <h3 className="text-[#041d3c] font-extrabold text-[16px] leading-snug line-clamp-2 mb-3 group-hover:text-[#1a84ff] transition-colors">
                       {p.title}
                     </h3>
                     <p className="text-gray-500 text-[13px] leading-relaxed line-clamp-2 flex-1">{p.excerpt}</p>

@@ -47,7 +47,7 @@ function BlogCard({ post }: { post: BlogPostData }) {
         </div>
 
         {/* Title */}
-        <h3 className="text-[#041d3c] font-black text-[18px] sm:text-[20px] leading-[1.35] line-clamp-2 mb-3">
+        <h3 className="text-[#041d3c] font-extrabold text-[18px] sm:text-[20px] leading-[1.35] line-clamp-2 mb-3">
           {post.title}
         </h3>
 

@@ -77,7 +77,7 @@ export function BlogSection({ blogs = [] }: { blogs?: any[] }) {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[#041d3c] font-black text-[19px] sm:text-[21px] leading-[1.3] line-clamp-2 mb-3 min-h-[54px]">
+                <h3 className="text-[#041d3c] font-extrabold text-[19px] sm:text-[21px] leading-[1.3] line-clamp-2 mb-3 min-h-[54px]">
                   {post.title}
                 </h3>
 
