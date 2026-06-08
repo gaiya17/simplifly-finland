@@ -10,26 +10,7 @@ import { ImageUpload } from "../../../components/admin/ImageUpload";
 const inputCls = "w-full px-4 py-3 bg-[#f4f7fb] border border-[#e2e8f0] rounded-[12px] text-[13px] font-medium text-[#041d3c] placeholder:text-gray-300 focus:outline-none focus:border-[#1a84ff]/60 focus:ring-2 focus:ring-[#1a84ff]/10 transition-all";
 const labelCls = "block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider mb-1.5";
 
-const ALL_FACILITIES = [
-  { label: 'Award-winning Overwater Spa', icon: 'Sparkles' },
-  { label: 'PADI Certified Dive Centre', icon: 'Anchor' },
-  { label: 'Water Sports Hub', icon: 'Waves' },
-  { label: "Kids' Club & Play Area", icon: 'Users' },
-  { label: 'Infinity Pool', icon: 'Waves' },
-  { label: 'Fully Equipped Fitness Centre', icon: 'Dumbbell' },
-  { label: 'High-Speed Wi-Fi Throughout', icon: 'Wifi' },
-  { label: 'Fine Dining Restaurants', icon: 'UtensilsCrossed' },
-  { label: 'Private Butler Service', icon: 'Coffee' },
-  { label: 'Live Entertainment', icon: 'Music' }
-];
 
-const ALL_OFFERS = [
-  "Early Bird Discount (20% Off)",
-  "Honeymoon Special (Free Spa & Champagne)",
-  "Stay 7 Pay 5",
-  "Free Seaplane Transfer for Family",
-  "All Inclusive Upgrade"
-];
 
 const COMMON_VILLA_FEATURES = ["Direct ocean access", "Private pool", "Glass floor panels", "Outdoor shower", "Jacuzzi", "Butler service", "Overwater hammock", "Sunset view", "Sunrise view"];
 const COMMON_BED_TYPES = ["1 King Bed", "2 King Beds", "2 Twin Beds", "1 Queen Bed", "1 Sofa Bed"];
@@ -41,6 +22,10 @@ export default function AdminResorts() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
 
+  const [transferOptions, setTransferOptions] = useState<any[]>([]);
+  const [facilityOptions, setFacilityOptions] = useState<any[]>([]);
+  const [offerOptions, setOfferOptions] = useState<any[]>([]);
+
   // Modals
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -51,7 +36,7 @@ export default function AdminResorts() {
   const [step, setStep] = useState(1);
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState<any>({
-    id: "", title: "", categoryId: "", summary: "", location: "", transfer: "Seaplane Transfer", price: "", status: "active",
+    id: "", title: "", categoryIds: [], summary: "", location: "", transfer: "Seaplane Transfer", price: "", status: "active",
     tripAdvisorRating: "", tripAdvisorReviews: "", bookingScore: "", bookingReviews: "",
     heroImage: "", heroImagePublicId: "", packageImage: "", packageImagePublicId: "",
     facilities: [], offers: [], gallery: [], villas: [], restaurants: [], factSheets: []
@@ -66,12 +51,18 @@ export default function AdminResorts() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [fetchedResorts, fetchedCategories] = await Promise.all([
+      const [fetchedResorts, fetchedCategories, fetchedTransfers, fetchedFacilities, fetchedOffers] = await Promise.all([
         resortApi.getAdminResorts(token),
-        resortApi.getCategories()
+        resortApi.getCategories(),
+        resortApi.getTransferOptions(),
+        resortApi.getFacilityOptions(),
+        resortApi.getOfferOptions()
       ]);
       setResorts(fetchedResorts);
       setCategories(fetchedCategories);
+      setTransferOptions(fetchedTransfers);
+      setFacilityOptions(fetchedFacilities);
+      setOfferOptions(fetchedOffers);
     } catch (err) {
       toast.error("Failed to load resort data");
     } finally {
@@ -88,6 +79,7 @@ export default function AdminResorts() {
         setIsEditing(true);
         setForm({
           ...fullResort,
+          categoryIds: fullResort.categories?.map((c:any) => c.id) || [],
           price: fullResort.price.toString(),
           tripAdvisorRating: fullResort.tripAdvisorRating?.toString() || "",
           tripAdvisorReviews: fullResort.tripAdvisorReviews?.toString() || "",
@@ -274,7 +266,7 @@ export default function AdminResorts() {
                 <img src={resort.packageImage || resort.heroImage || '/placeholder.jpg'} alt={resort.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/80 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-[6px] text-[#041d3c] text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
-                  {resort.category?.name}
+                  {resort.categories?.[0]?.name || 'Uncategorized'}
                 </div>
                 {resort.status === "inactive" && (
                   <div className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-[4px]">Hidden</div>
@@ -356,11 +348,25 @@ export default function AdminResorts() {
                 <div className="space-y-5 animate-in slide-in-from-right-4 duration-300">
                   <div className="grid grid-cols-2 gap-5">
                     <div>
-                      <label className={labelCls}>Category</label>
-                      <select value={form.categoryId} onChange={e => setForm({...form, categoryId: e.target.value})} className={inputCls}>
-                        <option value="" disabled>Select Category...</option>
-                        {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                      </select>
+                      <label className={labelCls}>Categories</label>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#f8fafc] border border-[#e8edf4] p-4 rounded-[12px]">
+                        {categories.map(c => (
+                          <label key={c.id} className="flex items-center gap-2.5 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={form.categoryIds?.includes(c.id)}
+                              onChange={(e) => {
+                                const newCatIds = e.target.checked 
+                                  ? [...(form.categoryIds || []), c.id]
+                                  : (form.categoryIds || []).filter((id: string) => id !== c.id);
+                                setForm({...form, categoryIds: newCatIds});
+                              }}
+                              className="w-4 h-4 rounded-[4px] border-gray-300 text-[#1a84ff]"
+                            />
+                            <span className="text-[13px] font-semibold text-[#041d3c]">{c.name}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
                     <div>
                       <label className={labelCls}>Resort Title</label>
@@ -378,11 +384,21 @@ export default function AdminResorts() {
                     </div>
                     <div>
                       <label className={labelCls}>Transfer Method</label>
-                      <select value={form.transfer} onChange={e => setForm({...form, transfer: e.target.value})} className={inputCls}>
-                        <option>Seaplane Transfer</option>
-                        <option>Domestic Flight + Speedboat</option>
-                        <option>Speedboat Transfer</option>
-                      </select>
+                      <div className="flex gap-2">
+                        <select value={form.transfer} onChange={e => setForm({...form, transfer: e.target.value})} className={inputCls}>
+                          <option value="">Select Transfer...</option>
+                          {transferOptions.map(t => <option key={t.id} value={t.name}>{t.name}</option>)}
+                        </select>
+                        <button type="button" onClick={() => {
+                          const name = prompt("Enter new transfer method:");
+                          if (name) {
+                            resortApi.createTransferOption(token, { name }).then(opt => {
+                              setTransferOptions([...transferOptions, opt]);
+                              setForm({...form, transfer: opt.name});
+                            }).catch(e => toast.error(e.message));
+                          }
+                        }} className="px-3 bg-gray-100 rounded-[12px] text-gray-500 hover:text-black font-bold transition-colors border border-[#e2e8f0]">+</button>
+                      </div>
                     </div>
                     <div>
                       <label className={labelCls}>Starting Price ($)</label>
@@ -390,22 +406,33 @@ export default function AdminResorts() {
                     </div>
                   </div>
                   <div>
-                    <label className={labelCls}>Deals & Offers</label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">Deals & Offers</label>
+                      <button type="button" onClick={() => {
+                        const name = prompt("Enter new offer:");
+                        if (name) {
+                          resortApi.createOfferOption(token, { name }).then(opt => {
+                            setOfferOptions([...offerOptions, opt]);
+                            setForm({...form, offers: [...(form.offers || []), opt.name]});
+                          }).catch(e => toast.error(e.message));
+                        }
+                      }} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add New Offer</button>
+                    </div>
                     <div className="grid grid-cols-2 gap-3 bg-[#f8fafc] border border-[#e8edf4] p-4 rounded-[12px]">
-                      {ALL_OFFERS.map(offer => (
-                        <label key={offer} className="flex items-center gap-2.5 cursor-pointer">
+                      {offerOptions.map(offer => (
+                        <label key={offer.id} className="flex items-center gap-2.5 cursor-pointer">
                           <input
                             type="checkbox"
-                            checked={form.offers?.includes(offer)}
+                            checked={form.offers?.includes(offer.name)}
                             onChange={(e) => {
                               const newOffers = e.target.checked 
-                                ? [...(form.offers || []), offer]
-                                : form.offers.filter((o: string) => o !== offer);
+                                ? [...(form.offers || []), offer.name]
+                                : form.offers.filter((o: string) => o !== offer.name);
                               setForm({...form, offers: newOffers});
                             }}
                             className="w-4 h-4 rounded-[4px] border-gray-300 text-[#1a84ff] focus:ring-[#1a84ff]"
                           />
-                          <span className="text-[13px] font-semibold text-[#041d3c]">{offer}</span>
+                          <span className="text-[13px] font-semibold text-[#041d3c]">{offer.name}</span>
                         </label>
                       ))}
                     </div>
@@ -771,23 +798,36 @@ export default function AdminResorts() {
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   
                   <div>
-                    <label className={labelCls}>Luxury Facilities</label>
-                    <p className="text-[12px] text-gray-500 font-medium mb-3">Select all facilities available at this resort.</p>
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <label className={labelCls}>Luxury Facilities</label>
+                        <p className="text-[12px] text-gray-500 font-medium">Select all facilities available at this resort.</p>
+                      </div>
+                      <button type="button" onClick={() => {
+                        const name = prompt("Enter new facility:");
+                        if (name) {
+                          resortApi.createFacilityOption(token, { name }).then(opt => {
+                            setFacilityOptions([...facilityOptions, opt]);
+                            setForm({...form, facilities: [...(form.facilities || []), opt.name]});
+                          }).catch(e => toast.error(e.message));
+                        }
+                      }} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add New Facility</button>
+                    </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {ALL_FACILITIES.map(fac => (
-                        <label key={fac.label} className="flex items-center gap-3 p-3 rounded-[12px] border border-[#e8edf4] cursor-pointer hover:bg-[#f8fafc] transition-colors">
+                      {facilityOptions.map(fac => (
+                        <label key={fac.id} className="flex items-center gap-3 p-3 rounded-[12px] border border-[#e8edf4] cursor-pointer hover:bg-[#f8fafc] transition-colors">
                           <input
                             type="checkbox"
-                            checked={form.facilities?.includes(fac.label)}
+                            checked={form.facilities?.includes(fac.name)}
                             onChange={(e) => {
                               const newF = e.target.checked 
-                                ? [...(form.facilities || []), fac.label]
-                                : form.facilities.filter((f: string) => f !== fac.label);
+                                ? [...(form.facilities || []), fac.name]
+                                : form.facilities.filter((f: string) => f !== fac.name);
                               setForm({...form, facilities: newF});
                             }}
                             className="w-4 h-4 rounded-[4px] border-gray-300 text-[#1a84ff] focus:ring-[#1a84ff]"
                           />
-                          <span className="text-[12.5px] font-bold text-[#041d3c]">{fac.label}</span>
+                          <span className="text-[12.5px] font-bold text-[#041d3c]">{fac.name}</span>
                         </label>
                       ))}
                     </div>

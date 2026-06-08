@@ -262,13 +262,13 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
                         {/* Action Buttons (Compressed heights and padding) */}
                         <div className="flex flex-col gap-1.5 shrink-0 w-[125px]">
                           <Link
-                            href={`/maldives-resorts/${pkg.category?.slug || 'luxury'}/${pkg.slug}#inquire-form`}
+                            href={`/maldives-resorts/${pkg.categories?.[0]?.slug || 'luxury'}/${pkg.slug}#inquire-form`}
                             className="w-full bg-white hover:bg-[#f4f7fb] text-[#041d3c] border border-[#041d3c]/20 hover:border-[#041d3c]/40 py-2 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 text-center block"
                           >
                             Get a Quote
                           </Link>
                           <Link
-                            href={`/maldives-resorts/${pkg.category?.slug || 'luxury'}/${pkg.slug}`}
+                            href={`/maldives-resorts/${pkg.categories?.[0]?.slug || 'luxury'}/${pkg.slug}`}
                             className="w-full bg-[#041d3c] hover:bg-[#1a84ff] text-white py-2 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 shadow-sm hover:shadow-[0_8px_20px_rgba(26,132,255,0.25)] hover:-translate-y-0.5 text-center block"
                           >
                             Explore More

@@ -124,7 +124,7 @@ export default function AllMaldivesResorts() {
 
     // 2. Category Filter
     if (selectedCategory !== 'all') {
-      result = result.filter(pkg => pkg.categoryId === selectedCategory);
+      result = result.filter(pkg => pkg.categories?.some((c: any) => c.id === selectedCategory));
     }
 
     // 3. Price Filter
@@ -361,7 +361,7 @@ export default function AllMaldivesResorts() {
                   const discountedPrice = pkg.discount > 0
                     ? Math.round(pkg.price * (1 - pkg.discount / 100))
                     : null;
-                  const catSlug = pkg.category?.slug || 'all';
+                  const catSlug = pkg.categories?.[0]?.slug || 'all';
 
                   return (
                     <Link

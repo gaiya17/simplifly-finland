@@ -151,5 +151,49 @@ export const resortApi = {
       throw new Error(err.error || "Failed to delete category");
     }
     return res.json();
+  },
+
+  // Dynamic Options
+  getTransferOptions: async () => {
+    const res = await fetch(`${API_URL}/resorts/options/transfers`);
+    if (!res.ok) throw new Error("Failed to fetch transfer options");
+    return res.json();
+  },
+  createTransferOption: async (token: string, data: { name: string }) => {
+    const res = await fetch(`${API_URL}/resorts/options/transfers`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error("Failed to create transfer option");
+    return res.json();
+  },
+  getFacilityOptions: async () => {
+    const res = await fetch(`${API_URL}/resorts/options/facilities`);
+    if (!res.ok) throw new Error("Failed to fetch facility options");
+    return res.json();
+  },
+  createFacilityOption: async (token: string, data: { name: string }) => {
+    const res = await fetch(`${API_URL}/resorts/options/facilities`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error("Failed to create facility option");
+    return res.json();
+  },
+  getOfferOptions: async () => {
+    const res = await fetch(`${API_URL}/resorts/options/offers`);
+    if (!res.ok) throw new Error("Failed to fetch offer options");
+    return res.json();
+  },
+  createOfferOption: async (token: string, data: { name: string }) => {
+    const res = await fetch(`${API_URL}/resorts/options/offers`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error("Failed to create offer option");
+    return res.json();
   }
 };

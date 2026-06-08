@@ -46,12 +46,12 @@ export class ResortController {
       const whereClause: any = { status: 'active' };
       
       if (categorySlug && typeof categorySlug === 'string') {
-        whereClause.category = { slug: categorySlug };
+        whereClause.categories = { some: { slug: categorySlug } };
       }
 
       const resorts = await prisma.resort.findMany({
         where: whereClause,
-        include: { category: true },
+        include: { categories: true },
         orderBy: { createdAt: 'desc' }
       });
       res.status(200).json(resorts);
@@ -65,7 +65,7 @@ export class ResortController {
   static async getAdminResorts(req: AuthenticatedRequest, res: Response) {
     try {
       const resorts = await prisma.resort.findMany({
-        include: { category: true },
+        include: { categories: true },
         orderBy: { createdAt: 'desc' }
       });
       res.status(200).json(resorts);
@@ -82,7 +82,7 @@ export class ResortController {
       const resort = await prisma.resort.findUnique({
         where: { id },
         include: {
-          category: true,
+          categories: true,
           gallery: { orderBy: { order: 'asc' } },
           villas: {
             include: { images: { orderBy: { order: 'asc' } } }
@@ -112,7 +112,7 @@ export class ResortController {
       const resort = await prisma.resort.findUnique({
         where: { slug },
         include: {
-          category: true,
+          categories: true,
           gallery: { orderBy: { order: 'asc' } },
           villas: {
             include: { images: { orderBy: { order: 'asc' } } }
@@ -142,7 +142,7 @@ export class ResortController {
         title, summary, location, transfer, price, status,
         tripAdvisorRating, tripAdvisorReviews, bookingScore, bookingReviews,
         heroImage, heroImagePublicId, packageImage, packageImagePublicId,
-        categoryId, facilities, offers,
+        categoryIds, facilities, offers,
         gallery, villas, restaurants, factSheets
       } = req.body;
 
@@ -155,7 +155,9 @@ export class ResortController {
           bookingScore: Number(bookingScore) || null,
           bookingReviews: Number(bookingReviews) || null,
           heroImage, heroImagePublicId, packageImage, packageImagePublicId,
-          categoryId,
+          categories: {
+            connect: (categoryIds || []).map((id: string) => ({ id }))
+          },
           facilities: facilities || [],
           offers: offers || [],
           gallery: {
@@ -221,7 +223,7 @@ export class ResortController {
         title, summary, location, transfer, price, status,
         tripAdvisorRating, tripAdvisorReviews, bookingScore, bookingReviews,
         heroImage, heroImagePublicId, packageImage, packageImagePublicId,
-        categoryId, facilities, offers,
+        categoryIds, facilities, offers,
         gallery, villas, restaurants, factSheets
       } = req.body;
 
@@ -245,7 +247,9 @@ export class ResortController {
           bookingScore: Number(bookingScore) || null,
           bookingReviews: Number(bookingReviews) || null,
           heroImage, heroImagePublicId, packageImage, packageImagePublicId,
-          categoryId,
+          categories: {
+            set: (categoryIds || []).map((id: string) => ({ id }))
+          },
           facilities: facilities || [],
           offers: offers || [],
           gallery: {
@@ -456,7 +460,7 @@ export class ResortController {
           status: 'active',
           offerPoster: { not: null }
         },
-        include: { category: true },
+        include: { categories: true },
         orderBy: { createdAt: 'desc' }
       });
       res.status(200).json(offers);
@@ -466,4 +470,62 @@ export class ResortController {
     }
   }
 
+  // --- OPTIONS ---
+
+  static async getTransferOptions(req: Request, res: Response) {
+    try {
+      const options = await prisma.resortTransferOption.findMany({ orderBy: { name: 'asc' } });
+      res.status(200).json(options);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch transfer options' });
+    }
+  }
+
+  static async createTransferOption(req: AuthenticatedRequest, res: Response) {
+    try {
+      const { name } = req.body;
+      const option = await prisma.resortTransferOption.create({ data: { name } });
+      res.status(201).json(option);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to create transfer option' });
+    }
+  }
+
+  static async getFacilityOptions(req: Request, res: Response) {
+    try {
+      const options = await prisma.resortFacilityOption.findMany({ orderBy: { name: 'asc' } });
+      res.status(200).json(options);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch facility options' });
+    }
+  }
+
+  static async createFacilityOption(req: AuthenticatedRequest, res: Response) {
+    try {
+      const { name } = req.body;
+      const option = await prisma.resortFacilityOption.create({ data: { name } });
+      res.status(201).json(option);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to create facility option' });
+    }
+  }
+
+  static async getOfferOptions(req: Request, res: Response) {
+    try {
+      const options = await prisma.resortOfferOption.findMany({ orderBy: { name: 'asc' } });
+      res.status(200).json(options);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch offer options' });
+    }
+  }
+
+  static async createOfferOption(req: AuthenticatedRequest, res: Response) {
+    try {
+      const { name } = req.body;
+      const option = await prisma.resortOfferOption.create({ data: { name } });
+      res.status(201).json(option);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to create offer option' });
+    }
+  }
 }
