@@ -46,7 +46,7 @@ export function DestinationHighlights({ tours = [] }: { tours?: any[] }) {
 
                 {pkg.discount > 0 && (
                   <div className="absolute top-4 right-4 bg-[#e11d48] text-white rounded-[10px] px-3.5 py-2 font-extrabold text-[11px] shadow-[0_6px_16px_rgba(225,29,72,0.35)] tracking-wide z-10 border border-white/10">
-                    -{pkg.discount}%
+                    {pkg.discount}%
                   </div>
                 )}
 
