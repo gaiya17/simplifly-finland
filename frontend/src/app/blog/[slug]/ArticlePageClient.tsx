@@ -311,17 +311,7 @@ export function ArticlePageClient({ initialPost, initialRelated }: { initialPost
                     </>
                   )}
                 </button>
-                <button
-                  onClick={() => setBookmarked((b) => !b)}
-                  className={`flex items-center gap-3 px-4 py-3 border rounded-[12px] text-[13px] font-bold transition-all duration-200 group ${
-                    bookmarked
-                      ? 'bg-[#D4AF37]/10 border-[#D4AF37]/25 text-[#b8922a]'
-                      : 'bg-[#f8fafc] border-[#041d3c]/10 text-gray-600 hover:border-[#D4AF37]/30 hover:text-[#b8922a]'
-                  }`}
-                >
-                  <Bookmark className={`w-4 h-4 transition-transform group-hover:scale-110 ${bookmarked ? 'fill-[#D4AF37] text-[#D4AF37]' : ''}`} />
-                  {bookmarked ? 'Bookmarked' : 'Bookmark'}
-                </button>
+
                 <a
                   href="https://wa.me/358408192758"
                   target="_blank"
@@ -385,7 +375,7 @@ export function ArticlePageClient({ initialPost, initialRelated }: { initialPost
                 rel="noopener noreferrer"
                 className="block w-full text-center bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-[13px] py-2.5 rounded-[12px] transition-colors duration-200"
               >
-                +94 71 523 3845
+                +358 40 819 2758
               </a>
             </div>
           </aside>
