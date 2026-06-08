@@ -352,7 +352,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
             <div>
               <p className="text-gray-400 text-[10.5px] font-extrabold uppercase tracking-widest mb-0.5">Starting From</p>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-[#041d3c] font-black text-[32px] leading-none">{resort.price}</span>
+                <span className="text-[#041d3c] font-extrabold text-[28px] leading-none">{resort.price}</span>
                 <span className="text-gray-400 text-[14px] font-semibold">/ night</span>
               </div>
             </div>

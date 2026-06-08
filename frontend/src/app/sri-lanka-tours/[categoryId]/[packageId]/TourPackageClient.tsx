@@ -264,6 +264,7 @@ export function TourPackageClient({ data }: { data: any }) {
             </div>
 
             {/* Gallery */}
+            {data.gallery && data.gallery.length > 0 && (
             <div>
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1a84ff]/8 text-[#1a84ff] font-extrabold text-[10px] lg:text-[11px] tracking-wider uppercase mb-4 border border-[#1a84ff]/10">
                 <span>✦ PHOTO GALLERY</span>
@@ -276,7 +277,7 @@ export function TourPackageClient({ data }: { data: any }) {
               <div className="grid grid-cols-3 gap-3">
                 {/* Large first image */}
                 <div
-                  className="col-span-3 md:col-span-2 rounded-[20px] overflow-hidden h-[280px] cursor-pointer group relative"
+                  className={`col-span-3 ${data.gallery.length > 1 ? 'md:col-span-2' : ''} rounded-[20px] overflow-hidden h-[280px] cursor-pointer group relative`}
                   onClick={() => setLightboxIndex(0)}
                 >
                   <ImageWithFallback
@@ -287,6 +288,7 @@ export function TourPackageClient({ data }: { data: any }) {
                   <div className="absolute inset-0 bg-[#041d3c]/0 group-hover:bg-[#041d3c]/20 transition-all duration-300 rounded-[20px]" />
                 </div>
                 {/* Second image stacked right */}
+                {data.gallery.length > 1 && (
                 <div
                   className="col-span-3 md:col-span-1 rounded-[20px] overflow-hidden h-[280px] cursor-pointer group relative"
                   onClick={() => setLightboxIndex(1)}
@@ -298,6 +300,7 @@ export function TourPackageClient({ data }: { data: any }) {
                   />
                   <div className="absolute inset-0 bg-[#041d3c]/0 group-hover:bg-[#041d3c]/20 transition-all duration-300 rounded-[20px]" />
                 </div>
+                )}
                 {/* Bottom row — 3 equal */}
                 {data.gallery.slice(2, 5).map((img: string, i: number) => (
                   <div
@@ -321,6 +324,7 @@ export function TourPackageClient({ data }: { data: any }) {
                 ))}
               </div>
             </div>
+            )}
 
             {/* Tabs */}
             <div>
@@ -553,7 +557,7 @@ export function TourPackageClient({ data }: { data: any }) {
                         </p>
                       )}
                       <div className="flex items-end gap-2">
-                        <span className="text-[#041d3c] font-black text-[38px] leading-none ">
+                        <span className="text-[#041d3c] font-extrabold text-[28px] leading-none ">
                           {data.currency}{data.discount ? Math.round(data.price * (1 - data.discount / 100)).toLocaleString() : data.price.toLocaleString()}
                         </span>
                         <span className="text-gray-400 text-[14px] font-medium leading-[1.2] pb-1">/ person</span>
