@@ -466,8 +466,9 @@ export default function AllMaldivesResorts() {
                             </div>
                           </div>
 
-                          <div className="bg-black group-hover:bg-[#1a84ff] text-white w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all duration-300">
-                            <ArrowRight className="w-4 h-4" />
+                          <div className="bg-[#041d3c] group-hover:bg-[#1a84ff] text-white px-5 py-3 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 flex items-center gap-1.5 shrink-0 shadow-md group-hover:shadow-[0_8px_20px_rgba(26,132,255,0.25)]">
+                            <span>View More</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
                           </div>
                         </div>
                       </div>
