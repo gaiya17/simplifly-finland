@@ -110,13 +110,13 @@ export function SupportCTA() {
               onMouseLeave={() => setIsHovered(false)}
             >
               {isLoading ? (
-                <div className="relative w-fit h-[75px] sm:h-[110px] lg:h-[150px] flex items-center justify-center gap-3 lg:gap-4 shrink-0 px-2 mt-4 md:mt-0">
-                  <div className="w-[125px] sm:w-[185px] lg:w-[270px] h-[62px] sm:h-[92px] lg:h-[135px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0"></div>
-                  <div className="w-[125px] sm:w-[185px] lg:w-[270px] h-[62px] sm:h-[92px] lg:h-[135px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0 hidden md:block"></div>
+                <div className="relative w-fit h-[130px] sm:h-[110px] lg:h-[150px] flex items-center justify-center gap-3 lg:gap-4 shrink-0 px-2 mt-4 md:mt-0">
+                  <div className="w-[240px] sm:w-[185px] lg:w-[270px] h-[120px] sm:h-[92px] lg:h-[135px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0"></div>
+                  <div className="w-[240px] sm:w-[185px] lg:w-[270px] h-[120px] sm:h-[92px] lg:h-[135px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0 hidden sm:block"></div>
                 </div>
               ) : offers.length > 0 ? (
                 <>
-                  <div className="relative w-fit h-[75px] sm:h-[110px] lg:h-[150px] flex items-center justify-center group">
+                  <div className="relative w-fit h-[130px] sm:h-[110px] lg:h-[150px] flex items-center justify-center group">
                     
                     <AnimatePresence mode="wait" initial={false}>
                       <motion.div
@@ -128,7 +128,7 @@ export function SupportCTA() {
                         className="flex gap-3 lg:gap-4 items-center shrink-0"
                       >
                         {/* First Poster Card */}
-                        <Link href={`/${offers[currentIndex].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[currentIndex].category?.slug || 'all'}/${offers[currentIndex].slug}`} className="w-[125px] sm:w-[185px] lg:w-[270px] h-[62px] sm:h-[92px] lg:h-[135px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
+                        <Link href={`/${offers[currentIndex].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[currentIndex].category?.slug || 'all'}/${offers[currentIndex].slug}`} className="w-[240px] sm:w-[185px] lg:w-[270px] h-[120px] sm:h-[92px] lg:h-[135px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
                           <img 
                             src={offers[currentIndex].offerPoster} 
                             alt={offers[currentIndex].title} 
@@ -139,7 +139,7 @@ export function SupportCTA() {
 
                         {/* Second Poster Card */}
                         {offers.length > 1 && (
-                          <Link href={`/${offers[(currentIndex + 1) % offers.length].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[(currentIndex + 1) % offers.length].category?.slug || 'all'}/${offers[(currentIndex + 1) % offers.length].slug}`} className="w-[125px] sm:w-[185px] lg:w-[270px] h-[62px] sm:h-[92px] lg:h-[135px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
+                          <Link href={`/${offers[(currentIndex + 1) % offers.length].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[(currentIndex + 1) % offers.length].category?.slug || 'all'}/${offers[(currentIndex + 1) % offers.length].slug}`} className="w-[240px] sm:w-[185px] lg:w-[270px] h-[120px] sm:h-[92px] lg:h-[135px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform hidden sm:block">
                             <img 
                               src={offers[(currentIndex + 1) % offers.length].offerPoster} 
                               alt={offers[(currentIndex + 1) % offers.length].title} 
