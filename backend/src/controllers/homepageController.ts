@@ -90,7 +90,7 @@ export class HomepageController {
           id: { in: config.featuredResorts },
           status: 'active'
         },
-        include: { category: true }
+        include: { categories: true }
       });
 
       const sortedResorts = config.featuredResorts
