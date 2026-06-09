@@ -81,10 +81,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="overflow-x-hidden w-full max-w-[100vw]">
       <body
         suppressHydrationWarning
-        className={`${poppins.variable} font-sans min-h-full flex flex-col antialiased`}
+        className={`${poppins.variable} font-sans min-h-full flex flex-col antialiased overflow-x-hidden w-full max-w-[100vw]`}
       >
         <SiteAssetsProvider>
           {/*

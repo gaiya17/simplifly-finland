@@ -493,7 +493,7 @@ export function TourPackageClient({ data }: { data: any }) {
                             <p className="text-gray-500 font-medium text-[14px] lg:text-[15px] leading-[1.7]">
                               {item.includes('https://eta.gov.lk/slvisa/') ? (
                                 <>
-                                  Sri Lanka Electronic Travel Authorization (eTA) (Link : <a href="https://eta.gov.lk/slvisa/" target="_blank" rel="noopener noreferrer" className="text-[#1a84ff] hover:underline transition-colors font-semibold">https://eta.gov.lk/slvisa/</a>)
+                                  Sri Lanka Electronic Travel Authorization (eTA) (Link : <a href="https://eta.gov.lk/slvisa/" target="_blank" rel="noopener noreferrer" className="text-[#1a84ff] hover:underline transition-colors font-semibold break-all">https://eta.gov.lk/slvisa/</a>)
                                 </>
                               ) : (
                                 item
@@ -665,7 +665,7 @@ export function TourPackageClient({ data }: { data: any }) {
                 <form className="space-y-3.5" onSubmit={handleSubmit(onSubmit)}>
 
                   {/* Row 1 — Names */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <input
                         type="text"
@@ -709,7 +709,7 @@ export function TourPackageClient({ data }: { data: any }) {
                   </div>
 
                   {/* Country + Phone with auto-code */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="relative">
                       <select
                         {...register('country', { required: 'Country is required' })}
