@@ -10,7 +10,7 @@
  *  3. Render the <Toaster> for global toast notifications (sonner)
  *  4. Delegate layout switching (public vs admin portal) to ClientLayout
  */
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import { Toaster } from "sonner";
 import { ClientLayout } from "../components/layout/ClientLayout";
@@ -65,6 +65,13 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 // ─── Root Layout Component ────────────────────────────────────────────────────
