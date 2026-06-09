@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
 
       {/* ── MAIN CONTENT (2 Columns) ── */}
       <section className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 py-[80px] lg:py-[100px]">
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 relative items-start">
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 relative lg:items-start">
           
           {/* LEFT: Sticky Table of Contents */}
           <aside className="w-full lg:w-[320px] shrink-0 lg:sticky lg:top-[120px] bg-white rounded-[24px] shadow-[0_8px_32px_rgba(4,29,60,0.04)] border border-gray-100 p-8 hidden md:block">

@@ -279,7 +279,7 @@ export function TourPackageClient({ data }: { data: any }) {
           </div>
         )}
 
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
 
           {/* ── LEFT COLUMN ── */}
           <div className="flex-1 min-w-0 space-y-14">

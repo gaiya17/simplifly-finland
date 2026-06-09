@@ -448,7 +448,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
       <section className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 py-[80px] lg:py-[100px]">
         {resort.offerPoster ? (
           <div className="flex flex-col gap-12 lg:gap-16">
-            <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+            <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
               <div className="flex-1 min-w-0">
                 {overviewHeader}
               </div>
@@ -459,7 +459,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                 </div>
               </div>
             </div>
-            <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+            <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
               <div className="flex-1 min-w-0">
                 {featuresAndReviews}
               </div>
@@ -467,7 +467,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
             </div>
           </div>
         ) : (
-          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
             <div className="flex-1 min-w-0">
               {overviewHeader}
               {featuresAndReviews}

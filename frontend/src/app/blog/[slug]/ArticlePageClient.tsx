@@ -232,7 +232,7 @@ export function ArticlePageClient({ initialPost, initialRelated }: { initialPost
 
       {/* ── MAIN LAYOUT ── */}
       <div className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 py-16 lg:py-20">
-        <div className="flex flex-col lg:flex-row gap-14 items-start">
+        <div className="flex flex-col lg:flex-row gap-14 lg:items-start">
 
           {/* ── ARTICLE BODY ── */}
           <article className="flex-1 min-w-0">
