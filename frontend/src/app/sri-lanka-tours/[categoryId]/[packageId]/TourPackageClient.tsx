@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, Clock, Users, CheckCircle2, Send, Calendar,
   Loader2, ArrowLeft, ChevronDown, Shield, CreditCard,
-  XCircle, Compass, Moon
+  XCircle, Compass, Moon, Lightbulb
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -91,9 +91,44 @@ const COUNTRIES: { name: string; code: string; dial: string; flag: string }[] = 
   { name: 'Vietnam', code: 'VN', dial: '+84', flag: '🇻🇳' },
 ].sort((a, b) => a.name.localeCompare(b.name));
 
+const DEFAULT_INCLUDED = [
+  "Transportation: A dedicated, English-speaking chauffeur guide for the entire duration of the tour in a private, air-conditioned vehicle.",
+  "Fuel & Taxes: All fuel costs, toll charges, parking fees, and local government taxes associated with the private transport.",
+  "Comfortable accommodation in double rooms at the hotels listed in the itinerary or similar quality hotels",
+  "Hotel service fees and carrier charges",
+  "Meals as mentioned in the tour itinerary throughout the trip",
+  "All transportation and guided excursions as per the program, including entrance fees",
+  "Flight taxes, tourist taxes, and all mandatory government fees",
+  "Tips for local guides and bus drivers included",
+  "Experienced English-speaking tour guide for added comfort and clear communication",
+  "Optional late check-out: on additional charge"
+];
+
+const DEFAULT_NOT_INCLUDED = [
+  "International Flights Charges to Sri Lanka",
+  "No meals are included unless specifically stated in the tour itinerary.",
+  "Alcoholic and soft drinks (available to purchase)",
+  "Tips & porterage.",
+  "VISA Fee"
+];
+
+const DEFAULT_INSIGHTFUL_TIPS = [
+  "Climate: Warm tropical weather year-round, approx. 25 - 30°C during the day; brief afternoon showers possible",
+  "Clothing: Light summer wear recommended; bring a light jacket for air-conditioned spaces",
+  "Footwear: Comfortable shoes for sightseeing; sandals ideal for temple visits",
+  "Essentials: Swimwear, sunglasses, sunscreen, and mosquito repellent",
+  "Travel Comfort: Some longer bus journeys - choose loose, breathable clothing",
+  "Temple Dress Code: Shoulders and knees covered; shoes removed; temple socks useful",
+  "Evenings: Casual but neat attire recommended in hotels",
+  "Wellness & Activities: Hotel spas offer massages and treatments (extra charge); yoga and water sports available",
+  "Health Info: No antimalarial medication needed; protect against daytime mosquitoes due to dengue risk",
+  "Sri Lanka Electronic Travel Authorization (eTA) (Link : https://eta.gov.lk/slvisa/)"
+];
+
 const TABS = [
   { id: 'itinerary', label: 'Itinerary', icon: Compass },
   { id: 'included', label: "What's Included", icon: CheckCircle2 },
+  { id: 'tips', label: 'Insightful Tips', icon: Lightbulb },
   { id: 'terms', label: 'Terms & Conditions', icon: Shield },
   { id: 'cancellation', label: 'Payment & Cancellation', icon: CreditCard },
 ];
@@ -182,8 +217,8 @@ export function TourPackageClient({ data }: { data: any }) {
     }
   };
 
-  const included = data.included;
-  const notIncluded = data.notIncluded;
+  const included = [...DEFAULT_INCLUDED, ...(data.included || [])];
+  const notIncluded = [...DEFAULT_NOT_INCLUDED, ...(data.notIncluded || [])];
 
   return (
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
@@ -434,6 +469,36 @@ export function TourPackageClient({ data }: { data: any }) {
                           <div key={i} className="flex items-start gap-3">
                             <XCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                             <p className="text-gray-500 font-medium text-[14px] leading-[1.7]">{item}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === 'tips' && (
+                  <motion.div
+                    key="tips"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -16 }}
+                    transition={{ duration: 0.35 }}
+                  >
+                    <div className="bg-white rounded-[20px] p-8 lg:p-10 border border-[#041d3c]/7 shadow-[0_4px_20px_rgba(4,29,60,0.04)]">
+                      <h3 className="text-[#041d3c] font-black text-2xl lg:text-[28px] mb-6">Insightful Tips</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {DEFAULT_INSIGHTFUL_TIPS.map((item: string, i: number) => (
+                          <div key={i} className="flex items-start gap-3">
+                            <Lightbulb className="w-5 h-5 text-[#f59e0b] shrink-0 mt-0.5" />
+                            <p className="text-gray-500 font-medium text-[14px] lg:text-[15px] leading-[1.7]">
+                              {item.includes('https://eta.gov.lk/slvisa/') ? (
+                                <>
+                                  Sri Lanka Electronic Travel Authorization (eTA) (Link : <a href="https://eta.gov.lk/slvisa/" target="_blank" rel="noopener noreferrer" className="text-[#1a84ff] hover:underline transition-colors font-semibold">https://eta.gov.lk/slvisa/</a>)
+                                </>
+                              ) : (
+                                item
+                              )}
+                            </p>
                           </div>
                         ))}
                       </div>
