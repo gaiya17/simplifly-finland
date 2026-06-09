@@ -361,233 +361,6 @@ export function TourPackageClient({ data }: { data: any }) {
             </div>
             )}
 
-            {/* Tabs */}
-            <div>
-              {/* Tab Pills */}
-              <div className="flex flex-wrap gap-2 mb-8">
-                {TABS.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-5 py-2.5 rounded-[12px] text-[13px] font-extrabold uppercase tracking-wider transition-all duration-300 ${
-                        isActive
-                          ? 'bg-[#041d3c] text-white shadow-[0_8px_20px_rgba(4,29,60,0.15)]'
-                          : 'bg-white text-[#041d3c]/60 border border-[#041d3c]/10 hover:border-[#1a84ff]/30 hover:text-[#041d3c]'
-                      }`}
-                    >
-                      <Icon className="w-3.5 h-3.5" />
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Tab Content */}
-              <AnimatePresence mode="wait">
-
-                {activeTab === 'itinerary' && (
-                  <motion.div
-                    key="itinerary"
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -16 }}
-                    transition={{ duration: 0.35 }}
-                    className="space-y-3"
-                  >
-                    {data.itinerary.map((item: any, idx: number) => (
-                      <div
-                        key={idx}
-                        className="bg-white rounded-[16px] overflow-hidden border border-[#041d3c]/7 shadow-[0_4px_20px_rgba(4,29,60,0.04)] hover:shadow-[0_8px_32px_rgba(4,29,60,0.08)] transition-all duration-300"
-                      >
-                        <button
-                          className="w-full flex items-center gap-4 p-5 text-left"
-                          onClick={() => setOpenDay(openDay === idx ? null : idx)}
-                        >
-                          {/* Day badge */}
-                          <div className="w-[72px] h-12 rounded-[12px] bg-[#1a84ff] text-white font-black text-[14px] flex items-center justify-center shrink-0">
-                            Day {item.day}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[#041d3c] font-black text-[16px] leading-tight">{item.activity}</p>
-                            <p className="text-gray-400 text-[12px] font-semibold mt-0.5 truncate">{item.route}</p>
-                          </div>
-                          <div className="flex items-center gap-3 shrink-0">
-                            <span className="hidden sm:block bg-[#f1f5f9] text-[#041d3c] text-[11px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full">
-                              {item.stay}
-                            </span>
-                            <ChevronDown
-                              className={`w-5 h-5 text-[#041d3c]/40 transition-transform duration-300 ${openDay === idx ? 'rotate-180' : ''}`}
-                            />
-                          </div>
-                        </button>
-                        <AnimatePresence>
-                          {openDay === idx && (
-                            <motion.div
-                              key="detail"
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="px-5 pb-5 pt-1 border-t border-[#041d3c]/5">
-                                <p className="text-gray-500 text-[14px] leading-[1.8] font-medium">{item.details}</p>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    ))}
-                  </motion.div>
-                )}
-
-                {activeTab === 'included' && (
-                  <motion.div
-                    key="included"
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -16 }}
-                    transition={{ duration: 0.35 }}
-                  >
-                    <div className="bg-white rounded-[20px] p-8 lg:p-10 border border-[#041d3c]/7 shadow-[0_4px_20px_rgba(4,29,60,0.04)]">
-                      <h3 className="text-[#041d3c] font-black text-2xl lg:text-[28px] mb-6">What's Included</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-                        {included.map((item: string, i: number) => (
-                          <div key={i} className="flex items-start gap-3">
-                            <CheckCircle2 className="w-5 h-5 text-[#1a84ff] shrink-0 mt-0.5" />
-                            <p className="text-gray-500 font-medium text-[14px] lg:text-[15px] leading-[1.7]">{item}</p>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="h-[1px] bg-[#041d3c]/5 mb-8" />
-                      <h3 className="text-[#041d3c] font-black text-xl mb-5">Not Included</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {notIncluded.map((item: string, i: number) => (
-                          <div key={i} className="flex items-start gap-3">
-                            <XCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                            <p className="text-gray-500 font-medium text-[14px] leading-[1.7]">{item}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                {activeTab === 'tips' && (
-                  <motion.div
-                    key="tips"
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -16 }}
-                    transition={{ duration: 0.35 }}
-                  >
-                    <div className="bg-white rounded-[20px] p-8 lg:p-10 border border-[#041d3c]/7 shadow-[0_4px_20px_rgba(4,29,60,0.04)]">
-                      <h3 className="text-[#041d3c] font-black text-2xl lg:text-[28px] mb-6">Insightful Tips</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {DEFAULT_INSIGHTFUL_TIPS.map((item: string, i: number) => (
-                          <div key={i} className="flex items-start gap-3">
-                            <Lightbulb className="w-5 h-5 text-[#f59e0b] shrink-0 mt-0.5" />
-                            <p className="text-gray-500 font-medium text-[14px] lg:text-[15px] leading-[1.7]">
-                              {item.includes('https://eta.gov.lk/slvisa/') ? (
-                                <>
-                                  Sri Lanka Electronic Travel Authorization (eTA) (Link : <a href="https://eta.gov.lk/slvisa/" target="_blank" rel="noopener noreferrer" className="text-[#1a84ff] hover:underline transition-colors font-semibold break-all">https://eta.gov.lk/slvisa/</a>)
-                                </>
-                              ) : (
-                                item
-                              )}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                {activeTab === 'terms' && (
-                  <motion.div
-                    key="terms"
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -16 }}
-                    transition={{ duration: 0.35 }}
-                  >
-                    <div className="bg-white rounded-[20px] p-8 lg:p-10 border border-[#041d3c]/7 shadow-[0_4px_20px_rgba(4,29,60,0.04)] space-y-6">
-                      <h3 className="text-[#041d3c] font-black text-2xl lg:text-[28px]">Terms & Conditions</h3>
-                      {[
-                        { title: '1. Booking & Confirmation', body: 'All bookings are subject to availability. A booking is confirmed only upon receipt of the specified deposit. We reserve the right to decline any booking at our discretion.' },
-                        { title: '2. Passport & Visas', body: "It is the traveler's responsibility to ensure that their passport is valid for at least 6 months from the date of entry into Sri Lanka. Appropriate tourist visas must be obtained prior to arrival or via ETA." },
-                        { title: '3. Insurance', body: 'We strongly recommend that all travelers purchase comprehensive travel insurance covering trip cancellation, medical emergencies, and baggage loss.' },
-                        { title: '4. Alterations to Itinerary', body: 'While every effort is made to adhere to the planned itinerary, we reserve the right to modify routes, accommodations, or activities due to unforeseen circumstances, ensuring the alternative is of a similar standard.' },
-                      ].map((clause, i) => (
-                        <div key={i} className="border-b border-[#041d3c]/5 pb-6 last:border-0 last:pb-0">
-                          <h4 className="text-[#041d3c] font-extrabold text-[15px] mb-2">{clause.title}</h4>
-                          <p className="text-gray-500 text-[14px] leading-[1.8] font-medium">{clause.body}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-
-                {activeTab === 'cancellation' && (
-                  <motion.div
-                    key="cancellation"
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -16 }}
-                    transition={{ duration: 0.35 }}
-                  >
-                    <div className="bg-white rounded-[20px] p-8 lg:p-10 border border-[#041d3c]/7 shadow-[0_4px_20px_rgba(4,29,60,0.04)] space-y-8">
-                      <h3 className="text-[#041d3c] font-black text-2xl lg:text-[28px]">Payment & Cancellation</h3>
-
-                      {/* Payment schedule */}
-                      <div className="bg-[#f1f8ff] rounded-[16px] p-6 border border-[#1a84ff]/10">
-                        <h4 className="text-[#041d3c] font-extrabold text-[16px] mb-4 flex items-center gap-2">
-                          <CreditCard className="w-5 h-5 text-[#1a84ff]" />
-                          Payment Schedule
-                        </h4>
-                        <ul className="space-y-3">
-                          {[
-                            '30% deposit required at the time of booking to secure your reservation.',
-                            'Remaining 70% balance must be paid at least 30 days prior to your arrival.',
-                            'For bookings made within 30 days of arrival, full payment is required immediately.',
-                          ].map((item, i) => (
-                            <li key={i} className="flex items-start gap-3">
-                              <CheckCircle2 className="w-4 h-4 text-[#1a84ff] shrink-0 mt-0.5" />
-                              <p className="text-gray-500 text-[14px] font-medium leading-[1.7]">{item}</p>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Cancellation table */}
-                      <div>
-                        <h4 className="text-[#041d3c] font-extrabold text-[16px] mb-4">Cancellation Terms</h4>
-                        <div className="border border-[#041d3c]/8 rounded-[16px] overflow-hidden">
-                          {[
-                            { period: '31+ days before arrival', charge: 'Full Refund (minus processing fees)', color: 'text-green-600' },
-                            { period: '15 – 30 days before arrival', charge: '50% Cancellation Fee', color: 'text-amber-600' },
-                            { period: '14 days or less / No Shows', charge: '100% No Refund', color: 'text-red-500' },
-                          ].map((row, i, arr) => (
-                            <div
-                              key={i}
-                              className={`flex flex-col sm:flex-row items-start sm:items-center justify-between px-6 py-4 gap-2 ${i < arr.length - 1 ? 'border-b border-[#041d3c]/7' : ''} ${i % 2 === 0 ? 'bg-white' : 'bg-[#f8fafc]'}`}
-                            >
-                              <span className="text-[#041d3c] font-semibold text-[14px]">{row.period}</span>
-                              <span className={`font-extrabold text-[14px] ${row.color}`}>{row.charge}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-              </AnimatePresence>
-            </div>
-
           </div>
 
           {/* ── RIGHT SIDEBAR ── */}
@@ -864,6 +637,236 @@ export function TourPackageClient({ data }: { data: any }) {
 
             </div>
           </div>
+
+        </div>
+        {/* ── TABS SECTION (FULL WIDTH) ── */}
+        <div className="mt-16 lg:mt-24 w-full">
+            {/* Tabs */}
+            <div>
+              {/* Tab Pills */}
+              <div className="flex flex-wrap gap-2 mb-8">
+                {TABS.map((tab) => {
+                  const Icon = tab.icon;
+                  const isActive = activeTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 px-5 py-2.5 rounded-[12px] text-[13px] font-extrabold uppercase tracking-wider transition-all duration-300 ${
+                        isActive
+                          ? 'bg-[#041d3c] text-white shadow-[0_8px_20px_rgba(4,29,60,0.15)]'
+                          : 'bg-white text-[#041d3c]/60 border border-[#041d3c]/10 hover:border-[#1a84ff]/30 hover:text-[#041d3c]'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Tab Content */}
+              <AnimatePresence mode="wait">
+
+                {activeTab === 'itinerary' && (
+                  <motion.div
+                    key="itinerary"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -16 }}
+                    transition={{ duration: 0.35 }}
+                    className="space-y-3"
+                  >
+                    {data.itinerary.map((item: any, idx: number) => (
+                      <div
+                        key={idx}
+                        className="bg-white rounded-[16px] overflow-hidden border border-[#041d3c]/7 shadow-[0_4px_20px_rgba(4,29,60,0.04)] hover:shadow-[0_8px_32px_rgba(4,29,60,0.08)] transition-all duration-300"
+                      >
+                        <button
+                          className="w-full flex items-center gap-4 p-5 text-left"
+                          onClick={() => setOpenDay(openDay === idx ? null : idx)}
+                        >
+                          {/* Day badge */}
+                          <div className="w-[72px] h-12 rounded-[12px] bg-[#1a84ff] text-white font-black text-[14px] flex items-center justify-center shrink-0">
+                            Day {item.day}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[#041d3c] font-black text-[16px] leading-tight">{item.activity}</p>
+                            <p className="text-gray-400 text-[12px] font-semibold mt-0.5 truncate">{item.route}</p>
+                          </div>
+                          <div className="flex items-center gap-3 shrink-0">
+                            <span className="hidden sm:block bg-[#f1f5f9] text-[#041d3c] text-[11px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full">
+                              {item.stay}
+                            </span>
+                            <ChevronDown
+                              className={`w-5 h-5 text-[#041d3c]/40 transition-transform duration-300 ${openDay === idx ? 'rotate-180' : ''}`}
+                            />
+                          </div>
+                        </button>
+                        <AnimatePresence>
+                          {openDay === idx && (
+                            <motion.div
+                              key="detail"
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="px-5 pb-5 pt-1 border-t border-[#041d3c]/5">
+                                <p className="text-gray-500 text-[14px] leading-[1.8] font-medium">{item.details}</p>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+
+                {activeTab === 'included' && (
+                  <motion.div
+                    key="included"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -16 }}
+                    transition={{ duration: 0.35 }}
+                  >
+                    <div className="bg-white rounded-[20px] p-8 lg:p-10 border border-[#041d3c]/7 shadow-[0_4px_20px_rgba(4,29,60,0.04)]">
+                      <h3 className="text-[#041d3c] font-black text-2xl lg:text-[28px] mb-6">What's Included</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+                        {included.map((item: string, i: number) => (
+                          <div key={i} className="flex items-start gap-3">
+                            <CheckCircle2 className="w-5 h-5 text-[#1a84ff] shrink-0 mt-0.5" />
+                            <p className="text-gray-500 font-medium text-[14px] lg:text-[15px] leading-[1.7]">{item}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="h-[1px] bg-[#041d3c]/5 mb-8" />
+                      <h3 className="text-[#041d3c] font-black text-xl mb-5">Not Included</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {notIncluded.map((item: string, i: number) => (
+                          <div key={i} className="flex items-start gap-3">
+                            <XCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                            <p className="text-gray-500 font-medium text-[14px] leading-[1.7]">{item}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === 'tips' && (
+                  <motion.div
+                    key="tips"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -16 }}
+                    transition={{ duration: 0.35 }}
+                  >
+                    <div className="bg-white rounded-[20px] p-8 lg:p-10 border border-[#041d3c]/7 shadow-[0_4px_20px_rgba(4,29,60,0.04)]">
+                      <h3 className="text-[#041d3c] font-black text-2xl lg:text-[28px] mb-6">Insightful Tips</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {DEFAULT_INSIGHTFUL_TIPS.map((item: string, i: number) => (
+                          <div key={i} className="flex items-start gap-3">
+                            <Lightbulb className="w-5 h-5 text-[#f59e0b] shrink-0 mt-0.5" />
+                            <p className="text-gray-500 font-medium text-[14px] lg:text-[15px] leading-[1.7]">
+                              {item.includes('https://eta.gov.lk/slvisa/') ? (
+                                <>
+                                  Sri Lanka Electronic Travel Authorization (eTA) (Link : <a href="https://eta.gov.lk/slvisa/" target="_blank" rel="noopener noreferrer" className="text-[#1a84ff] hover:underline transition-colors font-semibold break-all">https://eta.gov.lk/slvisa/</a>)
+                                </>
+                              ) : (
+                                item
+                              )}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === 'terms' && (
+                  <motion.div
+                    key="terms"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -16 }}
+                    transition={{ duration: 0.35 }}
+                  >
+                    <div className="bg-white rounded-[20px] p-8 lg:p-10 border border-[#041d3c]/7 shadow-[0_4px_20px_rgba(4,29,60,0.04)] space-y-6">
+                      <h3 className="text-[#041d3c] font-black text-2xl lg:text-[28px]">Terms & Conditions</h3>
+                      {[
+                        { title: '1. Booking & Confirmation', body: 'All bookings are subject to availability. A booking is confirmed only upon receipt of the specified deposit. We reserve the right to decline any booking at our discretion.' },
+                        { title: '2. Passport & Visas', body: "It is the traveler's responsibility to ensure that their passport is valid for at least 6 months from the date of entry into Sri Lanka. Appropriate tourist visas must be obtained prior to arrival or via ETA." },
+                        { title: '3. Insurance', body: 'We strongly recommend that all travelers purchase comprehensive travel insurance covering trip cancellation, medical emergencies, and baggage loss.' },
+                        { title: '4. Alterations to Itinerary', body: 'While every effort is made to adhere to the planned itinerary, we reserve the right to modify routes, accommodations, or activities due to unforeseen circumstances, ensuring the alternative is of a similar standard.' },
+                      ].map((clause, i) => (
+                        <div key={i} className="border-b border-[#041d3c]/5 pb-6 last:border-0 last:pb-0">
+                          <h4 className="text-[#041d3c] font-extrabold text-[15px] mb-2">{clause.title}</h4>
+                          <p className="text-gray-500 text-[14px] leading-[1.8] font-medium">{clause.body}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === 'cancellation' && (
+                  <motion.div
+                    key="cancellation"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -16 }}
+                    transition={{ duration: 0.35 }}
+                  >
+                    <div className="bg-white rounded-[20px] p-8 lg:p-10 border border-[#041d3c]/7 shadow-[0_4px_20px_rgba(4,29,60,0.04)] space-y-8">
+                      <h3 className="text-[#041d3c] font-black text-2xl lg:text-[28px]">Payment & Cancellation</h3>
+
+                      {/* Payment schedule */}
+                      <div className="bg-[#f1f8ff] rounded-[16px] p-6 border border-[#1a84ff]/10">
+                        <h4 className="text-[#041d3c] font-extrabold text-[16px] mb-4 flex items-center gap-2">
+                          <CreditCard className="w-5 h-5 text-[#1a84ff]" />
+                          Payment Schedule
+                        </h4>
+                        <ul className="space-y-3">
+                          {[
+                            '30% deposit required at the time of booking to secure your reservation.',
+                            'Remaining 70% balance must be paid at least 30 days prior to your arrival.',
+                            'For bookings made within 30 days of arrival, full payment is required immediately.',
+                          ].map((item, i) => (
+                            <li key={i} className="flex items-start gap-3">
+                              <CheckCircle2 className="w-4 h-4 text-[#1a84ff] shrink-0 mt-0.5" />
+                              <p className="text-gray-500 text-[14px] font-medium leading-[1.7]">{item}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Cancellation table */}
+                      <div>
+                        <h4 className="text-[#041d3c] font-extrabold text-[16px] mb-4">Cancellation Terms</h4>
+                        <div className="border border-[#041d3c]/8 rounded-[16px] overflow-hidden">
+                          {[
+                            { period: '31+ days before arrival', charge: 'Full Refund (minus processing fees)', color: 'text-green-600' },
+                            { period: '15 – 30 days before arrival', charge: '50% Cancellation Fee', color: 'text-amber-600' },
+                            { period: '14 days or less / No Shows', charge: '100% No Refund', color: 'text-red-500' },
+                          ].map((row, i, arr) => (
+                            <div
+                              key={i}
+                              className={`flex flex-col sm:flex-row items-start sm:items-center justify-between px-6 py-4 gap-2 ${i < arr.length - 1 ? 'border-b border-[#041d3c]/7' : ''} ${i % 2 === 0 ? 'bg-white' : 'bg-[#f8fafc]'}`}
+                            >
+                              <span className="text-[#041d3c] font-semibold text-[14px]">{row.period}</span>
+                              <span className={`font-extrabold text-[14px] ${row.color}`}>{row.charge}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+              </AnimatePresence>
+            </div>
 
         </div>
       </section>
