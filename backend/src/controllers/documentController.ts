@@ -40,10 +40,9 @@ export class DocumentController {
       return;
     }
 
-    const API_URL = process.env.API_URL || `http://localhost:${process.env.PORT || 5000}`;
-    const url     = `${API_URL}/docs/${req.file.filename}`;
-
-    res.json({ success: true, url, filename: req.file.filename });
+    // Return only the filename — the frontend constructs the full URL
+    // using NEXT_PUBLIC_API_URL so it works in every environment.
+    res.json({ success: true, filename: req.file.filename });
   }
 
   // DELETE /api/documents/upload

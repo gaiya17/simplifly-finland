@@ -36,6 +36,9 @@ export function PdfUpload({ value, onChange, onRemove, className = '' }: PdfUplo
     try {
       const token = localStorage.getItem('auth_token');
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      // Backend base URL (strip trailing /api so we can also reach /docs/)
+      const BACKEND_BASE = API_URL.replace(/\/api$/, '');
+
       const res = await fetch(`${API_URL}/documents/upload`, {
         method: 'POST',
         headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
@@ -44,7 +47,9 @@ export function PdfUpload({ value, onChange, onRemove, className = '' }: PdfUplo
 
       const data = await res.json();
       if (data.success) {
-        onChange(data.url);
+        // Build the publicly-accessible download URL using the correct backend host
+        const url = `${BACKEND_BASE}/docs/${data.filename}`;
+        onChange(url);
         toast.success('PDF uploaded successfully!');
       } else {
         toast.error(data.error || 'Upload failed');
