@@ -334,7 +334,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
   );
 
   const packageBox = (
-    <div className="w-full shrink-0 space-y-5">
+    <div className="w-full lg:w-[420px] shrink-0 lg:sticky lg:top-28 space-y-5">
       {/* Price + CTA card */}
       <div className="bg-white rounded-[24px] shadow-[0_16px_48px_rgba(4,29,60,0.10)] overflow-hidden">
         <div className="relative h-[200px] overflow-hidden">
@@ -436,20 +436,45 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
         </div>
       </section>
 
-      {/* ── MAIN CONTENT (OVERVIEW + GALLERY + STICKY SIDEBAR) ── */}
+      {/* ── OVERVIEW + STICKY BOOKING CARD ── */}
       <section className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 py-[80px] lg:py-[100px]">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start relative">
-          
-          {/* LEFT COLUMN: Overview, Features, Reviews, Gallery */}
-          <div className="flex-1 min-w-0 flex flex-col gap-[80px]">
-            
-            <div className="flex flex-col gap-12">
+        {resort.offerPoster ? (
+          <div className="flex flex-col gap-12 lg:gap-16">
+            <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
+              <div className="flex-1 min-w-0">
+                {overviewHeader}
+              </div>
+              <div className="w-full lg:w-[420px] shrink-0">
+                <div className="w-full rounded-[24px] overflow-hidden shadow-[0_16px_48px_rgba(4,29,60,0.10)] border border-[#041d3c]/5 relative group">
+                  <ImageWithFallback src={resort.offerPoster} alt="Resort Offer" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-black/0 via-white/5 to-white/10 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
+              <div className="flex-1 min-w-0">
+                {featuresAndReviews}
+              </div>
+              {packageBox}
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
+            <div className="flex-1 min-w-0">
               {overviewHeader}
               {featuresAndReviews}
             </div>
+            {packageBox}
+          </div>
+        )}
+      </section>
 
-            {/* ── GALLERY ── */}
-            <div className="flex flex-col">
+      {/* ── GALLERY + INQUIRY FORM ── */}
+      <section className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 pb-[100px]">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-stretch">
+
+          {/* ── GALLERY ── */}
+          <div className="flex-1 flex flex-col min-w-0">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1a84ff]/8 text-[#1a84ff] font-extrabold text-[10px] lg:text-[11px] tracking-wider uppercase mb-4 border border-[#1a84ff]/10 w-fit">
               <Images className="w-3.5 h-3.5" />
               <span>✦ RESORT GALLERY</span>
@@ -511,22 +536,9 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
               })}
             </div>
           </div>
-          </div>
 
-          {/* RIGHT COLUMN: PackageBox, OfferPoster, InquireForm */}
-          <div className="w-full lg:w-[420px] xl:w-[480px] shrink-0 lg:sticky lg:top-28 flex flex-col gap-8 pb-10">
-            
-            {packageBox}
-
-            {resort.offerPoster && (
-              <div className="w-full rounded-[24px] overflow-hidden shadow-[0_16px_48px_rgba(4,29,60,0.10)] border border-[#041d3c]/5 relative group">
-                <ImageWithFallback src={resort.offerPoster} alt="Resort Offer" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-black/0 via-white/5 to-white/10 pointer-events-none" />
-              </div>
-            )}
-
-            {/* Inquiry form */}
-            <div id="inquire-form" className="w-full scroll-mt-32">
+          {/* Inquiry form */}
+          <div id="inquire-form" className="w-full lg:w-[480px] shrink-0 scroll-mt-32">
             <div className="bg-white rounded-[24px] shadow-[0_16px_48px_rgba(4,29,60,0.08)] p-8 border border-[#041d3c]/5">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1a84ff]/8 text-[#1a84ff] font-extrabold text-[10px] lg:text-[11px] tracking-wider uppercase mb-4 border border-[#1a84ff]/10 w-fit">
                 <span>✦ QUICK INQUIRY</span>
@@ -748,7 +760,6 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                 </button>
               </form>
             </div>
-          </div>
           </div>
         </div>
       </section>
