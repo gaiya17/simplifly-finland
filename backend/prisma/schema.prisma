@@ -114,6 +114,7 @@ model Resort {
   summary              String?
   location             String
   transfer             String
+  duration             String?
   price                Float
   discount             Float?
   status               String   @default("active")

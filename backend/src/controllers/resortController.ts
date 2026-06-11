@@ -139,7 +139,7 @@ export class ResortController {
   static async createResort(req: AuthenticatedRequest, res: Response) {
     try {
       const {
-        title, summary, location, transfer, price, status,
+        title, summary, location, transfer, duration, price, status,
         tripAdvisorRating, tripAdvisorReviews, bookingScore, bookingReviews,
         heroImage, heroImagePublicId, packageImage, packageImagePublicId,
         categoryIds, facilities, offers,
@@ -148,7 +148,7 @@ export class ResortController {
 
       const newResort = await prisma.resort.create({
         data: {
-          title, slug: generateSlug(title), summary, location, transfer, status,
+          title, slug: generateSlug(title), summary, location, transfer, duration, status,
           price: Number(price) || 0,
           tripAdvisorRating: Number(tripAdvisorRating) || null,
           tripAdvisorReviews: Number(tripAdvisorReviews) || null,
@@ -220,7 +220,7 @@ export class ResortController {
     try {
       const { id } = req.params;
       const {
-        title, summary, location, transfer, price, status,
+        title, summary, location, transfer, duration, price, status,
         tripAdvisorRating, tripAdvisorReviews, bookingScore, bookingReviews,
         heroImage, heroImagePublicId, packageImage, packageImagePublicId,
         categoryIds, facilities, offers,
@@ -240,7 +240,7 @@ export class ResortController {
       const updatedResort = await prisma.resort.update({
         where: { id },
         data: {
-          title, slug: generateSlug(title), summary, location, transfer, status,
+          title, slug: generateSlug(title), summary, location, transfer, duration, status,
           price: Number(price) || 0,
           tripAdvisorRating: Number(tripAdvisorRating) || null,
           tripAdvisorReviews: Number(tripAdvisorReviews) || null,

@@ -129,7 +129,7 @@ export default function AdminResorts() {
     } else {
       setIsEditing(false);
       setForm({
-        id: "", title: "", categoryId: categories[0]?.id || "", summary: "", location: "", transfer: "Seaplane Transfer", price: "", status: "active",
+        id: "", title: "", categoryId: categories[0]?.id || "", summary: "", location: "", transfer: "Seaplane Transfer", duration: "", price: "", status: "active",
         tripAdvisorRating: "", tripAdvisorReviews: "", bookingScore: "", bookingReviews: "",
         heroImage: "", heroImagePublicId: "", packageImage: "", packageImagePublicId: "",
         facilities: [], offers: [], gallery: [], villas: [], restaurants: [], factSheets: []
@@ -395,7 +395,7 @@ export default function AdminResorts() {
                     <label className={labelCls}>About This Resort</label>
                     <textarea rows={4} placeholder="Describe the resort experience..." value={form.summary} onChange={e => setForm({...form, summary: e.target.value})} className={`${inputCls} resize-none`} />
                   </div>
-                  <div className="grid grid-cols-3 gap-5">
+                  <div className="grid grid-cols-4 gap-5">
                     <div>
                       <label className={labelCls}>Location</label>
                       <input type="text" placeholder="e.g. Noonu Atoll" value={form.location} onChange={e => setForm({...form, location: e.target.value})} className={inputCls} />
@@ -417,6 +417,10 @@ export default function AdminResorts() {
                           }
                         }} className="px-3 bg-gray-100 rounded-[12px] text-gray-500 hover:text-black font-bold transition-colors border border-[#e2e8f0]">+</button>
                       </div>
+                    </div>
+                    <div>
+                      <label className={labelCls}>Duration</label>
+                      <input type="text" placeholder="e.g. 45 Minutes" value={form.duration || ''} onChange={e => setForm({...form, duration: e.target.value})} className={inputCls} />
                     </div>
                     <div>
                       <label className={labelCls}>Starting Price ($)</label>
