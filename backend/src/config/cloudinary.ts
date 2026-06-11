@@ -17,8 +17,7 @@ const storage = new CloudinaryStorage({
     if (isPdf) {
       return {
         folder,
-        format: 'pdf',
-        resource_type: 'image',
+        resource_type: 'raw',
       };
     }
 
