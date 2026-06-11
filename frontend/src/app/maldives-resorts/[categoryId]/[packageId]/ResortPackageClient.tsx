@@ -831,7 +831,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                           </div>
                           <div className="w-1 h-1 rounded-full bg-[#041d3c]/20 hidden sm:block" />
                           <div className="flex items-center gap-2 text-[#041d3c] text-[12.5px] font-extrabold tracking-wide uppercase">
-                            <BedDouble className="w-4 h-4 text-[#1a84ff]" /> {villa.bedType || 'Not specified'}
+                            <BedDouble className="w-4 h-4 text-[#1a84ff]" /> {villa.bedType ? villa.bedType.split(',').map((s:string)=>s.trim()).join(' or ') : 'Not specified'}
                           </div>
                         </div>
 

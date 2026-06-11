@@ -30,6 +30,14 @@ export default function AdminResorts() {
   const [newFacilityName, setNewFacilityName] = useState("");
   const [isAddingFacility, setIsAddingFacility] = useState(false);
 
+  // Custom Inline Villa Options
+  const [customBedTypes, setCustomBedTypes] = useState<string[]>([]);
+  const [addingBedIdx, setAddingBedIdx] = useState<number | null>(null);
+  const [newBedType, setNewBedType] = useState("");
+  const [customFeatures, setCustomFeatures] = useState<string[]>([]);
+  const [addingFeatureIdx, setAddingFeatureIdx] = useState<number | null>(null);
+  const [newFeature, setNewFeature] = useState("");
+
   // Modals
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -92,7 +100,16 @@ export default function AdminResorts() {
           villas: fullResort.villas.map((v: any) => {
             return {
               ...v,
-              capacityList: v.capacity ? v.capacity.split(',').map((s:string)=>s.trim()).filter(Boolean) : [],
+              capacityList: v.capacity ? v.capacity.split('|').map((s:string) => {
+                const matchAdults = s.match(/(\d+)\s+Adult/);
+                const matchChildren = s.match(/(\d+)\s+Child/);
+                const matchInfants = s.match(/(\d+)\s+Infant/);
+                return {
+                  adults: matchAdults ? matchAdults[1] : "2",
+                  children: matchChildren ? matchChildren[1] : "0",
+                  infants: matchInfants ? matchInfants[1] : "0",
+                };
+              }) : [{ adults: "2", children: "0", infants: "0" }],
               features: v.features.join(", ")
             };
           }),
@@ -128,7 +145,9 @@ export default function AdminResorts() {
         ...form,
         villas: form.villas.map((v: any) => ({
           ...v,
-          capacity: Array.isArray(v.capacityList) && v.capacityList.length > 0 ? v.capacityList.filter(Boolean).join(", ") : (v.capacity || "2 Adults"),
+          capacity: Array.isArray(v.capacityList) && v.capacityList.length > 0 
+            ? v.capacityList.map((c:any) => `${c.adults || "2"} Adults, ${c.children || "0"} Children, ${c.infants || "0"} Infants`).join(" | ")
+            : (v.capacity || "2 Adults, 0 Children, 0 Infants"),
           features: Array.isArray(v.features) ? v.features : v.features.split(",").map((s: string) => s.trim()).filter(Boolean)
         })),
         restaurants: form.restaurants.map((r: any) => ({
@@ -563,7 +582,7 @@ export default function AdminResorts() {
                           <div>
                             <label className={labelCls}>Bed Type</label>
                             <div className="grid grid-cols-2 gap-2 mb-3">
-                              {COMMON_BED_TYPES.map(bed => {
+                              {[...COMMON_BED_TYPES, ...customBedTypes].map(bed => {
                                 const isChecked = typeof villa.bedType === 'string' 
                                   ? villa.bedType.includes(bed) 
                                   : Array.isArray(villa.bedType) ? villa.bedType.includes(bed) : false;
@@ -579,17 +598,41 @@ export default function AdminResorts() {
                                   </label>
                                 );
                               })}
+                              
+                              {addingBedIdx === idx ? (
+                                <div className="flex items-center gap-2 mt-1 col-span-2">
+                                  <input type="text" value={newBedType} onChange={e => setNewBedType(e.target.value)} placeholder="New bed type" className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff] w-full" autoFocus onKeyDown={e => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      if (newBedType.trim() && !customBedTypes.includes(newBedType.trim()) && !COMMON_BED_TYPES.includes(newBedType.trim())) {
+                                        setCustomBedTypes(prev => [...prev, newBedType.trim()]);
+                                        const newV = [...form.villas];
+                                        let currentBeds = typeof newV[idx].bedType === 'string' ? newV[idx].bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (newV[idx].bedType || []);
+                                        currentBeds.push(newBedType.trim());
+                                        newV[idx].bedType = currentBeds.join(', ');
+                                        setForm({...form, villas: newV});
+                                      }
+                                      setNewBedType("");
+                                      setAddingBedIdx(null);
+                                    }
+                                  }} />
+                                  <button type="button" onClick={() => {
+                                    if (newBedType.trim() && !customBedTypes.includes(newBedType.trim()) && !COMMON_BED_TYPES.includes(newBedType.trim())) {
+                                      setCustomBedTypes(prev => [...prev, newBedType.trim()]);
+                                      const newV = [...form.villas];
+                                      let currentBeds = typeof newV[idx].bedType === 'string' ? newV[idx].bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (newV[idx].bedType || []);
+                                      currentBeds.push(newBedType.trim());
+                                      newV[idx].bedType = currentBeds.join(', ');
+                                      setForm({...form, villas: newV});
+                                    }
+                                    setNewBedType("");
+                                    setAddingBedIdx(null);
+                                  }} className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold">Add</button>
+                                </div>
+                              ) : (
+                                <button type="button" onClick={() => setAddingBedIdx(idx)} className="text-[#1a84ff] text-[11px] font-bold hover:underline mt-1 col-span-2 text-left">+ Add Custom Bed Type</button>
+                              )}
                             </div>
-                            <input type="text" placeholder="Add custom beds (comma separated)..." value={
-                              typeof villa.bedType === 'string' 
-                                ? villa.bedType.split(',').map((s:string)=>s.trim()).filter((s:string) => !COMMON_BED_TYPES.includes(s)).join(', ')
-                                : Array.isArray(villa.bedType) ? villa.bedType.filter((s:string) => !COMMON_BED_TYPES.includes(s)).join(', ') : ''
-                            } onChange={e => {
-                              const currentBeds = typeof villa.bedType === 'string' ? villa.bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.bedType || []);
-                              const predefined = currentBeds.filter((b:string) => COMMON_BED_TYPES.includes(b));
-                              const custom = e.target.value.split(',').map(s=>s.trim()).filter(Boolean);
-                              const newV = [...form.villas]; newV[idx].bedType = [...predefined, ...custom].join(', '); setForm({...form, villas: newV});
-                            }} className={inputCls} />
                           </div>
                         </div>
                         <div className="mb-4">
@@ -607,31 +650,51 @@ export default function AdminResorts() {
                           </div>
                           <div>
                             <label className={labelCls}>Capacity Combinations</label>
-                            <div className="space-y-2">
-                              {(Array.isArray(villa.capacityList) ? villa.capacityList : (villa.capacity ? villa.capacity.split(',').map((s:string)=>s.trim()).filter(Boolean) : [""])).map((cap: string, capIdx: number) => (
-                                <div key={capIdx} className="flex gap-2">
-                                  <input type="text" value={cap} onChange={e => {
+                            <div className="space-y-3">
+                              {(Array.isArray(villa.capacityList) ? villa.capacityList : [{ adults: "2", children: "0", infants: "0" }]).map((cap: any, capIdx: number) => (
+                                <div key={capIdx} className="flex gap-2 items-center bg-[#f8fafc] border border-[#e8edf4] p-2.5 rounded-[12px]">
+                                  <select value={cap.adults} onChange={e => {
                                     const newV = [...form.villas];
-                                    const newList = [...(newV[idx].capacityList || newV[idx].capacity?.split(',').map((s:string)=>s.trim()).filter(Boolean) || [""])];
-                                    newList[capIdx] = e.target.value;
+                                    const newList = [...(Array.isArray(newV[idx].capacityList) ? newV[idx].capacityList : [{ adults: "2", children: "0", infants: "0" }])];
+                                    newList[capIdx] = { ...newList[capIdx], adults: e.target.value };
                                     newV[idx].capacityList = newList;
                                     setForm({...form, villas: newV});
-                                  }} className={inputCls} placeholder="e.g. 2 Adults or 1 Adult + 2 Children" />
+                                  }} className={inputCls + " py-2 !bg-white"}>
+                                    {[1,2,3,4,5,6].map(n => <option key={n} value={String(n)}>{n} Adult{n>1?'s':''}</option>)}
+                                  </select>
+                                  <select value={cap.children} onChange={e => {
+                                    const newV = [...form.villas];
+                                    const newList = [...(Array.isArray(newV[idx].capacityList) ? newV[idx].capacityList : [{ adults: "2", children: "0", infants: "0" }])];
+                                    newList[capIdx] = { ...newList[capIdx], children: e.target.value };
+                                    newV[idx].capacityList = newList;
+                                    setForm({...form, villas: newV});
+                                  }} className={inputCls + " py-2 !bg-white"}>
+                                    {[0,1,2,3,4].map(n => <option key={n} value={String(n)}>{n} Child{n!==1?'ren':''}</option>)}
+                                  </select>
+                                  <select value={cap.infants} onChange={e => {
+                                    const newV = [...form.villas];
+                                    const newList = [...(Array.isArray(newV[idx].capacityList) ? newV[idx].capacityList : [{ adults: "2", children: "0", infants: "0" }])];
+                                    newList[capIdx] = { ...newList[capIdx], infants: e.target.value };
+                                    newV[idx].capacityList = newList;
+                                    setForm({...form, villas: newV});
+                                  }} className={inputCls + " py-2 !bg-white"}>
+                                    {[0,1,2,3,4].map(n => <option key={n} value={String(n)}>{n} Infant{n!==1?'s':''}</option>)}
+                                  </select>
                                   <button type="button" onClick={() => {
                                     const newV = [...form.villas];
-                                    const newList = [...(newV[idx].capacityList || newV[idx].capacity?.split(',').map((s:string)=>s.trim()).filter(Boolean) || [""])];
+                                    const newList = [...(Array.isArray(newV[idx].capacityList) ? newV[idx].capacityList : [{ adults: "2", children: "0", infants: "0" }])];
                                     newList.splice(capIdx, 1);
                                     newV[idx].capacityList = newList;
                                     setForm({...form, villas: newV});
-                                  }} className="px-3 bg-red-50 text-red-500 rounded-[12px] hover:bg-red-100 transition-colors">
+                                  }} className="px-2.5 bg-red-50 text-red-500 rounded-[8px] hover:bg-red-100 transition-colors h-[38px] shrink-0">
                                     <X className="w-4 h-4" />
                                   </button>
                                 </div>
                               ))}
                               <button type="button" onClick={() => {
                                 const newV = [...form.villas];
-                                const newList = [...(newV[idx].capacityList || newV[idx].capacity?.split(',').map((s:string)=>s.trim()).filter(Boolean) || [""])];
-                                newList.push("");
+                                const newList = [...(Array.isArray(newV[idx].capacityList) ? newV[idx].capacityList : [{ adults: "2", children: "0", infants: "0" }])];
+                                newList.push({ adults: "2", children: "0", infants: "0" });
                                 newV[idx].capacityList = newList;
                                 setForm({...form, villas: newV});
                               }} className="text-[#1a84ff] text-[11px] font-bold hover:underline flex items-center gap-1 mt-2">
@@ -640,37 +703,61 @@ export default function AdminResorts() {
                             </div>
                           </div>
                         </div>
-                        <div className="mb-4">
-                          <label className={labelCls}>Features</label>
-                          <div className="grid grid-cols-2 gap-2 mb-3">
-                            {COMMON_VILLA_FEATURES.map(feat => {
-                              const isChecked = typeof villa.features === 'string' 
-                                ? villa.features.includes(feat) 
-                                : Array.isArray(villa.features) ? villa.features.includes(feat) : false;
-                              return (
-                                <label key={feat} className="flex items-center gap-2 cursor-pointer">
-                                  <input type="checkbox" checked={isChecked} onChange={e => {
-                                    let currentFeats = typeof villa.features === 'string' ? villa.features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.features || []);
-                                    if (e.target.checked) currentFeats.push(feat);
-                                    else currentFeats = currentFeats.filter((f:string) => f !== feat);
-                                    const newV = [...form.villas]; newV[idx].features = currentFeats.join(', '); setForm({...form, villas: newV});
-                                  }} className="w-3.5 h-3.5 rounded-[4px] border-gray-300 text-[#1a84ff]" />
-                                  <span className="text-[12px] font-medium text-[#041d3c]">{feat}</span>
-                                </label>
-                              );
-                            })}
+                          <div>
+                            <label className={labelCls}>Features</label>
+                            <div className="grid grid-cols-2 gap-2 mb-3">
+                              {[...COMMON_VILLA_FEATURES, ...customFeatures].map(feat => {
+                                const isChecked = typeof villa.features === 'string' 
+                                  ? villa.features.includes(feat) 
+                                  : Array.isArray(villa.features) ? villa.features.includes(feat) : false;
+                                return (
+                                  <label key={feat} className="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" checked={isChecked} onChange={e => {
+                                      let currentFeats = typeof villa.features === 'string' ? villa.features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.features || []);
+                                      if (e.target.checked) currentFeats.push(feat);
+                                      else currentFeats = currentFeats.filter((f:string) => f !== feat);
+                                      const newV = [...form.villas]; newV[idx].features = currentFeats.join(', '); setForm({...form, villas: newV});
+                                    }} className="w-3.5 h-3.5 rounded-[4px] border-gray-300 text-[#1a84ff]" />
+                                    <span className="text-[12px] font-medium text-[#041d3c]">{feat}</span>
+                                  </label>
+                                );
+                              })}
+                              
+                              {addingFeatureIdx === idx ? (
+                                <div className="flex items-center gap-2 mt-1 col-span-2">
+                                  <input type="text" value={newFeature} onChange={e => setNewFeature(e.target.value)} placeholder="New feature" className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff] w-full" autoFocus onKeyDown={e => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      if (newFeature.trim() && !customFeatures.includes(newFeature.trim()) && !COMMON_VILLA_FEATURES.includes(newFeature.trim())) {
+                                        setCustomFeatures(prev => [...prev, newFeature.trim()]);
+                                        const newV = [...form.villas];
+                                        let currentFeats = typeof newV[idx].features === 'string' ? newV[idx].features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (newV[idx].features || []);
+                                        currentFeats.push(newFeature.trim());
+                                        newV[idx].features = currentFeats.join(', ');
+                                        setForm({...form, villas: newV});
+                                      }
+                                      setNewFeature("");
+                                      setAddingFeatureIdx(null);
+                                    }
+                                  }} />
+                                  <button type="button" onClick={() => {
+                                    if (newFeature.trim() && !customFeatures.includes(newFeature.trim()) && !COMMON_VILLA_FEATURES.includes(newFeature.trim())) {
+                                      setCustomFeatures(prev => [...prev, newFeature.trim()]);
+                                      const newV = [...form.villas];
+                                      let currentFeats = typeof newV[idx].features === 'string' ? newV[idx].features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (newV[idx].features || []);
+                                      currentFeats.push(newFeature.trim());
+                                      newV[idx].features = currentFeats.join(', ');
+                                      setForm({...form, villas: newV});
+                                    }
+                                    setNewFeature("");
+                                    setAddingFeatureIdx(null);
+                                  }} className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold">Add</button>
+                                </div>
+                              ) : (
+                                <button type="button" onClick={() => setAddingFeatureIdx(idx)} className="text-[#1a84ff] text-[11px] font-bold hover:underline mt-1 col-span-2 text-left">+ Add Custom Feature</button>
+                              )}
+                            </div>
                           </div>
-                          <input type="text" placeholder="Add custom features (comma separated)..." value={
-                            typeof villa.features === 'string' 
-                              ? villa.features.split(',').map((s:string)=>s.trim()).filter((s:string) => !COMMON_VILLA_FEATURES.includes(s)).join(', ')
-                              : Array.isArray(villa.features) ? villa.features.filter((s:string) => !COMMON_VILLA_FEATURES.includes(s)).join(', ') : ''
-                          } onChange={e => {
-                            const currentFeats = typeof villa.features === 'string' ? villa.features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.features || []);
-                            const predefined = currentFeats.filter((f:string) => COMMON_VILLA_FEATURES.includes(f));
-                            const custom = e.target.value.split(',').map(s=>s.trim()).filter(Boolean);
-                            const newV = [...form.villas]; newV[idx].features = [...predefined, ...custom].join(', '); setForm({...form, villas: newV});
-                          }} className={inputCls} />
-                        </div>
                         
                         <div>
                           <label className={labelCls}>Villa Images (Rotating preview)</label>
