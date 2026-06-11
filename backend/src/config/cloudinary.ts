@@ -12,9 +12,19 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
     const folder = (req.body.folder as string) || 'simplifly/general';
+    const isPdf = file.mimetype === 'application/pdf' || file.originalname.toLowerCase().endsWith('.pdf');
+
+    if (isPdf) {
+      return {
+        folder,
+        format: 'pdf',
+        resource_type: 'image',
+      };
+    }
+
     return {
       folder,
-      allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'pdf'],
+      allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
       transformation: [{ quality: 'auto', fetch_format: 'auto' }],
     };
   },
