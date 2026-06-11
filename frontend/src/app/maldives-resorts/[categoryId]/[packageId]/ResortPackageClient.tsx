@@ -279,57 +279,22 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
   const featuresAndReviews = (
     <>
       {/* Info chips */}
-      <div className="grid grid-cols-2 gap-4 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
         {[
           { icon: MapPin, label: 'Location', value: resort.location },
           { icon: Compass, label: 'Transfer', value: resort.transfer },
           { icon: Clock, label: 'Price', value: `${resort.price} / night` },
-          { icon: Star, label: 'Rating', value: `${resort.tripAdvisorRating || 'N/A'} / 5.0 (${resort.tripAdvisorReviews || 0} reviews)` },
         ].map(({ icon: Icon, label, value }) => (
-          <div key={label} className="bg-white rounded-[16px] p-5 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_8px_24px_rgba(4,29,60,0.09)] transition-all flex items-start gap-4">
-            <div className="w-10 h-10 rounded-[12px] bg-[#1a84ff]/8 flex items-center justify-center shrink-0">
-              <Icon className="w-5 h-5 text-[#1a84ff]" />
+          <div key={label} className="bg-white rounded-[20px] p-6 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(4,29,60,0.08)] border border-[#041d3c]/5 hover:border-[#1a84ff]/20 transition-all flex flex-col gap-4">
+            <div className="w-12 h-12 rounded-[14px] bg-[#1a84ff]/8 flex items-center justify-center shrink-0">
+              <Icon className="w-6 h-6 text-[#1a84ff]" />
             </div>
             <div>
-              <p className="text-gray-400 text-[10.5px] font-extrabold uppercase tracking-wider mb-0.5">{label}</p>
-              <p className="text-[#041d3c] text-[13px] font-bold leading-snug">{value}</p>
+              <p className="text-gray-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">{label}</p>
+              <p className="text-[#041d3c] text-[15px] font-bold leading-snug">{value}</p>
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Ratings row — TripAdvisor + Booking.com */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {/* TripAdvisor */}
-        <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(0,175,135,0.08)] border border-transparent hover:border-[#00af87]/20 transition-all">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-8 h-8 rounded-[8px] bg-[#00af87]/10 flex items-center justify-center">
-              <svg className="w-5 h-5 text-[#00af87]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.5a6.5 6.5 0 110-13 6.5 6.5 0 010 13zm3.5-9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm-7 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
-            </div>
-            <span className="font-black text-[#041d3c] text-[13px]">TripAdvisor</span>
-          </div>
-          <div className="flex gap-1 mb-2">
-            {[...Array(5)].map((_, i) => <div key={i} className="w-4 h-4 rounded-full bg-[#00af87] border border-white" />)}
-          </div>
-          <p className="text-[#041d3c] font-black text-[22px] leading-none mb-1">{resort.tripAdvisorRating || '5.0'} <span className="text-gray-400 font-medium text-[13px]">/ 5.0</span></p>
-          <p className="text-gray-400 text-[11.5px] font-semibold">Based on {resort.tripAdvisorReviews || 0} traveler reviews</p>
-        </div>
-
-        {/* Booking.com */}
-        <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(0,53,128,0.08)] border border-transparent hover:border-[#003580]/20 transition-all">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-8 h-8 rounded-[8px] bg-[#003580]/10 flex items-center justify-center">
-              <svg className="w-5 h-5 text-[#003580]" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 0H2.4C1.08 0 0 1.08 0 2.4v19.2C0 22.92 1.08 24 2.4 24h19.2c1.32 0 2.4-1.08 2.4-2.4V2.4C24 1.08 22.92 0 21.6 0zM7.2 18H3.6V6h3.6c1.98 0 3.6 1.62 3.6 3.6 0 1.26-.63 2.34-1.62 2.97C10.35 13.2 10.8 14.28 10.8 15.6c0 1.32-1.08 2.4-2.4 2.4zm10.8 0h-3.6V6H18c1.98 0 3.6 1.62 3.6 3.6v4.8c0 1.98-1.62 3.6-3.6 3.6z"/></svg>
-            </div>
-            <span className="font-black text-[#041d3c] text-[13px]">Booking.com</span>
-          </div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="bg-[#003580] text-white font-black text-[15px] px-2.5 py-1 rounded-[8px]">{resort.bookingScore}</span>
-            <span className="text-[#003580] font-extrabold text-[13px]">Superb</span>
-          </div>
-          <p className="text-[#041d3c] font-black text-[22px] leading-none mb-1">{resort.bookingReviews} <span className="text-gray-400 font-medium text-[13px]">Reviews</span></p>
-          <p className="text-gray-400 text-[11.5px] font-semibold">Top-rated Partner Resort</p>
-        </div>
       </div>
     </>
   );
@@ -423,13 +388,6 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
 
           {/* Inline stats strip */}
           <div className="flex flex-wrap items-center gap-4">
-            {/* Stars */}
-            <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-[10px] px-3.5 py-2">
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />)}
-              </div>
-              <span className="text-white font-extrabold text-[12px] ml-1">({resort.tripAdvisorReviews || 0})</span>
-            </div>
             {/* Location chip */}
             <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-[10px] px-3.5 py-2">
               <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -822,15 +780,15 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
 
                         {/* Stats strip */}
                         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-6 bg-[#f8fafc] py-3 px-5 rounded-[14px] border border-[#041d3c]/5 w-fit">
-                          <div className="flex items-center gap-2 text-[#041d3c] text-[12.5px] font-extrabold tracking-wide uppercase">
-                            <Maximize className="w-4 h-4 text-[#1a84ff]" /> {villa.size}
+                          <div className="flex items-center gap-2 text-[#041d3c] text-[12.5px] font-semibold tracking-wide uppercase">
+                            <Maximize className="w-4 h-4 text-[#1a84ff]" /> {villa.size?.toString().replace(/sqm/i, '').trim() || '-'} sqm
                           </div>
                           <div className="w-1 h-1 rounded-full bg-[#041d3c]/20 hidden sm:block" />
-                          <div className="flex items-center gap-2 text-[#041d3c] text-[12.5px] font-extrabold tracking-wide uppercase">
-                            <Users className="w-4 h-4 text-[#1a84ff]" /> {villa.capacity ? villa.capacity.split(',').map((s:string)=>s.trim()).join(' or ') : 'Not specified'}
+                          <div className="flex items-center gap-2 text-[#041d3c] text-[12.5px] font-semibold tracking-wide uppercase">
+                            <Users className="w-4 h-4 text-[#1a84ff]" /> {villa.capacity ? villa.capacity.split('|').map((combo:string) => combo.split(',').map((s:string) => s.trim()).filter((s:string) => !s.startsWith('0 ')).join(' and ')).filter(Boolean).join(' or ') : 'Not specified'}
                           </div>
                           <div className="w-1 h-1 rounded-full bg-[#041d3c]/20 hidden sm:block" />
-                          <div className="flex items-center gap-2 text-[#041d3c] text-[12.5px] font-extrabold tracking-wide uppercase">
+                          <div className="flex items-center gap-2 text-[#041d3c] text-[12.5px] font-semibold tracking-wide uppercase">
                             <BedDouble className="w-4 h-4 text-[#1a84ff]" /> {villa.bedType ? villa.bedType.split(',').map((s:string)=>s.trim()).join(' or ') : 'Not specified'}
                           </div>
                         </div>
