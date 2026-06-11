@@ -30,8 +30,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Serve uploaded PDF documents statically (no auth required for download)
-app.use('/docs', express.static(path.join(process.cwd(), 'uploads', 'docs')));
+// Serve uploaded PDF documents under /api/docs — accessible via the same
+// Caddy reverse proxy that handles all /api/* traffic.
+app.use('/api/docs', express.static(path.join(process.cwd(), 'uploads', 'docs')));
 
 // Mount Portal API Routes
 app.use("/api/auth", authRoutes);
