@@ -18,6 +18,7 @@ const storage = new CloudinaryStorage({
       return {
         folder,
         resource_type: 'raw',
+        format: 'pdf',
       };
     }
 
