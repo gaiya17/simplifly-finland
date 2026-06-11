@@ -26,6 +26,10 @@ export default function AdminResorts() {
   const [facilityOptions, setFacilityOptions] = useState<any[]>([]);
   const [offerOptions, setOfferOptions] = useState<any[]>([]);
 
+  // Facility prompt replacement
+  const [newFacilityName, setNewFacilityName] = useState("");
+  const [isAddingFacility, setIsAddingFacility] = useState(false);
+
   // Modals
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -86,14 +90,9 @@ export default function AdminResorts() {
           bookingScore: fullResort.bookingScore?.toString() || "",
           bookingReviews: fullResort.bookingReviews?.toString() || "",
           villas: fullResort.villas.map((v: any) => {
-            const matchAdults = v.capacity?.match(/(\d+)\s+Adult/);
-            const matchChildren = v.capacity?.match(/(\d+)\s+Child/);
-            const matchInfants = v.capacity?.match(/(\d+)\s+Infant/);
             return {
               ...v,
-              capacityAdults: matchAdults ? matchAdults[1] : "2",
-              capacityChildren: matchChildren ? matchChildren[1] : "0",
-              capacityInfants: matchInfants ? matchInfants[1] : "0",
+              capacityList: v.capacity ? v.capacity.split(',').map((s:string)=>s.trim()).filter(Boolean) : [],
               features: v.features.join(", ")
             };
           }),
@@ -129,7 +128,7 @@ export default function AdminResorts() {
         ...form,
         villas: form.villas.map((v: any) => ({
           ...v,
-          capacity: `${v.capacityAdults || "2"} Adults, ${v.capacityChildren || "0"} Children, ${v.capacityInfants || "0"} Infants`,
+          capacity: Array.isArray(v.capacityList) && v.capacityList.length > 0 ? v.capacityList.filter(Boolean).join(", ") : (v.capacity || "2 Adults"),
           features: Array.isArray(v.features) ? v.features : v.features.split(",").map((s: string) => s.trim()).filter(Boolean)
         })),
         restaurants: form.restaurants.map((r: any) => ({
@@ -607,23 +606,37 @@ export default function AdminResorts() {
                             }} className={inputCls} />
                           </div>
                           <div>
-                            <label className={labelCls}>Capacity</label>
-                            <div className="flex gap-2">
-                              <select value={villa.capacityAdults || "2"} onChange={e => {
-                                const newV = [...form.villas]; newV[idx].capacityAdults = e.target.value; setForm({...form, villas: newV});
-                              }} className={inputCls}>
-                                {[1,2,3,4,5,6].map(n => <option key={n} value={String(n)}>{n} Adult{n>1?'s':''}</option>)}
-                              </select>
-                              <select value={villa.capacityChildren || "0"} onChange={e => {
-                                const newV = [...form.villas]; newV[idx].capacityChildren = e.target.value; setForm({...form, villas: newV});
-                              }} className={inputCls}>
-                                {[0,1,2,3,4].map(n => <option key={n} value={String(n)}>{n} Child{n!==1?'ren':''}</option>)}
-                              </select>
-                              <select value={villa.capacityInfants || "0"} onChange={e => {
-                                const newV = [...form.villas]; newV[idx].capacityInfants = e.target.value; setForm({...form, villas: newV});
-                              }} className={inputCls}>
-                                {[0,1,2,3,4].map(n => <option key={n} value={String(n)}>{n} Infant{n!==1?'s':''}</option>)}
-                              </select>
+                            <label className={labelCls}>Capacity Combinations</label>
+                            <div className="space-y-2">
+                              {(Array.isArray(villa.capacityList) ? villa.capacityList : (villa.capacity ? villa.capacity.split(',').map((s:string)=>s.trim()).filter(Boolean) : [""])).map((cap: string, capIdx: number) => (
+                                <div key={capIdx} className="flex gap-2">
+                                  <input type="text" value={cap} onChange={e => {
+                                    const newV = [...form.villas];
+                                    const newList = [...(newV[idx].capacityList || newV[idx].capacity?.split(',').map((s:string)=>s.trim()).filter(Boolean) || [""])];
+                                    newList[capIdx] = e.target.value;
+                                    newV[idx].capacityList = newList;
+                                    setForm({...form, villas: newV});
+                                  }} className={inputCls} placeholder="e.g. 2 Adults or 1 Adult + 2 Children" />
+                                  <button type="button" onClick={() => {
+                                    const newV = [...form.villas];
+                                    const newList = [...(newV[idx].capacityList || newV[idx].capacity?.split(',').map((s:string)=>s.trim()).filter(Boolean) || [""])];
+                                    newList.splice(capIdx, 1);
+                                    newV[idx].capacityList = newList;
+                                    setForm({...form, villas: newV});
+                                  }} className="px-3 bg-red-50 text-red-500 rounded-[12px] hover:bg-red-100 transition-colors">
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              ))}
+                              <button type="button" onClick={() => {
+                                const newV = [...form.villas];
+                                const newList = [...(newV[idx].capacityList || newV[idx].capacity?.split(',').map((s:string)=>s.trim()).filter(Boolean) || [""])];
+                                newList.push("");
+                                newV[idx].capacityList = newList;
+                                setForm({...form, villas: newV});
+                              }} className="text-[#1a84ff] text-[11px] font-bold hover:underline flex items-center gap-1 mt-2">
+                                <Plus className="w-3 h-3" /> Add Capacity Option
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -803,15 +816,42 @@ export default function AdminResorts() {
                         <label className={labelCls}>Luxury Facilities</label>
                         <p className="text-[12px] text-gray-500 font-medium">Select all facilities available at this resort.</p>
                       </div>
-                      <button type="button" onClick={() => {
-                        const name = prompt("Enter new facility:");
-                        if (name) {
-                          resortApi.createFacilityOption(token, { name }).then(opt => {
-                            setFacilityOptions([...facilityOptions, opt]);
-                            setForm({...form, facilities: [...(form.facilities || []), opt.name]});
-                          }).catch(e => toast.error(e.message));
-                        }
-                      }} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add New Facility</button>
+                      {isAddingFacility ? (
+                        <div className="flex items-center gap-2">
+                          <input type="text" value={newFacilityName} onChange={e => setNewFacilityName(e.target.value)} placeholder="Facility name" className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff]" autoFocus onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              if (newFacilityName.trim()) {
+                                resortApi.createFacilityOption(token, { name: newFacilityName.trim() }).then(opt => {
+                                  setFacilityOptions([...facilityOptions, opt]);
+                                  setForm({...form, facilities: [...(form.facilities || []), opt.name]});
+                                  setNewFacilityName("");
+                                  setIsAddingFacility(false);
+                                }).catch(e => toast.error(e.message));
+                              } else {
+                                setIsAddingFacility(false);
+                              }
+                            }
+                          }} />
+                          <button type="button" onClick={() => {
+                            if (newFacilityName.trim()) {
+                              resortApi.createFacilityOption(token, { name: newFacilityName.trim() }).then(opt => {
+                                setFacilityOptions([...facilityOptions, opt]);
+                                setForm({...form, facilities: [...(form.facilities || []), opt.name]});
+                                setNewFacilityName("");
+                                setIsAddingFacility(false);
+                              }).catch(e => toast.error(e.message));
+                            } else {
+                              setIsAddingFacility(false);
+                            }
+                          }} className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold">Save</button>
+                          <button type="button" onClick={() => { setIsAddingFacility(false); setNewFacilityName(""); }} className="text-gray-400 hover:text-gray-600">
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <button type="button" onClick={() => setIsAddingFacility(true)} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add New Facility</button>
+                      )}
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       {facilityOptions.map(fac => (
