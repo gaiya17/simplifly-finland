@@ -283,18 +283,52 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
         {[
           { icon: MapPin, label: 'Location', value: resort.location },
           { icon: Compass, label: 'Transfer', value: resort.transfer },
-          { icon: Clock, label: 'Price', value: `${resort.price} / night` },
+          { icon: Clock, label: 'Duration', value: resort.duration || 'Customizable' },
         ].map(({ icon: Icon, label, value }) => (
-          <div key={label} className="bg-white rounded-[20px] p-6 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(4,29,60,0.08)] border border-[#041d3c]/5 hover:border-[#1a84ff]/20 transition-all flex flex-col gap-4">
-            <div className="w-12 h-12 rounded-[14px] bg-[#1a84ff]/8 flex items-center justify-center shrink-0">
-              <Icon className="w-6 h-6 text-[#1a84ff]" />
+          <div key={label} className="bg-white rounded-[20px] p-5 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(4,29,60,0.08)] border border-[#041d3c]/5 hover:border-[#1a84ff]/20 transition-all flex flex-col gap-2">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-[10px] bg-[#1a84ff]/8 flex items-center justify-center shrink-0">
+                <Icon className="w-4 h-4 text-[#1a84ff]" />
+              </div>
+              <p className="text-gray-400 text-[11px] font-extrabold uppercase tracking-widest m-0">{label}</p>
             </div>
-            <div>
-              <p className="text-gray-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">{label}</p>
-              <p className="text-[#041d3c] text-[15px] font-bold leading-snug">{value}</p>
-            </div>
+            <p className="text-[#041d3c] text-[14px] font-bold leading-snug">{value}</p>
           </div>
         ))}
+      </div>
+
+      {/* Ratings row — TripAdvisor + Booking.com */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-10">
+        {/* TripAdvisor */}
+        <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(0,175,135,0.08)] border border-[#041d3c]/5 hover:border-[#00af87]/20 transition-all">
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="w-8 h-8 rounded-[8px] bg-[#00af87]/10 flex items-center justify-center">
+              <svg className="w-5 h-5 text-[#00af87]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.5a6.5 6.5 0 110-13 6.5 6.5 0 010 13zm3.5-9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm-7 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
+            </div>
+            <span className="font-black text-[#041d3c] text-[13px]">TripAdvisor</span>
+          </div>
+          <div className="flex gap-1 mb-2">
+            {[...Array(5)].map((_, i) => <div key={i} className="w-4 h-4 rounded-full bg-[#00af87] border border-white" />)}
+          </div>
+          <p className="text-[#041d3c] font-black text-[22px] leading-none mb-1">{resort.tripAdvisorRating || '5.0'} <span className="text-gray-400 font-medium text-[13px]">/ 5.0</span></p>
+          <p className="text-gray-400 text-[11.5px] font-semibold">Based on {resort.tripAdvisorReviews || 0} traveler reviews</p>
+        </div>
+
+        {/* Booking.com */}
+        <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(0,53,128,0.08)] border border-[#041d3c]/5 hover:border-[#003580]/20 transition-all">
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="w-8 h-8 rounded-[8px] bg-[#003580]/10 flex items-center justify-center">
+              <svg className="w-5 h-5 text-[#003580]" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 0H2.4C1.08 0 0 1.08 0 2.4v19.2C0 22.92 1.08 24 2.4 24h19.2c1.32 0 2.4-1.08 2.4-2.4V2.4C24 1.08 22.92 0 21.6 0zM7.2 18H3.6V6h3.6c1.98 0 3.6 1.62 3.6 3.6 0 1.26-.63 2.34-1.62 2.97C10.35 13.2 10.8 14.28 10.8 15.6c0 1.32-1.08 2.4-2.4 2.4zm10.8 0h-3.6V6H18c1.98 0 3.6 1.62 3.6 3.6v4.8c0 1.98-1.62 3.6-3.6 3.6z"/></svg>
+            </div>
+            <span className="font-black text-[#041d3c] text-[13px]">Booking.com</span>
+          </div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="bg-[#003580] text-white font-black text-[15px] px-2.5 py-1 rounded-[8px]">{resort.bookingScore}</span>
+            <span className="text-[#003580] font-extrabold text-[13px]">Superb</span>
+          </div>
+          <p className="text-[#041d3c] font-black text-[22px] leading-none mb-1">{resort.bookingReviews} <span className="text-gray-400 font-medium text-[13px]">Reviews</span></p>
+          <p className="text-gray-400 text-[11.5px] font-semibold">Top-rated Partner Resort</p>
+        </div>
       </div>
     </>
   );
@@ -317,7 +351,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
             <div>
               <p className="text-gray-400 text-[10.5px] font-extrabold uppercase tracking-widest mb-0.5">Starting From</p>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-[#041d3c] font-extrabold text-[28px] leading-none">{resort.price}</span>
+                <span className="text-[#041d3c] font-extrabold text-[28px] leading-none">€{resort.price?.toString().replace(/€/g, '').trim()}</span>
                 <span className="text-gray-400 text-[14px] font-semibold">/ night</span>
               </div>
             </div>
@@ -470,8 +504,8 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
               </div>
             </div>
 
-            {/* Thumbnail grid — show 4 thumbs, last one has +N overlay if more */}
-            <div className="grid grid-cols-4 gap-3">
+            {/* Thumbnail grid — 2x2 layout */}
+            <div className="grid grid-cols-2 gap-3">
               {resort.gallery.slice(1, 5).map((img: any, i: number) => {
                 const actualIdx = i + 1;
                 const isLast = i === 3 && resort.gallery.length > 5;
@@ -479,7 +513,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                 return (
                   <div
                     key={actualIdx}
-                    className="relative rounded-[16px] overflow-hidden shadow-[0_4px_16px_rgba(4,29,60,0.08)] h-[90px] lg:h-[110px] cursor-pointer group"
+                    className="relative rounded-[16px] overflow-hidden shadow-[0_4px_16px_rgba(4,29,60,0.08)] h-[130px] lg:h-[160px] cursor-pointer group"
                     onClick={() => openLightbox(actualIdx)}
                   >
                     <ImageWithFallback
@@ -489,12 +523,12 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                     />
                     {isLast ? (
                       <div className="absolute inset-0 bg-[#041d3c]/70 backdrop-blur-sm flex flex-col items-center justify-center">
-                        <span className="text-white font-black text-[22px] leading-none">+{remaining}</span>
-                        <span className="text-white/70 text-[10px] font-semibold uppercase tracking-wider mt-0.5">more</span>
+                        <span className="text-white font-black text-[24px] lg:text-[28px] leading-none">+{remaining}</span>
+                        <span className="text-white/70 text-[11px] lg:text-[12px] font-semibold uppercase tracking-wider mt-1">more</span>
                       </div>
                     ) : (
                       <div className="absolute inset-0 bg-[#041d3c]/0 group-hover:bg-[#041d3c]/30 transition-all duration-300 flex items-center justify-center">
-                        <ZoomIn className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <ZoomIn className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
                     )}
                   </div>
