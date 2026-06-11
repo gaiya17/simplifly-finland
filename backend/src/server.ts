@@ -16,6 +16,8 @@ import homepageRoutes from "./routes/homepageRoutes";
 import adminHomepageRoutes from "./routes/adminHomepageRoutes";
 import inquiryRoutes from "./routes/inquiryRoutes";
 import siteAssetRoutes from "./routes/siteAssetRoutes";
+import documentRoutes from "./routes/documents";
+import path from "path";
 import { prisma } from "./config/db";
 
 const app = express();
@@ -27,6 +29,9 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+
+// Serve uploaded PDF documents statically (no auth required for download)
+app.use('/docs', express.static(path.join(process.cwd(), 'uploads', 'docs')));
 
 // Mount Portal API Routes
 app.use("/api/auth", authRoutes);
@@ -41,6 +46,7 @@ app.use("/api/homepage", homepageRoutes);
 app.use("/api/admin/homepage", adminHomepageRoutes);
 app.use("/api/inquiries", inquiryRoutes);
 app.use("/api/assets", siteAssetRoutes);
+app.use("/api/documents", documentRoutes);
 
 // General Health Check
 app.get("/api/health", async (req, res) => {

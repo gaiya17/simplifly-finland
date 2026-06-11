@@ -5,12 +5,11 @@ import { Plus, X, Search, MapPin, Calendar, Trash2, Filter, Edit, Image as Image
 import { toast } from "sonner";
 import { resortApi } from "../../../lib/resortApi";
 import { ImageUpload } from "../../../components/admin/ImageUpload";
+import { PdfUpload } from "../../../components/admin/PdfUpload";
 
 
 const inputCls = "w-full px-4 py-3 bg-[#f4f7fb] border border-[#e2e8f0] rounded-[12px] text-[13px] font-medium text-[#041d3c] placeholder:text-gray-300 focus:outline-none focus:border-[#1a84ff]/60 focus:ring-2 focus:ring-[#1a84ff]/10 transition-all";
 const labelCls = "block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider mb-1.5";
-
-
 
 const COMMON_VILLA_FEATURES = ["Direct ocean access", "Private pool", "Glass floor panels", "Outdoor shower", "Jacuzzi", "Butler service", "Overwater hammock", "Sunset view", "Sunrise view"];
 const COMMON_BED_TYPES = ["1 King Bed", "2 King Beds", "2 Twin Beds", "1 Queen Bed", "1 Sofa Bed"];
@@ -965,14 +964,13 @@ export default function AdminResorts() {
                   </div>
 
                   <div className="pt-6 border-t border-[#e8edf4]">
-                    <label className={labelCls}>Resort Fact Sheet (PDF/Image)</label>
+                    <label className={labelCls}>Resort Fact Sheet (PDF only)</label>
                     <div className="w-full max-w-sm">
-                       <ImageUpload
-                          value={form.factSheets?.[0]?.url || ""}
-                          onChange={(url, publicId) => setForm({...form, factSheets: [{ name: "Fact Sheet", url, publicId }]})}
-                          onRemove={() => setForm({...form, factSheets: []})}
-                          folder="simplifly/resorts/docs"
-                        />
+                      <PdfUpload
+                        value={form.factSheets?.[0]?.url || ""}
+                        onChange={(url) => setForm({...form, factSheets: [{ name: "Fact Sheet", url, publicId: '' }]})}
+                        onRemove={() => setForm({...form, factSheets: []})}
+                      />
                     </div>
                   </div>
 

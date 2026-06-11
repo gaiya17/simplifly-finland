@@ -905,7 +905,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                 {resort.factSheets && resort.factSheets.length > 0 ? (
                   <div className="flex flex-col gap-3">
                     {resort.factSheets.map((fs: any, i: number) => (
-                      <a key={i} href={fs.url} target="_blank" rel="noopener noreferrer" className="inline-flex w-fit items-center gap-2 bg-[#041d3c] hover:bg-[#1a84ff] text-white font-extrabold text-[13px] uppercase tracking-wider px-7 py-3.5 rounded-[14px] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(26,132,255,0.25)] hover:-translate-y-0.5">
+                      <a key={i} href={fs.url} download target="_blank" rel="noopener noreferrer" className="inline-flex w-fit items-center gap-2 bg-[#041d3c] hover:bg-[#1a84ff] text-white font-extrabold text-[13px] uppercase tracking-wider px-7 py-3.5 rounded-[14px] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(26,132,255,0.25)] hover:-translate-y-0.5">
                         Download {fs.name} (PDF)
                       </a>
                     ))}
