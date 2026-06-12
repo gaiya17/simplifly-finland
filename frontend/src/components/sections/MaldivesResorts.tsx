@@ -102,6 +102,7 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
         settings: {
           slidesToShow: 1,
           arrows: false,
+          centerMode: false,
         }
       }
     ]
@@ -122,7 +123,7 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 h-full flex flex-col justify-center items-center">
+      <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-4 sm:px-12 lg:px-24 h-full flex flex-col justify-center items-center">
 
         {/* Centered Modern Section Header matching Sri Lanka Section */}
         <div className="flex flex-col items-center text-center mb-16 relative">
@@ -143,7 +144,7 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
           {resorts.length > 0 ? (
             <Slider ref={sliderRef} {...sliderSettings}>
               {resorts.map((pkg) => (
-                <div key={pkg.id} className="px-4 outline-none pb-12 pt-4">
+                <div key={pkg.id} className="px-2 sm:px-4 outline-none pb-12 pt-4">
                   <div className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 transition-all duration-500 ease-out h-full group cursor-pointer">
 
                     {/* Image Container with Zoom effect */}
@@ -177,7 +178,7 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
                     <div className="p-4 flex flex-col flex-grow text-left">
 
                       {/* Title */}
-                      <h3 className="text-[#041d3c] font-extrabold text-[19px] sm:text-[21px] leading-[1.25] line-clamp-2 mb-1.5 min-h-[44px]">
+                      <h3 className="text-[#041d3c] font-extrabold text-[17px] sm:text-[19px] md:text-[21px] leading-[1.25] line-clamp-2 mb-1.5 min-h-[44px]">
                         {pkg.title}
                       </h3>
 
@@ -241,7 +242,7 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
                       <div className="h-[1px] bg-[#041d3c]/5 w-full mb-2.5" />
 
                       {/* Bottom Action Section */}
-                      <div className="mt-auto flex items-center justify-between gap-3">
+                      <div className="mt-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                         {/* Price block (Matches Sri Lanka Tours card sizes and Black colorway) */}
                         <div className="flex flex-col text-left">
                           <p className="text-gray-400 text-[9.5px] font-extrabold uppercase tracking-widest mb-0">
@@ -259,17 +260,17 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
                           </div>
                         </div>
 
-                        {/* Action Buttons (Compressed heights and padding) */}
-                        <div className="flex flex-col gap-1.5 shrink-0 w-[125px]">
+                        {/* Action Buttons — stacked full-width on mobile, fixed-width column on sm+ */}
+                        <div className="flex flex-col gap-1.5 shrink-0 w-full sm:w-[125px]">
                           <Link
                             href={`/maldives-resorts/${pkg.categories?.[0]?.slug || 'luxury'}/${pkg.slug}#inquire-form`}
-                            className="w-full bg-white hover:bg-[#f4f7fb] text-[#041d3c] border border-[#041d3c]/20 hover:border-[#041d3c]/40 py-2 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 text-center block"
+                            className="w-full bg-white hover:bg-[#f4f7fb] text-[#041d3c] border border-[#041d3c]/20 hover:border-[#041d3c]/40 py-2 rounded-[12px] font-extrabold text-[11px] tracking-wider uppercase transition-all duration-300 text-center block"
                           >
                             Get a Quote
                           </Link>
                           <Link
                             href={`/maldives-resorts/${pkg.categories?.[0]?.slug || 'luxury'}/${pkg.slug}`}
-                            className="w-full bg-[#041d3c] hover:bg-[#1a84ff] text-white py-2 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 shadow-sm hover:shadow-[0_8px_20px_rgba(26,132,255,0.25)] hover:-translate-y-0.5 text-center block"
+                            className="w-full bg-[#041d3c] hover:bg-[#1a84ff] text-white py-2 rounded-[12px] font-extrabold text-[11px] tracking-wider uppercase transition-all duration-300 shadow-sm hover:shadow-[0_8px_20px_rgba(26,132,255,0.25)] hover:-translate-y-0.5 text-center block"
                           >
                             Explore More
                           </Link>
