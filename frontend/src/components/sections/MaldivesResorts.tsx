@@ -96,32 +96,34 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     pauseOnHover: true,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
+    ...(isMounted && {
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 2,
+          }
+        },
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: 1,
+            arrows: true,
+            centerMode: true,
+            centerPadding: '40px',
+          }
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            slidesToShow: 1,
+            arrows: false,
+            centerMode: true,
+            centerPadding: '20px',
+          }
         }
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-          arrows: true,
-          centerMode: true,
-          centerPadding: '40px',
-        }
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          arrows: false,
-          centerMode: true,
-          centerPadding: '20px',
-        }
-      }
-    ]
+      ]
+    })
   };
 
   return (
@@ -158,7 +160,7 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
         {/* Resort Packages Slider */}
         <div className="mt-8 w-full relative mx-auto [&_.slick-dots_li_button:before]:text-white/70 [&_.slick-dots_li.slick-active_button:before]:text-white z-10">
           {resorts.length > 0 ? (
-            <Slider key={isMounted ? 'client' : 'server'} ref={sliderRef} {...sliderSettings}>
+            <Slider ref={sliderRef} {...sliderSettings}>
               {resorts.map((pkg) => (
                 <div key={pkg.id} className="px-2 sm:px-4 outline-none pb-12 pt-4">
                   <div className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 transition-all duration-500 ease-out h-full group cursor-pointer">
