@@ -65,15 +65,16 @@ model TourDestination {
 }
 
 model ItineraryDay {
-  id          String   @id @default(uuid())
-  dayNumber   Int
-  title       String
-  route       String?
-  description String?
-  stay        String?
-  mealPlan    String?  // e.g., BB, HB, FB, AI
-  packageId   String
-  package     TourPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  id           String   @id @default(uuid())
+  dayNumber    Int
+  dayNumberEnd Int?     // null = single day, set = end of combined range (e.g. Day 01–03)
+  title        String
+  route        String?
+  description  String?
+  stay         String?
+  mealPlan     String?  // e.g., BB, HB, FB, AI
+  packageId    String
+  package      TourPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
 }
 
 model TourInclusion {

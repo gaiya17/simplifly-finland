@@ -95,6 +95,7 @@ export default function AdminTours() {
         destinations: tour.destinations ? tour.destinations.split(",").map((s: string) => s.trim()).filter(Boolean) : [],
         itinerary: tour.itinerary ? tour.itinerary.map((d: any) => ({
           ...d,
+          dayNumberEnd: d.dayNumberEnd ?? null,
           routeLocations: d.route ? d.route.split(" -> ").map((s: string) => s.trim()).filter(Boolean) : [""]
         })) : [], 
         inclusions: tour.inclusions || [], gallery: tour.gallery || []
@@ -457,14 +458,38 @@ export default function AdminTours() {
                     <h4 className="text-[15px] font-bold text-[#041d3c]">4. Itinerary ({form.days} Days)</h4>
                     <button onClick={() => {
                       const nextDay = form.itinerary.length + 1;
-                      setForm({...form, itinerary: [...form.itinerary, { dayNumber: nextDay, title: "", description: "", routeLocations: [""], stay: "", mealPlan: "BB" }]});
+                      setForm({...form, itinerary: [...form.itinerary, { dayNumber: nextDay, dayNumberEnd: null, title: "", description: "", routeLocations: [""], stay: "", mealPlan: "BB" }]});
                     }} className="text-[12px] text-[#1a84ff] font-bold flex items-center gap-1"><Plus className="w-3.5 h-3.5"/> Add Day</button>
                   </div>
                   <div className="space-y-6">
                     {form.itinerary.map((day: any, i: number) => (
                       <div key={i} className="p-5 bg-gray-50 rounded-[16px] border border-gray-100 relative group">
                         <button onClick={() => setForm({...form, itinerary: form.itinerary.filter((_:any, idx:number)=>idx!==i)})} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 hidden group-hover:block"><Trash2 className="w-4 h-4"/></button>
-                        <div className="font-bold text-[13px] text-[#041d3c] mb-3">Day {day.dayNumber}</div>
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider">Day</span>
+                            <input
+                              type="number" min="1"
+                              value={day.dayNumber}
+                              onChange={e => { const ni = [...form.itinerary]; ni[i].dayNumber = Number(e.target.value); setForm({...form, itinerary: ni}); }}
+                              className="w-16 px-2 py-1.5 bg-[#f4f7fb] border border-[#e2e8f0] rounded-[8px] text-[13px] font-bold text-[#041d3c] focus:outline-none focus:border-[#1a84ff]/60 text-center"
+                            />
+                            <span className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider">To Day</span>
+                            <input
+                              type="number" min="1"
+                              placeholder="–"
+                              value={day.dayNumberEnd ?? ''}
+                              onChange={e => { const ni = [...form.itinerary]; ni[i].dayNumberEnd = e.target.value ? Number(e.target.value) : null; setForm({...form, itinerary: ni}); }}
+                              className="w-16 px-2 py-1.5 bg-[#f4f7fb] border border-[#e2e8f0] rounded-[8px] text-[13px] font-bold text-[#041d3c] focus:outline-none focus:border-[#1a84ff]/60 text-center placeholder:text-gray-300"
+                            />
+                            <span className="text-[11px] font-medium text-gray-400">(optional — for combined days)</span>
+                          </div>
+                          <div className="ml-auto text-[12px] font-extrabold text-[#1a84ff] bg-blue-50 px-3 py-1 rounded-full">
+                            {day.dayNumberEnd
+                              ? `Day ${String(day.dayNumber).padStart(2,'0')}\u2013${String(day.dayNumberEnd).padStart(2,'0')}`
+                              : `Day ${String(day.dayNumber).padStart(2,'0')}`}
+                          </div>
+                        </div>
                         <div className="mb-4">
                           <input type="text" placeholder="Day Title (e.g. Arrival in Colombo)" value={day.title} onChange={e => { const ni = [...form.itinerary]; ni[i].title = e.target.value; setForm({...form, itinerary: ni}); }} className={inputCls} />
                         </div>

@@ -183,6 +183,7 @@ export class TourController {
           itinerary: {
             create: itinerary?.map((day: any) => ({
               dayNumber: Number(day.dayNumber),
+              dayNumberEnd: day.dayNumberEnd ? Number(day.dayNumberEnd) : null,
               title: day.title,
               route: day.route,
               description: day.description,
@@ -240,6 +241,7 @@ export class TourController {
           itinerary: {
             create: itinerary?.map((day: any) => ({
               dayNumber: Number(day.dayNumber),
+              dayNumberEnd: day.dayNumberEnd ? Number(day.dayNumberEnd) : null,
               title: day.title,
               route: day.route,
               description: day.description,

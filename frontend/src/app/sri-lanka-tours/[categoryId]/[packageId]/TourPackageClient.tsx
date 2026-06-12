@@ -686,9 +686,9 @@ export function TourPackageClient({ data }: { data: any }) {
                           className="w-full flex items-center gap-4 p-5 text-left"
                           onClick={() => setOpenDay(openDay === idx ? null : idx)}
                         >
-                          {/* Day badge */}
-                          <div className="w-[72px] h-12 rounded-[12px] bg-[#1a84ff] text-white font-black text-[14px] flex items-center justify-center shrink-0">
-                            Day {item.day}
+                          {/* Day badge — single or combined range */}
+                          <div className={`h-12 rounded-[12px] bg-[#1a84ff] text-white font-black text-[13px] flex items-center justify-center shrink-0 px-3 ${item.dayEnd ? 'min-w-[96px]' : 'w-[72px]'}`}>
+                            {item.dayEnd ? `Day ${item.day}–${item.dayEnd}` : `Day ${item.day}`}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-[#041d3c] font-black text-[16px] leading-tight">{item.activity}</p>

@@ -37,6 +37,7 @@ export default async function TourPackagePage({ params }: { params: Promise<{ pa
     gallery: res.gallery?.length ? res.gallery.map((g: any) => g.url) : ['https://images.unsplash.com/photo-1594805938839-c581da5d8129'],
     itinerary: res.itinerary?.map((day: any) => ({
       day: String(day.dayNumber).padStart(2, '0'),
+      dayEnd: day.dayNumberEnd ? String(day.dayNumberEnd).padStart(2, '0') : null,
       route: day.route,
       activity: day.title,
       details: day.description,
