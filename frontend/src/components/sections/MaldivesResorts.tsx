@@ -1,41 +1,10 @@
 "use client";
 import { ImageWithFallback } from '../shared/ImageWithFallback';
 const tripAdvisorLogo = '/images/tripadvisor.png';
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { ChevronLeft, ChevronRight, MapPin, Users, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useSiteAssets } from '../providers/SiteAssetsProvider';
-
-// Custom Next Arrow
-const NextArrow = (props: any) => {
-  const { onClick } = props;
-  return (
-    <button
-      onClick={onClick}
-      className="absolute top-1/2 -right-4 lg:-right-12 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white transition-all duration-300 group shadow-lg"
-      aria-label="Next package"
-    >
-      <ChevronRight className="w-6 h-6 group-hover:scale-110 transition-transform" />
-    </button>
-  );
-};
-
-// Custom Prev Arrow
-const PrevArrow = (props: any) => {
-  const { onClick } = props;
-  return (
-    <button
-      onClick={onClick}
-      className="absolute top-1/2 -left-4 lg:-left-12 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white transition-all duration-300 group shadow-lg"
-      aria-label="Previous package"
-    >
-      <ChevronLeft className="w-6 h-6 group-hover:scale-110 transition-transform" />
-    </button>
-  );
-};
 
 const BookingComLogo = ({ pkgId }: { pkgId: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-[24px] w-auto" viewBox="0 0 5.693 2.848">
@@ -75,55 +44,18 @@ const BookingComLogo = ({ pkgId }: { pkgId: string }) => (
 );
 
 export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
-  const sliderRef = React.useRef<Slider>(null);
-  const [isMounted, setIsMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { getAssetUrl } = useSiteAssets();
   const bgImage = getAssetUrl('homepage_maldives_bg', '/images/MaldivesResortBG.jpg');
 
-  const sliderSettings = {
-    dots: true,
-    infinite: resorts.length > 3,
-    speed: 800,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    autoplay: false,
-    arrows: true,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
-    pauseOnHover: true,
-    ...(isMounted && {
-      responsive: [
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 2,
-          }
-        },
-        {
-          breakpoint: 768,
-          settings: {
-            slidesToShow: 1,
-            arrows: true,
-            centerMode: true,
-            centerPadding: '40px',
-          }
-        },
-        {
-          breakpoint: 480,
-          settings: {
-            slidesToShow: 1,
-            arrows: false,
-            centerMode: true,
-            centerPadding: '20px',
-          }
-        }
-      ]
-    })
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = window.innerWidth < 768 ? window.innerWidth * 0.85 : 360;
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
   };
 
   return (
@@ -157,21 +89,30 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
           </p>
         </div>
 
-        {/* Resort Packages Slider */}
-        <div className="mt-8 w-full relative mx-auto [&_.slick-dots_li_button:before]:text-white/70 [&_.slick-dots_li.slick-active_button:before]:text-white z-10">
+        {/* Resort Packages Native CSS Slider */}
+        <div className="mt-8 w-full relative z-10 group">
           {resorts.length > 0 ? (
-            <Slider ref={sliderRef} {...sliderSettings}>
-              {resorts.map((pkg) => (
-                <div key={pkg.id} className="px-2 sm:px-4 outline-none pb-12 pt-4">
-                  <div className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 transition-all duration-500 ease-out h-full group cursor-pointer">
+            <>
+              {/* Native Scroll Container */}
+              <div 
+                ref={scrollContainerRef}
+                className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-6 pb-8 px-4 sm:px-0 hide-scrollbar scroll-smooth w-full"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {resorts.map((pkg) => (
+                  <div 
+                    key={pkg.id} 
+                    className="snap-center shrink-0 w-[85vw] sm:w-[340px] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] outline-none"
+                  >
+                    <div className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 transition-all duration-500 ease-out h-full group/card cursor-pointer">
 
-                    {/* Image Container with Zoom effect */}
+                      {/* Image Container with Zoom effect */}
                     <div className="relative h-[230px] w-full shrink-0 overflow-hidden bg-[#f4f7fb]">
-                      <ImageWithFallback
-                        src={pkg.heroImage || pkg.packageImage}
-                        alt={pkg.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                      />
+                        <ImageWithFallback
+                          src={pkg.heroImage || pkg.packageImage}
+                          alt={pkg.title}
+                          className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-700 ease-out"
+                        />
 
                       {/* Glossy Overlay inside Image */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent opacity-70 pointer-events-none" />
@@ -299,7 +240,28 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
                   </div>
                 </div>
               ))}
-            </Slider>
+            </div>
+
+              {/* Desktop Navigation Arrows (hidden on mobile, only visible if > 3 resorts) */}
+              {resorts.length > 3 && (
+                <>
+                  <button
+                    onClick={() => scroll('left')}
+                    className="hidden lg:flex absolute top-1/2 -left-4 lg:-left-12 -translate-y-1/2 z-10 w-12 h-12 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white transition-all duration-300 shadow-lg"
+                    aria-label="Previous package"
+                  >
+                    <ChevronLeft className="w-6 h-6 hover:scale-110 transition-transform" />
+                  </button>
+                  <button
+                    onClick={() => scroll('right')}
+                    className="hidden lg:flex absolute top-1/2 -right-4 lg:-right-12 -translate-y-1/2 z-10 w-12 h-12 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white transition-all duration-300 shadow-lg"
+                    aria-label="Next package"
+                  >
+                    <ChevronRight className="w-6 h-6 hover:scale-110 transition-transform" />
+                  </button>
+                </>
+              )}
+            </>
           ) : (
             <div className="text-center py-10">
               <p className="text-white/60 font-medium text-[15px]">No resorts selected to display.</p>
