@@ -76,6 +76,12 @@ const BookingComLogo = ({ pkgId }: { pkgId: string }) => (
 
 export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
   const sliderRef = React.useRef<Slider>(null);
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { getAssetUrl } = useSiteAssets();
   const bgImage = getAssetUrl('homepage_maldives_bg', '/images/MaldivesResortBG.jpg');
 
@@ -152,7 +158,7 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
         {/* Resort Packages Slider */}
         <div className="mt-8 w-full relative mx-auto [&_.slick-dots_li_button:before]:text-white/70 [&_.slick-dots_li.slick-active_button:before]:text-white z-10">
           {resorts.length > 0 ? (
-            <Slider ref={sliderRef} {...sliderSettings}>
+            <Slider key={isMounted ? 'client' : 'server'} ref={sliderRef} {...sliderSettings}>
               {resorts.map((pkg) => (
                 <div key={pkg.id} className="px-2 sm:px-4 outline-none pb-12 pt-4">
                   <div className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 transition-all duration-500 ease-out h-full group cursor-pointer">
