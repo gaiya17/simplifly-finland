@@ -14,9 +14,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --prod --frozen-lockfile
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/dist ./dist
-# Copy the pre-generated Prisma client from the builder stage.
-# This avoids needing the 'prisma' CLI (a devDependency) in production.
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+RUN npx prisma@6 generate
 
 EXPOSE 5000
 CMD ["npm", "run", "start"]
