@@ -98,11 +98,21 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
         }
       },
       {
-        breakpoint: 640,
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+          arrows: true,
+          centerMode: true,
+          centerPadding: '40px',
+        }
+      },
+      {
+        breakpoint: 480,
         settings: {
           slidesToShow: 1,
           arrows: false,
-          centerMode: false,
+          centerMode: true,
+          centerPadding: '20px',
         }
       }
     ]
