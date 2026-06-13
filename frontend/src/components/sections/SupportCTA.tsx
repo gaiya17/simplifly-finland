@@ -54,7 +54,7 @@ export function SupportCTA() {
       <div className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24">
         {/* Generous horizontal padding px-10 sm:px-16 lg:px-24 to create spacing from the left and right corners */}
         <div 
-          className="w-full bg-gradient-to-r from-[#f0f6ff] to-[#e6f1ff] rounded-[20px] shadow-[0_20px_50px_rgba(26,132,255,0.08)] border border-[#1a84ff]/15 relative min-h-[140px] md:min-h-[155px] lg:min-h-[175px] px-6 sm:px-12 lg:px-24 py-7 sm:py-5 md:py-4 lg:py-5 flex items-center justify-between overflow-hidden"
+          className="w-full bg-gradient-to-r from-[#f0f6ff] to-[#e6f1ff] rounded-[20px] shadow-[0_20px_50px_rgba(26,132,255,0.08)] border border-[#1a84ff]/15 relative min-h-[140px] md:min-h-[180px] lg:min-h-[220px] px-6 sm:px-12 lg:px-24 py-7 sm:py-5 md:py-5 lg:py-6 flex items-center justify-between overflow-hidden"
         >
 
           {/* Grid Layout restored: content on left (col-span-5), carousel on right (col-span-7) to allow maximum poster width */}
@@ -110,13 +110,13 @@ export function SupportCTA() {
               onMouseLeave={() => setIsHovered(false)}
             >
               {isLoading ? (
-                <div className="relative w-fit h-[160px] sm:h-[110px] lg:h-[150px] flex items-center justify-center gap-3 lg:gap-4 shrink-0 px-2 mt-5 md:mt-0">
-                  <div className="w-[300px] sm:w-[185px] lg:w-[270px] h-[150px] sm:h-[92px] lg:h-[135px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0"></div>
-                  <div className="w-[300px] sm:w-[185px] lg:w-[270px] h-[150px] sm:h-[92px] lg:h-[135px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0 hidden sm:block"></div>
+                <div className="relative w-fit h-[160px] sm:h-[110px] md:h-[135px] lg:h-[190px] flex items-center justify-center gap-3 lg:gap-4 shrink-0 px-2 mt-5 md:mt-0">
+                  <div className="w-[300px] sm:w-[185px] md:w-[240px] lg:w-[350px] h-[150px] sm:h-[92px] md:h-[120px] lg:h-[175px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0"></div>
+                  <div className="w-[300px] sm:w-[185px] md:w-[240px] lg:w-[350px] h-[150px] sm:h-[92px] md:h-[120px] lg:h-[175px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0 hidden sm:block"></div>
                 </div>
               ) : offers.length > 0 ? (
-                <>
-                  <div className="relative w-full sm:w-fit h-[160px] sm:h-[110px] lg:h-[150px] flex items-center justify-center group mt-6 md:mt-0">
+                <div className="flex flex-col items-center w-full sm:w-fit mt-6 md:mt-0">
+                  <div className="relative w-full sm:w-fit h-[160px] sm:h-[110px] md:h-[135px] lg:h-[190px] flex items-center justify-center group">
                     
                     <AnimatePresence mode="wait" initial={false}>
                       <motion.div
@@ -128,7 +128,7 @@ export function SupportCTA() {
                         className="flex gap-3 lg:gap-4 items-center shrink-0"
                       >
                         {/* First Poster Card */}
-                        <Link href={`/${offers[currentIndex].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[currentIndex].category?.slug || 'all'}/${offers[currentIndex].slug}`} className="w-[300px] sm:w-[185px] lg:w-[270px] h-[150px] sm:h-[92px] lg:h-[135px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
+                        <Link href={`/${offers[currentIndex].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[currentIndex].category?.slug || 'all'}/${offers[currentIndex].slug}`} className="w-[300px] sm:w-[185px] md:w-[240px] lg:w-[350px] h-[150px] sm:h-[92px] md:h-[120px] lg:h-[175px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
                           <img 
                             src={offers[currentIndex].offerPoster} 
                             alt={offers[currentIndex].title} 
@@ -139,7 +139,7 @@ export function SupportCTA() {
 
                         {/* Second Poster Card */}
                         {offers.length > 1 && (
-                          <Link href={`/${offers[(currentIndex + 1) % offers.length].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[(currentIndex + 1) % offers.length].category?.slug || 'all'}/${offers[(currentIndex + 1) % offers.length].slug}`} className="w-[300px] sm:w-[185px] lg:w-[270px] h-[150px] sm:h-[92px] lg:h-[135px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform hidden sm:block">
+                          <Link href={`/${offers[(currentIndex + 1) % offers.length].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[(currentIndex + 1) % offers.length].category?.slug || 'all'}/${offers[(currentIndex + 1) % offers.length].slug}`} className="w-[300px] sm:w-[185px] md:w-[240px] lg:w-[350px] h-[150px] sm:h-[92px] md:h-[120px] lg:h-[175px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform hidden sm:block">
                             <img 
                               src={offers[(currentIndex + 1) % offers.length].offerPoster} 
                               alt={offers[(currentIndex + 1) % offers.length].title} 
@@ -192,7 +192,7 @@ export function SupportCTA() {
                       })}
                     </div>
                   )}
-                </>
+                </div>
               ) : null}
             </div>
 
