@@ -304,8 +304,20 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
           <div className="flex items-center gap-2.5 mb-4 h-[24px]">
             <ImageWithFallback src="/images/tripadvisor-logo.png" alt="TripAdvisor" className="h-[28px] w-auto object-contain object-left" />
           </div>
-          <div className="flex gap-1 mb-2">
-            {[...Array(5)].map((_, i) => <div key={i} className="w-4 h-4 rounded-full bg-[#00af87] border border-white" />)}
+          <div className="flex gap-[3px] mb-2 mt-1">
+            {[...Array(5)].map((_, i) => {
+              const rating = Number(resort.tripAdvisorRating || 5);
+              const isFull = i < Math.floor(rating);
+              const isHalf = i === Math.floor(rating) && rating % 1 !== 0;
+
+              return (
+                <div
+                  key={i}
+                  className={`w-[16px] h-[16px] rounded-full border-[1.5px] border-[#00af87] ${isFull ? 'bg-[#00af87]' : 'bg-transparent'}`}
+                  style={isHalf ? { background: 'linear-gradient(to right, #00af87 50%, transparent 50%)' } : {}}
+                />
+              );
+            })}
           </div>
           <p className="text-[#041d3c] font-black text-[22px] leading-none mb-1">{resort.tripAdvisorRating || '5.0'} <span className="text-gray-400 font-medium text-[13px]">/ 5.0</span></p>
           <p className="text-gray-400 text-[11.5px] font-semibold">Based on {resort.tripAdvisorReviews || 0} traveler reviews</p>

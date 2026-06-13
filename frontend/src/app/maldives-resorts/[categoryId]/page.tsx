@@ -242,16 +242,21 @@ export default async function MaldivesResortsCategory({ params }: { params: Prom
                       </div>
                       <div className="flex items-center gap-1.5">
                         <div className="flex items-center gap-[2px] sm:gap-[3px] shrink-0">
-                          {[...Array(5)].map((_, i) => (
-                            <div
-                              key={i}
-                              className={`w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full border-[1.5px] ${
-                                i < Math.round(Number(pkg.tripAdvisorRating || 0))
-                                  ? 'bg-[#00aa6c] border-[#00aa6c]'
-                                  : 'bg-transparent border-[#00aa6c]'
-                              }`}
-                            />
-                          ))}
+                          {[...Array(5)].map((_, i) => {
+                            const rating = Number(pkg.tripAdvisorRating || 0);
+                            const isFull = i < Math.floor(rating);
+                            const isHalf = i === Math.floor(rating) && rating % 1 !== 0;
+
+                            return (
+                              <div
+                                key={i}
+                                className={`w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full border-[1.5px] border-[#00aa6c] ${
+                                  isFull ? 'bg-[#00aa6c]' : 'bg-transparent'
+                                }`}
+                                style={isHalf ? { background: 'linear-gradient(to right, #00aa6c 50%, transparent 50%)' } : {}}
+                              />
+                            );
+                          })}
                         </div>
                         <span className="text-gray-400 text-[9.5px] sm:text-[10px] font-extrabold leading-none mt-0.5 truncate">
                           ({pkg.tripAdvisorReviews || 0})
