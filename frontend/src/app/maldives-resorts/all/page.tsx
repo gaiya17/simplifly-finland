@@ -357,8 +357,8 @@ export default function AllMaldivesResorts() {
                         <div className="flex items-center justify-between w-full mb-2.5 pt-0">
                           {/* Booking.com Block */}
                           <div className="flex flex-col gap-1.5 w-[45%] shrink-0 text-left">
-                            <div className="h-[24px] sm:h-[28px] flex items-center justify-start">
-                              <ImageWithFallback src="/images/booking-logo.png" alt="Booking.com" className="h-[15px] sm:h-[18px] w-auto object-contain object-left shrink-0" style={{ minWidth: '70px' }} />
+                            <div className="h-[24px] sm:h-[28px] w-full flex items-center justify-start">
+                              <ImageWithFallback src="/images/booking-logo.png" alt="Booking.com" className="max-w-[85%] sm:max-w-[90%] h-auto max-h-[16px] sm:max-h-[19px] object-contain object-left" />
                             </div>
                             <div className="flex items-center gap-1.5">
                               <div className="bg-[#003b95] text-white font-extrabold text-[10.5px] px-1.5 py-0.5 rounded-[4px] leading-tight shrink-0">
@@ -375,12 +375,11 @@ export default function AllMaldivesResorts() {
 
                           {/* TripAdvisor Block */}
                           <div className="flex flex-col gap-1.5 w-[45%] shrink-0 pl-1 text-left">
-                            <div className="h-[24px] sm:h-[28px] flex items-center justify-start">
+                            <div className="h-[24px] sm:h-[28px] w-full flex items-center justify-start">
                               <ImageWithFallback
                                 src="/images/tripadvisor-logo.png"
                                 alt="TripAdvisor"
-                                className="h-[20px] sm:h-[24px] w-auto object-contain object-left shrink-0"
-                                style={{ minWidth: '70px' }}
+                                className="max-w-[95%] sm:max-w-full h-auto max-h-[20px] sm:max-h-[24px] object-contain object-left"
                               />
                             </div>
                             <div className="flex items-center gap-1.5">
