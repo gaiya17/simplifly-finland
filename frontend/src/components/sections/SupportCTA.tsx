@@ -57,11 +57,11 @@ export function SupportCTA() {
           className="w-full bg-gradient-to-r from-[#f0f6ff] to-[#e6f1ff] rounded-[20px] shadow-[0_20px_50px_rgba(26,132,255,0.08)] border border-[#1a84ff]/15 relative min-h-[140px] md:min-h-[180px] lg:min-h-[220px] px-6 sm:px-12 lg:px-24 py-7 sm:py-5 md:py-5 lg:py-6 flex items-center justify-between overflow-hidden"
         >
 
-          {/* Grid Layout restored: content on left (col-span-5), carousel on right (col-span-7) to allow maximum poster width */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center w-full h-full relative z-10 py-1">
+          {/* Grid Layout restored: content on left (col-span-5/4), carousel on right (col-span-7/8) to allow maximum poster width without overlap */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 xl:gap-8 items-center w-full h-full relative z-10 py-1">
             
             {/* Left Content Side - Centered text on mobile, perfectly left-aligned on desktop */}
-            <div className="col-span-1 md:col-span-5 lg:col-span-5 flex flex-col justify-center items-center md:items-start text-center md:text-left">
+            <div className="col-span-1 md:col-span-5 lg:col-span-5 xl:col-span-4 flex flex-col justify-center items-center md:items-start text-center md:text-left">
               {/* Premium Slim Blue-themed Badge */}
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1a84ff]/10 text-[#1a84ff] font-extrabold text-[9px] lg:text-[10px] tracking-wider uppercase mb-2 shadow-sm border border-[#1a84ff]/10 shrink-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#1a84ff] animate-ping shrink-0" />
@@ -103,20 +103,20 @@ export function SupportCTA() {
               </a>
             </div>
 
-            {/* Right Side: Expanded Double Poster Slider (Increased height as well to show full wide banner) */}
+            {/* Right Side: Expanded Double Poster Slider */}
             <div 
-              className="col-span-1 md:col-span-7 lg:col-span-7 flex flex-col justify-center items-center md:items-end w-full relative"
+              className="col-span-1 md:col-span-7 lg:col-span-7 xl:col-span-8 flex flex-col justify-center items-center md:items-end w-full relative"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
               {isLoading ? (
-                <div className="relative w-fit h-[160px] sm:h-[110px] md:h-[135px] lg:h-[190px] flex items-center justify-center gap-3 lg:gap-4 shrink-0 px-2 mt-5 md:mt-0">
-                  <div className="w-[300px] sm:w-[185px] md:w-[240px] lg:w-[350px] h-[150px] sm:h-[92px] md:h-[120px] lg:h-[175px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0"></div>
-                  <div className="w-[300px] sm:w-[185px] md:w-[240px] lg:w-[350px] h-[150px] sm:h-[92px] md:h-[120px] lg:h-[175px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0 hidden sm:block"></div>
+                <div className="relative w-fit h-[160px] sm:h-[110px] md:h-[120px] lg:h-[140px] xl:h-[180px] flex items-center justify-center gap-3 lg:gap-4 shrink-0 px-2 mt-5 md:mt-0">
+                  <div className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0"></div>
+                  <div className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0 hidden sm:block"></div>
                 </div>
               ) : offers.length > 0 ? (
                 <div className="flex flex-col items-center w-full sm:w-fit mt-6 md:mt-0">
-                  <div className="relative w-full sm:w-fit h-[160px] sm:h-[110px] md:h-[135px] lg:h-[190px] flex items-center justify-center group">
+                  <div className="relative w-full sm:w-fit h-[160px] sm:h-[110px] md:h-[120px] lg:h-[140px] xl:h-[180px] flex items-center justify-center group">
                     
                     <AnimatePresence mode="wait" initial={false}>
                       <motion.div
@@ -128,7 +128,7 @@ export function SupportCTA() {
                         className="flex gap-3 lg:gap-4 items-center shrink-0"
                       >
                         {/* First Poster Card */}
-                        <Link href={`/${offers[currentIndex].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[currentIndex].category?.slug || 'all'}/${offers[currentIndex].slug}`} className="w-[300px] sm:w-[185px] md:w-[240px] lg:w-[350px] h-[150px] sm:h-[92px] md:h-[120px] lg:h-[175px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
+                        <Link href={`/${offers[currentIndex].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[currentIndex].category?.slug || 'all'}/${offers[currentIndex].slug}`} className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
                           <img 
                             src={offers[currentIndex].offerPoster} 
                             alt={offers[currentIndex].title} 
@@ -139,7 +139,7 @@ export function SupportCTA() {
 
                         {/* Second Poster Card */}
                         {offers.length > 1 && (
-                          <Link href={`/${offers[(currentIndex + 1) % offers.length].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[(currentIndex + 1) % offers.length].category?.slug || 'all'}/${offers[(currentIndex + 1) % offers.length].slug}`} className="w-[300px] sm:w-[185px] md:w-[240px] lg:w-[350px] h-[150px] sm:h-[92px] md:h-[120px] lg:h-[175px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform hidden sm:block">
+                          <Link href={`/${offers[(currentIndex + 1) % offers.length].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[(currentIndex + 1) % offers.length].category?.slug || 'all'}/${offers[(currentIndex + 1) % offers.length].slug}`} className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform hidden sm:block">
                             <img 
                               src={offers[(currentIndex + 1) % offers.length].offerPoster} 
                               alt={offers[(currentIndex + 1) % offers.length].title} 
