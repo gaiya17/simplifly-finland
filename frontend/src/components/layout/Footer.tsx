@@ -1,5 +1,5 @@
 'use client';
-import { MapPin, Phone, Globe, Camera, Video, ArrowRight } from 'lucide-react';
+import { MapPin, Phone, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { ImageWithFallback } from '../shared/ImageWithFallback';
 import { useTranslation } from '../../lib/i18n/LanguageContext';
@@ -60,19 +60,19 @@ export function Footer() {
 
             <div className="flex flex-wrap items-center gap-3">
               {[
-                { icon: Globe, href: 'https://web.facebook.com/simpliflyfinland', label: 'Facebook' },
-                { icon: Camera, href: 'https://www.instagram.com/simpliflyfinland', label: 'Instagram' },
-                { icon: Video, href: 'https://www.youtube.com/@simplflyfinlandOy', label: 'YouTube' },
-              ].map(({ icon: Icon, href, label }) => (
+                { src: '/images/social/facebook.png', href: 'https://web.facebook.com/simpliflyfinland', label: 'Facebook' },
+                { src: '/images/social/instagram.png', href: 'https://www.instagram.com/simpliflyfinland', label: 'Instagram' },
+                { src: '/images/social/youtube.png', href: 'https://www.youtube.com/@simplflyfinlandOy', label: 'YouTube' },
+              ].map(({ src, href, label }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="group flex items-center justify-center w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-[#1a84ff] hover:border-[#1a84ff] transition-all duration-300 shadow-[0_4px_12px_rgba(4,29,60,0.2)] hover:-translate-y-1"
+                  className="group flex items-center justify-center w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/30 transition-all duration-300 shadow-[0_4px_12px_rgba(4,29,60,0.2)] hover:-translate-y-1"
                 >
-                  <Icon className="w-4 h-4 text-white/70 group-hover:text-white transition-colors duration-300" />
+                  <ImageWithFallback src={src} alt={label} className="w-[22px] h-[22px] object-contain group-hover:scale-110 transition-transform duration-300" />
                 </a>
               ))}
             </div>
