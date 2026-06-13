@@ -465,7 +465,7 @@ export default function AdminResorts() {
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <div className="p-6 bg-emerald-50 rounded-[16px] border border-emerald-100">
                     <div className="mb-5">
-                      <img src="/images/tripadvisor.png" alt="TripAdvisor Ratings" className="h-8 w-auto object-contain" />
+                      <img src="/images/tripadvisor-logo.png" alt="TripAdvisor Ratings" className="h-8 w-auto object-contain" />
                     </div>
                     <div className="grid grid-cols-2 gap-5">
                       <div>
@@ -481,7 +481,7 @@ export default function AdminResorts() {
 
                   <div className="p-6 bg-blue-50 rounded-[16px] border border-blue-100">
                     <div className="mb-5">
-                      <img src="/images/booking.com.png" alt="Booking.com Ratings" className="h-8 w-auto object-contain" />
+                      <img src="/images/booking-logo.png" alt="Booking.com Ratings" className="h-8 w-auto object-contain" />
                     </div>
                     <div className="grid grid-cols-2 gap-5">
                       <div>

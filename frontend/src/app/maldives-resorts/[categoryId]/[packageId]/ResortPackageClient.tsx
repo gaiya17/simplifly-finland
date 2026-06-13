@@ -301,11 +301,8 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-10">
         {/* TripAdvisor */}
         <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(0,175,135,0.08)] border border-[#041d3c]/5 hover:border-[#00af87]/20 transition-all">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-8 h-8 rounded-[8px] bg-[#00af87]/10 flex items-center justify-center">
-              <svg className="w-5 h-5 text-[#00af87]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.5a6.5 6.5 0 110-13 6.5 6.5 0 010 13zm3.5-9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm-7 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
-            </div>
-            <span className="font-black text-[#041d3c] text-[13px]">TripAdvisor</span>
+          <div className="flex items-center gap-2.5 mb-4 h-[24px]">
+            <ImageWithFallback src="/images/tripadvisor-logo.png" alt="TripAdvisor" className="h-[20px] w-auto object-contain object-left" />
           </div>
           <div className="flex gap-1 mb-2">
             {[...Array(5)].map((_, i) => <div key={i} className="w-4 h-4 rounded-full bg-[#00af87] border border-white" />)}
@@ -316,11 +313,8 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
 
         {/* Booking.com */}
         <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(0,53,128,0.08)] border border-[#041d3c]/5 hover:border-[#003580]/20 transition-all">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-8 h-8 rounded-[8px] bg-[#003580]/10 flex items-center justify-center">
-              <svg className="w-5 h-5 text-[#003580]" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 0H2.4C1.08 0 0 1.08 0 2.4v19.2C0 22.92 1.08 24 2.4 24h19.2c1.32 0 2.4-1.08 2.4-2.4V2.4C24 1.08 22.92 0 21.6 0zM7.2 18H3.6V6h3.6c1.98 0 3.6 1.62 3.6 3.6 0 1.26-.63 2.34-1.62 2.97C10.35 13.2 10.8 14.28 10.8 15.6c0 1.32-1.08 2.4-2.4 2.4zm10.8 0h-3.6V6H18c1.98 0 3.6 1.62 3.6 3.6v4.8c0 1.98-1.62 3.6-3.6 3.6z"/></svg>
-            </div>
-            <span className="font-black text-[#041d3c] text-[13px]">Booking.com</span>
+          <div className="flex items-center gap-2.5 mb-4 h-[24px]">
+            <ImageWithFallback src="/images/booking-logo.png" alt="Booking.com" className="h-[20px] w-auto object-contain object-left" />
           </div>
           <div className="flex items-center gap-2 mb-2">
             <span className="bg-[#003580] text-white font-black text-[15px] px-2.5 py-1 rounded-[8px]">{resort.bookingScore}</span>
