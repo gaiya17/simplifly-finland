@@ -242,22 +242,22 @@ export function MaldivesResorts({ resorts = [] }: { resorts?: any[] }) {
               ))}
             </div>
 
-              {/* Desktop Navigation Arrows (hidden on mobile, only visible if > 3 resorts) */}
-              {resorts.length > 3 && (
+              {/* Navigation Arrows (visible on mobile if > 1 resort, on desktop if > 3 resorts) */}
+              {resorts.length > 1 && (
                 <>
                   <button
                     onClick={() => scroll('left')}
-                    className="hidden lg:flex absolute top-1/2 -left-4 lg:-left-12 -translate-y-1/2 z-10 w-12 h-12 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white transition-all duration-300 shadow-lg"
+                    className={`flex absolute top-1/2 left-2 sm:left-4 lg:-left-12 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 items-center justify-center rounded-full bg-black/20 hover:bg-black/40 lg:bg-white/10 lg:hover:bg-white/20 backdrop-blur-md border border-white/40 lg:border-white/30 text-white transition-all duration-300 shadow-lg ${resorts.length <= 3 ? 'lg:hidden' : ''}`}
                     aria-label="Previous package"
                   >
-                    <ChevronLeft className="w-6 h-6 hover:scale-110 transition-transform" />
+                    <ChevronLeft className="w-5 h-5 lg:w-6 lg:h-6 hover:scale-110 transition-transform" />
                   </button>
                   <button
                     onClick={() => scroll('right')}
-                    className="hidden lg:flex absolute top-1/2 -right-4 lg:-right-12 -translate-y-1/2 z-10 w-12 h-12 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white transition-all duration-300 shadow-lg"
+                    className={`flex absolute top-1/2 right-2 sm:right-4 lg:-right-12 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 items-center justify-center rounded-full bg-black/20 hover:bg-black/40 lg:bg-white/10 lg:hover:bg-white/20 backdrop-blur-md border border-white/40 lg:border-white/30 text-white transition-all duration-300 shadow-lg ${resorts.length <= 3 ? 'lg:hidden' : ''}`}
                     aria-label="Next package"
                   >
-                    <ChevronRight className="w-6 h-6 hover:scale-110 transition-transform" />
+                    <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6 hover:scale-110 transition-transform" />
                   </button>
                 </>
               )}
