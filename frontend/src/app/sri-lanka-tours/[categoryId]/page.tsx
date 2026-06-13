@@ -138,15 +138,15 @@ export default async function SriLankaTourCategory({ params }: { params: Promise
                         </span>
                       </div>
 
-                      <h3 className="text-[#041d3c] font-extrabold text-[19px] sm:text-[21px] leading-[1.3] line-clamp-2 mb-3 min-h-[54px]">
+                      <h3 className="text-[#041d3c] font-extrabold text-[19px] sm:text-[21px] leading-[1.3] mb-3">
                         {pkg.title}
                       </h3>
 
-                      <div className="mb-5 mt-1.5 min-h-[42px]">
+                      <div className="mb-5 mt-1.5">
                         <span className="text-black font-extrabold text-[11px] uppercase tracking-wider block mb-1">
                           Destinations
                         </span>
-                        <p className="text-black text-[13px] font-medium leading-relaxed line-clamp-2">
+                        <p className="text-black text-[13px] font-medium leading-relaxed">
                           {pkg.destinations || "Multi-city journey"}
                         </p>
                       </div>

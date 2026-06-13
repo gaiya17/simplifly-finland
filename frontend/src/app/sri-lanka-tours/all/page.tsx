@@ -287,15 +287,15 @@ export default function AllSriLankaTours() {
                           </span>
                         </div>
 
-                        <h3 className="text-[#041d3c] font-extrabold text-[18px] leading-[1.3] line-clamp-2 mb-3 min-h-[46px]">
+                        <h3 className="text-[#041d3c] font-extrabold text-[18px] leading-[1.3] mb-3">
                           {pkg.title}
                         </h3>
 
-                        <div className="mb-5 mt-1 min-h-[40px]">
+                        <div className="mb-5 mt-1">
                           <span className="text-black font-extrabold text-[11px] uppercase tracking-wider block mb-1">
                             Destinations
                           </span>
-                          <p className="text-black text-[12px] font-medium leading-relaxed line-clamp-2">
+                          <p className="text-black text-[12px] font-medium leading-relaxed">
                             {pkg.destinations || "Multi-city journey"}
                           </p>
                         </div>
