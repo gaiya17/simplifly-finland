@@ -5,7 +5,7 @@ import { useTranslation } from '../../lib/i18n/LanguageContext';
 
 export function FAQSection() {
   const { t } = useTranslation();
-  const [openId, setOpenId] = useState<number | null>(1);
+  const [openId, setOpenId] = useState<number | null>(null);
 
   const trustIcons = [Shield, Clock, HelpCircle];
 
