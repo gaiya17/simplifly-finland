@@ -353,42 +353,49 @@ export default function AllMaldivesResorts() {
                           </p>
                         </div>
 
-                        <div className="flex items-center gap-4 mb-2.5 pt-0">
-                          <div className="flex flex-col gap-1.5 flex-1 text-left">
-                            <div className="h-[20px] flex items-center">
-                              <ImageWithFallback src="/images/booking-logo.png" alt="Booking.com" className="h-full w-auto object-contain object-left" />
+                        {/* Symmetrical Platforms Reviews Block (Reduced spacing) */}
+                        <div className="flex items-center justify-between w-full mb-2.5 pt-0">
+                          {/* Booking.com Block */}
+                          <div className="flex flex-col gap-1.5 w-[45%] shrink-0 text-left">
+                            <div className="h-[18px] sm:h-[20px] flex items-center justify-start">
+                              <ImageWithFallback src="/images/booking-logo.png" alt="Booking.com" className="h-[14px] sm:h-[16px] w-auto object-contain object-left shrink-0" style={{ minWidth: '70px' }} />
                             </div>
                             <div className="flex items-center gap-1.5">
-                              <div className="bg-[#003b95] text-white font-extrabold text-[10.5px] px-1.5 py-0.5 rounded-[4px] leading-tight">
+                              <div className="bg-[#003b95] text-white font-extrabold text-[10.5px] px-1.5 py-0.5 rounded-[4px] leading-tight shrink-0">
                                 {Number(pkg.bookingRating || 0).toFixed(1)}
                               </div>
-                              <span className="text-gray-400 text-[10px] font-extrabold leading-none mt-0.5">
+                              <span className="text-gray-400 text-[9.5px] sm:text-[10px] font-extrabold leading-none mt-0.5 truncate">
                                 ({pkg.bookingReviews || 0})
                               </span>
                             </div>
                           </div>
 
-                          <div className="w-[1px] h-8 bg-[#041d3c]/8 rounded-full"></div>
+                          {/* Vertical Separator */}
+                          <div className="w-[1px] h-8 bg-[#041d3c]/8 rounded-full shrink-0"></div>
 
-                          <div className="flex flex-col gap-1.5 flex-1 pl-2 text-left">
-                            <ImageWithFallback
-                              src="/images/tripadvisor-logo.png"
-                              alt="TripAdvisor"
-                              className="h-[20px] w-auto object-contain object-left"
-                            />
+                          {/* TripAdvisor Block */}
+                          <div className="flex flex-col gap-1.5 w-[45%] shrink-0 pl-1 text-left">
+                            <div className="h-[18px] sm:h-[20px] flex items-center justify-start">
+                              <ImageWithFallback
+                                src="/images/tripadvisor-logo.png"
+                                alt="TripAdvisor"
+                                className="h-[14px] sm:h-[16px] w-auto object-contain object-left shrink-0"
+                                style={{ minWidth: '70px' }}
+                              />
+                            </div>
                             <div className="flex items-center gap-1.5">
-                              <div className="flex items-center gap-[3px]">
+                              <div className="flex items-center gap-[2px] sm:gap-[3px] shrink-0">
                                 {[...Array(5)].map((_, i) => (
                                   <div
                                     key={i}
-                                    className={`w-[11px] h-[11px] rounded-full border-[1.5px] ${i < Math.round(pkg.tripAdvisorRating || 0)
-                                        ? 'bg-[#00aa6c] border-[#00aa6c]'
-                                        : 'bg-transparent border-[#00aa6c]'
+                                    className={`w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full border-[1.5px] ${i < Math.round(pkg.tripAdvisorRating || 0)
+                                      ? 'bg-[#00aa6c] border-[#00aa6c]'
+                                      : 'bg-transparent border-[#00aa6c]'
                                       }`}
                                   />
                                 ))}
                               </div>
-                              <span className="text-gray-400 text-[10px] font-extrabold leading-none mt-0.5">
+                              <span className="text-gray-400 text-[9.5px] sm:text-[10px] font-extrabold leading-none mt-0.5 truncate">
                                 ({pkg.tripAdvisorReviews || 0})
                               </span>
                             </div>
