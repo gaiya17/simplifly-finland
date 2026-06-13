@@ -302,7 +302,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
         {/* TripAdvisor */}
         <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(0,175,135,0.08)] border border-[#041d3c]/5 hover:border-[#00af87]/20 transition-all">
           <div className="flex items-center gap-2.5 mb-4 h-[24px]">
-            <ImageWithFallback src="/images/tripadvisor-logo.png" alt="TripAdvisor" className="h-[20px] w-auto object-contain object-left" />
+            <ImageWithFallback src="/images/tripadvisor-logo.png" alt="TripAdvisor" className="h-[28px] w-auto object-contain object-left" />
           </div>
           <div className="flex gap-1 mb-2">
             {[...Array(5)].map((_, i) => <div key={i} className="w-4 h-4 rounded-full bg-[#00af87] border border-white" />)}

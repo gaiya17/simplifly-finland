@@ -214,8 +214,8 @@ export default async function MaldivesResortsCategory({ params }: { params: Prom
                   <div className="flex items-center justify-between w-full mb-2.5 pt-0">
                     {/* Booking.com Block */}
                     <div className="flex flex-col gap-1.5 w-[45%] shrink-0 text-left">
-                      <div className="h-[18px] sm:h-[20px] flex items-center justify-start">
-                        <ImageWithFallback src="/images/booking-logo.png" alt="Booking.com" className="h-[14px] sm:h-[16px] w-auto object-contain object-left shrink-0" style={{ minWidth: '70px' }} />
+                      <div className="h-[24px] sm:h-[28px] flex items-center justify-start">
+                        <ImageWithFallback src="/images/booking-logo.png" alt="Booking.com" className="h-[15px] sm:h-[18px] w-auto object-contain object-left shrink-0" style={{ minWidth: '70px' }} />
                       </div>
                       <div className="flex items-center gap-1.5">
                         <div className="bg-[#003b95] text-white font-extrabold text-[10.5px] px-1.5 py-0.5 rounded-[4px] leading-tight shrink-0">
@@ -228,15 +228,15 @@ export default async function MaldivesResortsCategory({ params }: { params: Prom
                     </div>
 
                     {/* Vertical Separator */}
-                    <div className="w-[1px] h-8 bg-[#041d3c]/8 rounded-full shrink-0"></div>
+                    <div className="w-[1px] h-9 bg-[#041d3c]/8 rounded-full shrink-0"></div>
 
                     {/* TripAdvisor Block */}
                     <div className="flex flex-col gap-1.5 w-[45%] shrink-0 pl-1 text-left">
-                      <div className="h-[18px] sm:h-[20px] flex items-center justify-start">
+                      <div className="h-[24px] sm:h-[28px] flex items-center justify-start">
                         <ImageWithFallback
                           src="/images/tripadvisor-logo.png"
                           alt="TripAdvisor"
-                          className="h-[14px] sm:h-[16px] w-auto object-contain object-left shrink-0"
+                          className="h-[20px] sm:h-[24px] w-auto object-contain object-left shrink-0"
                           style={{ minWidth: '70px' }}
                         />
                       </div>
