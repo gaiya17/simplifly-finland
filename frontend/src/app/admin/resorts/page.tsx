@@ -663,7 +663,7 @@ export default function AdminResorts() {
                                     newV[idx].capacityList = newList;
                                     setForm({...form, villas: newV});
                                   }} className={inputCls + " py-2 !bg-white"}>
-                                    {[1,2,3,4,5,6].map(n => <option key={n} value={String(n)}>{n} Adult{n>1?'s':''}</option>)}
+                                    {[...Array(50)].map((_, i) => i + 1).map(n => <option key={n} value={String(n)}>{n} Adult{n>1?'s':''}</option>)}
                                   </select>
                                   <select value={cap.children} onChange={e => {
                                     const newV = [...form.villas];
@@ -672,7 +672,7 @@ export default function AdminResorts() {
                                     newV[idx].capacityList = newList;
                                     setForm({...form, villas: newV});
                                   }} className={inputCls + " py-2 !bg-white"}>
-                                    {[0,1,2,3,4].map(n => <option key={n} value={String(n)}>{n} Child{n!==1?'ren':''}</option>)}
+                                    {[...Array(51)].map((_, i) => i).map(n => <option key={n} value={String(n)}>{n} Child{n!==1?'ren':''}</option>)}
                                   </select>
                                   <select value={cap.infants} onChange={e => {
                                     const newV = [...form.villas];
@@ -681,7 +681,7 @@ export default function AdminResorts() {
                                     newV[idx].capacityList = newList;
                                     setForm({...form, villas: newV});
                                   }} className={inputCls + " py-2 !bg-white"}>
-                                    {[0,1,2,3,4].map(n => <option key={n} value={String(n)}>{n} Infant{n!==1?'s':''}</option>)}
+                                    {[...Array(51)].map((_, i) => i).map(n => <option key={n} value={String(n)}>{n} Infant{n!==1?'s':''}</option>)}
                                   </select>
                                   <button type="button" onClick={() => {
                                     const newV = [...form.villas];
