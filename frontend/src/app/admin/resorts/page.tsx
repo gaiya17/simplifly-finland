@@ -24,6 +24,7 @@ export default function AdminResorts() {
   const [transferOptions, setTransferOptions] = useState<any[]>([]);
   const [facilityOptions, setFacilityOptions] = useState<any[]>([]);
   const [offerOptions, setOfferOptions] = useState<any[]>([]);
+  const [villaOptions, setVillaOptions] = useState<{ bedTypes: string[], features: string[] }>({ bedTypes: [], features: [] });
 
   // Facility prompt replacement
   const [newFacilityName, setNewFacilityName] = useState("");
@@ -62,18 +63,20 @@ export default function AdminResorts() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [fetchedResorts, fetchedCategories, fetchedTransfers, fetchedFacilities, fetchedOffers] = await Promise.all([
+      const [fetchedResorts, fetchedCategories, fetchedTransfers, fetchedFacilities, fetchedOffers, fetchedVillaOpts] = await Promise.all([
         resortApi.getAdminResorts(token),
         resortApi.getCategories(),
         resortApi.getTransferOptions(),
         resortApi.getFacilityOptions(),
-        resortApi.getOfferOptions()
+        resortApi.getOfferOptions(),
+        resortApi.getVillaOptions()
       ]);
       setResorts(fetchedResorts);
       setCategories(fetchedCategories);
       setTransferOptions(fetchedTransfers);
       setFacilityOptions(fetchedFacilities);
       setOfferOptions(fetchedOffers);
+      setVillaOptions(fetchedVillaOpts);
     } catch (err) {
       toast.error("Failed to load resort data");
     } finally {
@@ -585,7 +588,7 @@ export default function AdminResorts() {
                           <div>
                             <label className={labelCls}>Bed Type</label>
                             <div className="grid grid-cols-2 gap-2 mb-3">
-                              {[...COMMON_BED_TYPES, ...customBedTypes].map(bed => {
+                              {Array.from(new Set([...COMMON_BED_TYPES, ...(villaOptions.bedTypes || []), ...customBedTypes])).map(bed => {
                                 const isChecked = typeof villa.bedType === 'string' 
                                   ? villa.bedType.includes(bed) 
                                   : Array.isArray(villa.bedType) ? villa.bedType.includes(bed) : false;
@@ -709,7 +712,7 @@ export default function AdminResorts() {
                           <div>
                             <label className={labelCls}>Features</label>
                             <div className="grid grid-cols-2 gap-2 mb-3">
-                              {[...COMMON_VILLA_FEATURES, ...customFeatures].map(feat => {
+                              {Array.from(new Set([...COMMON_VILLA_FEATURES, ...(villaOptions.features || []), ...customFeatures])).map(feat => {
                                 const isChecked = typeof villa.features === 'string' 
                                   ? villa.features.includes(feat) 
                                   : Array.isArray(villa.features) ? villa.features.includes(feat) : false;
@@ -874,6 +877,7 @@ export default function AdminResorts() {
                                       <option>Lunch</option>
                                       <option>Dinner</option>
                                       <option>All Day Dining</option>
+                                      <option>Timing</option>
                                     </select>
                                     <div className="flex items-center gap-1.5 flex-1">
                                       <input type="time" value={sch.timeFrom || "07:00"} onChange={e => {
@@ -904,63 +908,58 @@ export default function AdminResorts() {
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <label className={labelCls}>Luxury Facilities</label>
-                        <p className="text-[12px] text-gray-500 font-medium">Select all facilities available at this resort.</p>
+                        <p className="text-[12px] text-gray-500 font-medium">Add facilities available at this resort.</p>
                       </div>
-                      {isAddingFacility ? (
-                        <div className="flex items-center gap-2">
-                          <input type="text" value={newFacilityName} onChange={e => setNewFacilityName(e.target.value)} placeholder="Facility name" className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff]" autoFocus onKeyDown={e => {
-                            if (e.key === 'Enter') {
-                              e.preventDefault();
-                              if (newFacilityName.trim()) {
-                                resortApi.createFacilityOption(token, { name: newFacilityName.trim() }).then(opt => {
-                                  setFacilityOptions([...facilityOptions, opt]);
-                                  setForm({...form, facilities: [...(form.facilities || []), opt.name]});
-                                  setNewFacilityName("");
-                                  setIsAddingFacility(false);
-                                }).catch(e => toast.error(e.message));
-                              } else {
-                                setIsAddingFacility(false);
-                              }
-                            }
-                          }} />
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {(form.facilities || []).map((fac: string, idx: number) => (
+                        <div key={idx} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fb] border border-[#e8edf4] rounded-[8px]">
+                          <span className="text-[12px] font-bold text-[#041d3c]">{fac}</span>
                           <button type="button" onClick={() => {
-                            if (newFacilityName.trim()) {
-                              resortApi.createFacilityOption(token, { name: newFacilityName.trim() }).then(opt => {
-                                setFacilityOptions([...facilityOptions, opt]);
-                                setForm({...form, facilities: [...(form.facilities || []), opt.name]});
-                                setNewFacilityName("");
-                                setIsAddingFacility(false);
-                              }).catch(e => toast.error(e.message));
+                            const newF = form.facilities.filter((_: any, i: number) => i !== idx);
+                            setForm({...form, facilities: newF});
+                          }} className="text-gray-400 hover:text-rose-500 ml-1">
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {isAddingFacility ? (
+                      <div className="flex items-center gap-2 max-w-sm">
+                        <input type="text" value={newFacilityName} onChange={e => setNewFacilityName(e.target.value)} placeholder="E.g. Free WiFi" className={`${inputCls} py-2`} autoFocus onKeyDown={e => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (newFacilityName.trim() && !form.facilities?.includes(newFacilityName.trim())) {
+                              resortApi.createFacilityOption(token, { name: newFacilityName.trim() }).catch(() => {});
+                              setForm({...form, facilities: [...(form.facilities || []), newFacilityName.trim()]});
+                              setNewFacilityName("");
+                              setIsAddingFacility(false);
                             } else {
                               setIsAddingFacility(false);
                             }
-                          }} className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold">Save</button>
-                          <button type="button" onClick={() => { setIsAddingFacility(false); setNewFacilityName(""); }} className="text-gray-400 hover:text-gray-600">
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ) : (
-                        <button type="button" onClick={() => setIsAddingFacility(true)} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add New Facility</button>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {facilityOptions.map(fac => (
-                        <label key={fac.id} className="flex items-center gap-3 p-3 rounded-[12px] border border-[#e8edf4] cursor-pointer hover:bg-[#f8fafc] transition-colors">
-                          <input
-                            type="checkbox"
-                            checked={form.facilities?.includes(fac.name)}
-                            onChange={(e) => {
-                              const newF = e.target.checked 
-                                ? [...(form.facilities || []), fac.name]
-                                : form.facilities.filter((f: string) => f !== fac.name);
-                              setForm({...form, facilities: newF});
-                            }}
-                            className="w-4 h-4 rounded-[4px] border-gray-300 text-[#1a84ff] focus:ring-[#1a84ff]"
-                          />
-                          <span className="text-[12.5px] font-bold text-[#041d3c]">{fac.name}</span>
-                        </label>
-                      ))}
-                    </div>
+                          }
+                        }} />
+                        <button type="button" onClick={() => {
+                          if (newFacilityName.trim() && !form.facilities?.includes(newFacilityName.trim())) {
+                            resortApi.createFacilityOption(token, { name: newFacilityName.trim() }).catch(() => {});
+                            setForm({...form, facilities: [...(form.facilities || []), newFacilityName.trim()]});
+                            setNewFacilityName("");
+                            setIsAddingFacility(false);
+                          } else {
+                            setIsAddingFacility(false);
+                          }
+                        }} className="text-white bg-[#1a84ff] px-4 py-2 rounded-[12px] text-[12px] font-bold">Add</button>
+                        <button type="button" onClick={() => { setIsAddingFacility(false); setNewFacilityName(""); }} className="text-gray-400 hover:text-gray-600 p-2">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button type="button" onClick={() => setIsAddingFacility(true)} className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#f4f7fb] text-[#1a84ff] text-[12px] font-bold rounded-[8px] hover:bg-[#1a84ff] hover:text-white transition-colors">
+                        <Plus className="w-3.5 h-3.5" /> Add Facility
+                      </button>
+                    )}
                   </div>
 
                   <div className="pt-6 border-t border-[#e8edf4]">

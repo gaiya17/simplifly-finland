@@ -11,6 +11,7 @@ router.get('/category/:slug', ResortController.getCategoryBySlug);
 router.get('/options/transfers', ResortController.getTransferOptions);
 router.get('/options/facilities', ResortController.getFacilityOptions);
 router.get('/options/offers', ResortController.getOfferOptions);
+router.get('/options/villas', ResortController.getVillaOptions);
 router.get('/offers', ResortController.getOffers);
 router.get('/slug/:slug', ResortController.getResortBySlug);
 router.get('/:id', ResortController.getResortById);

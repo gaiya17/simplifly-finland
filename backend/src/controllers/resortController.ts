@@ -519,6 +519,39 @@ export class ResortController {
     }
   }
 
+  static async getVillaOptions(req: Request, res: Response) {
+    try {
+      const villas = await prisma.resortVilla.findMany({
+        select: { bedType: true, features: true }
+      });
+
+      const bedTypesSet = new Set<string>();
+      const featuresSet = new Set<string>();
+
+      villas.forEach(v => {
+        if (v.bedType) {
+          v.bedType.split(',').forEach(b => {
+            const bt = b.trim();
+            if (bt) bedTypesSet.add(bt);
+          });
+        }
+        if (v.features && Array.isArray(v.features)) {
+          v.features.forEach(f => {
+            if (f) featuresSet.add(f.trim());
+          });
+        }
+      });
+
+      res.status(200).json({
+        bedTypes: Array.from(bedTypesSet).sort(),
+        features: Array.from(featuresSet).sort()
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to fetch villa options' });
+    }
+  }
+
   static async createOfferOption(req: AuthenticatedRequest, res: Response) {
     try {
       const { name } = req.body;

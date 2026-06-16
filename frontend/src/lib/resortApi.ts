@@ -187,6 +187,11 @@ export const resortApi = {
     if (!res.ok) throw new Error("Failed to fetch offer options");
     return res.json();
   },
+  getVillaOptions: async () => {
+    const res = await fetch(`${API_URL}/resorts/options/villas`);
+    if (!res.ok) throw new Error("Failed to fetch villa options");
+    return res.json();
+  },
   createOfferOption: async (token: string, data: { name: string }) => {
     const res = await fetch(`${API_URL}/resorts/options/offers`, {
       method: "POST",
