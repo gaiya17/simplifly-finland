@@ -710,59 +710,67 @@ export default function AdminResorts() {
                           </div>
                         </div>
                           <div>
-                            <label className={labelCls}>Features</label>
-                            <div className="grid grid-cols-2 gap-2 mb-3">
-                              {Array.from(new Set([...COMMON_VILLA_FEATURES, ...(villaOptions.features || []), ...customFeatures])).map(feat => {
-                                const isChecked = typeof villa.features === 'string' 
-                                  ? villa.features.includes(feat) 
-                                  : Array.isArray(villa.features) ? villa.features.includes(feat) : false;
-                                return (
-                                  <label key={feat} className="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" checked={isChecked} onChange={e => {
+                            <label className={labelCls}>Villa Features</label>
+                            
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              {(typeof villa.features === 'string' ? villa.features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.features || [])).map((feat: string, fIdx: number) => (
+                                <div key={fIdx} className="flex items-center gap-1.5 px-3 py-1 bg-[#f4f7fb] border border-[#e8edf4] rounded-[8px]">
+                                  <span className="text-[11px] font-bold text-[#041d3c]">{feat}</span>
+                                  <button type="button" onClick={() => {
+                                    let currentFeats = typeof villa.features === 'string' ? villa.features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.features || []);
+                                    const newFeats = currentFeats.filter((_: any, i: number) => i !== fIdx);
+                                    const newV = [...form.villas]; newV[idx].features = newFeats.join(', '); setForm({...form, villas: newV});
+                                  }} className="text-gray-400 hover:text-rose-500 ml-1">
+                                    <X className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+
+                            {addingFeatureIdx === idx ? (
+                              <div className="flex items-center gap-2 mt-1">
+                                <input type="text" value={newFeature} onChange={e => setNewFeature(e.target.value)} placeholder="E.g. Private Pool" className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff] w-full" autoFocus onKeyDown={e => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    if (newFeature.trim()) {
                                       let currentFeats = typeof villa.features === 'string' ? villa.features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.features || []);
-                                      if (e.target.checked) currentFeats.push(feat);
-                                      else currentFeats = currentFeats.filter((f:string) => f !== feat);
-                                      const newV = [...form.villas]; newV[idx].features = currentFeats.join(', '); setForm({...form, villas: newV});
-                                    }} className="w-3.5 h-3.5 rounded-[4px] border-gray-300 text-[#1a84ff]" />
-                                    <span className="text-[12px] font-medium text-[#041d3c]">{feat}</span>
-                                  </label>
-                                );
-                              })}
-                              
-                              {addingFeatureIdx === idx ? (
-                                <div className="flex items-center gap-2 mt-1 col-span-2">
-                                  <input type="text" value={newFeature} onChange={e => setNewFeature(e.target.value)} placeholder="New feature" className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff] w-full" autoFocus onKeyDown={e => {
-                                    if (e.key === 'Enter') {
-                                      e.preventDefault();
-                                      if (newFeature.trim() && !customFeatures.includes(newFeature.trim()) && !COMMON_VILLA_FEATURES.includes(newFeature.trim())) {
-                                        setCustomFeatures(prev => [...prev, newFeature.trim()]);
-                                        const newV = [...form.villas];
-                                        let currentFeats = typeof newV[idx].features === 'string' ? newV[idx].features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (newV[idx].features || []);
+                                      if (!currentFeats.includes(newFeature.trim())) {
                                         currentFeats.push(newFeature.trim());
+                                        const newV = [...form.villas];
                                         newV[idx].features = currentFeats.join(', ');
                                         setForm({...form, villas: newV});
                                       }
                                       setNewFeature("");
                                       setAddingFeatureIdx(null);
+                                    } else {
+                                      setAddingFeatureIdx(null);
                                     }
-                                  }} />
-                                  <button type="button" onClick={() => {
-                                    if (newFeature.trim() && !customFeatures.includes(newFeature.trim()) && !COMMON_VILLA_FEATURES.includes(newFeature.trim())) {
-                                      setCustomFeatures(prev => [...prev, newFeature.trim()]);
-                                      const newV = [...form.villas];
-                                      let currentFeats = typeof newV[idx].features === 'string' ? newV[idx].features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (newV[idx].features || []);
+                                  }
+                                }} />
+                                <button type="button" onClick={() => {
+                                  if (newFeature.trim()) {
+                                    let currentFeats = typeof villa.features === 'string' ? villa.features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.features || []);
+                                    if (!currentFeats.includes(newFeature.trim())) {
                                       currentFeats.push(newFeature.trim());
+                                      const newV = [...form.villas];
                                       newV[idx].features = currentFeats.join(', ');
                                       setForm({...form, villas: newV});
                                     }
                                     setNewFeature("");
                                     setAddingFeatureIdx(null);
-                                  }} className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold">Add</button>
-                                </div>
-                              ) : (
-                                <button type="button" onClick={() => setAddingFeatureIdx(idx)} className="text-[#1a84ff] text-[11px] font-bold hover:underline mt-1 col-span-2 text-left">+ Add Custom Feature</button>
-                              )}
-                            </div>
+                                  } else {
+                                    setAddingFeatureIdx(null);
+                                  }
+                                }} className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold">Add</button>
+                                <button type="button" onClick={() => { setAddingFeatureIdx(null); setNewFeature(""); }} className="text-gray-400 hover:text-gray-600 p-1.5">
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            ) : (
+                              <button type="button" onClick={() => setAddingFeatureIdx(idx)} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold rounded-[6px] hover:bg-[#1a84ff] hover:text-white transition-colors">
+                                <Plus className="w-3.5 h-3.5" /> Add Feature
+                              </button>
+                            )}
                           </div>
                         
                         <div>
