@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import {
   LayoutDashboard, Map, Hotel, CalendarCheck, FileText,
-  Image, Shield, Bell, Search, LogOut, ChevronDown, User, X, MessageCircle, LayoutTemplate, MapPin, Palmtree, BookOpen, MessageSquare, BotMessageSquare, Globe
+  Image, Shield, Bell, Search, LogOut, ChevronDown, User, X, MessageCircle, LayoutTemplate, MapPin, Palmtree, BookOpen, MessageSquare, BotMessageSquare, Globe, FileDown
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -19,6 +19,7 @@ const menuItems = [
   { name: "Gallery Manager", path: "/admin/gallery", icon: Image },
   { name: "Global Assets", path: "/admin/global-assets", icon: Globe },
   { name: "Chatbot Manager", path: "/admin/chatbot", icon: MessageCircle },
+  { name: "Client Brochures", path: "/admin/reports", icon: FileDown },
   { name: "User Management", path: "/admin/users", icon: Shield },
 ];
 
@@ -55,6 +56,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     if (p.includes("/admin/gallery")) return "Gallery Manager";
     if (p.includes("/admin/chatbot")) return "Chatbot Manager";
     if (p.includes("/admin/users")) return "User Management";
+    if (p.includes("/admin/reports")) return "Client Brochures";
     return "Admin Panel";
   };
 

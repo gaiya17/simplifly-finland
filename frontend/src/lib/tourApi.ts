@@ -58,6 +58,11 @@ export const tourApi = {
     const res = await fetch(`${API_URL}/tours/${id}`);
     return handleRes(res);
   },
+  // Alias used by PDF generator to fetch full tour data (itinerary, inclusions, gallery)
+  getTour: async (id: string) => {
+    const res = await fetch(`${API_URL}/tours/${id}`);
+    return handleRes(res);
+  },
   getTourBySlug: async (slug: string) => {
     const res = await fetch(`${API_URL}/tours/slug/${slug}`);
     return handleRes(res);
