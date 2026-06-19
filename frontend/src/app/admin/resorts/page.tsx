@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { Plus, X, Search, MapPin, Calendar, Trash2, Filter, Edit, Image as ImageIcon, Check, ChevronRight, ChevronLeft, Loader2, Star, Waves, UtensilsCrossed, Dumbbell, FileText, Wifi, Wind, Coffee, Music, Anchor, Users } from "lucide-react";
+import { Plus, X, Search, MapPin, Trash2, Filter, Edit, Check, ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { resortApi } from "../../../lib/resortApi";
 import { ImageUpload } from "../../../components/admin/ImageUpload";
@@ -11,8 +11,7 @@ import { PdfUpload } from "../../../components/admin/PdfUpload";
 const inputCls = "w-full px-4 py-3 bg-[#f4f7fb] border border-[#e2e8f0] rounded-[12px] text-[13px] font-medium text-[#041d3c] placeholder:text-gray-300 focus:outline-none focus:border-[#1a84ff]/60 focus:ring-2 focus:ring-[#1a84ff]/10 transition-all";
 const labelCls = "block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider mb-1.5";
 
-const COMMON_VILLA_FEATURES = ["Direct ocean access", "Private pool", "Glass floor panels", "Outdoor shower", "Jacuzzi", "Butler service", "Overwater hammock", "Sunset view", "Sunrise view"];
-const COMMON_BED_TYPES = ["1 King Bed", "2 King Beds", "2 Twin Beds", "1 Queen Bed", "1 Sofa Bed"];
+
 
 export default function AdminResorts() {
   const [resorts, setResorts] = useState<any[]>([]);
@@ -587,58 +586,50 @@ export default function AdminResorts() {
                           </div>
                           <div>
                             <label className={labelCls}>Bed Type</label>
-                            <div className="grid grid-cols-2 gap-2 mb-3">
-                              {Array.from(new Set([...COMMON_BED_TYPES, ...(villaOptions.bedTypes || []), ...customBedTypes])).map(bed => {
-                                const isChecked = typeof villa.bedType === 'string' 
-                                  ? villa.bedType.includes(bed) 
-                                  : Array.isArray(villa.bedType) ? villa.bedType.includes(bed) : false;
-                                return (
-                                  <label key={bed} className="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" checked={isChecked} onChange={e => {
-                                      let currentBeds = typeof villa.bedType === 'string' ? villa.bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.bedType || []);
-                                      if (e.target.checked) currentBeds.push(bed);
-                                      else currentBeds = currentBeds.filter((b:string) => b !== bed);
-                                      const newV = [...form.villas]; newV[idx].bedType = currentBeds.join(', '); setForm({...form, villas: newV});
-                                    }} className="w-3.5 h-3.5 rounded-[4px] border-gray-300 text-[#1a84ff]" />
-                                    <span className="text-[12px] font-medium text-[#041d3c]">{bed}</span>
-                                  </label>
-                                );
-                              })}
-                              
-                              {addingBedIdx === idx ? (
-                                <div className="flex items-center gap-2 mt-1 col-span-2">
-                                  <input type="text" value={newBedType} onChange={e => setNewBedType(e.target.value)} placeholder="New bed type" className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff] w-full" autoFocus onKeyDown={e => {
-                                    if (e.key === 'Enter') {
-                                      e.preventDefault();
-                                      if (newBedType.trim() && !customBedTypes.includes(newBedType.trim()) && !COMMON_BED_TYPES.includes(newBedType.trim())) {
-                                        setCustomBedTypes(prev => [...prev, newBedType.trim()]);
-                                        const newV = [...form.villas];
-                                        let currentBeds = typeof newV[idx].bedType === 'string' ? newV[idx].bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (newV[idx].bedType || []);
-                                        currentBeds.push(newBedType.trim());
-                                        newV[idx].bedType = currentBeds.join(', ');
-                                        setForm({...form, villas: newV});
-                                      }
-                                      setNewBedType("");
-                                      setAddingBedIdx(null);
-                                    }
-                                  }} />
+                            
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              {(typeof villa.bedType === 'string' ? villa.bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.bedType || [])).map((bed: string, bIdx: number) => (
+                                <div key={bIdx} className="flex items-center gap-1.5 px-3 py-1 bg-[#f4f7fb] border border-[#e8edf4] rounded-[8px]">
+                                  <span className="text-[11px] font-bold text-[#041d3c]">{bed}</span>
                                   <button type="button" onClick={() => {
-                                    if (newBedType.trim() && !customBedTypes.includes(newBedType.trim()) && !COMMON_BED_TYPES.includes(newBedType.trim())) {
-                                      setCustomBedTypes(prev => [...prev, newBedType.trim()]);
-                                      const newV = [...form.villas];
-                                      let currentBeds = typeof newV[idx].bedType === 'string' ? newV[idx].bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (newV[idx].bedType || []);
-                                      currentBeds.push(newBedType.trim());
-                                      newV[idx].bedType = currentBeds.join(', ');
-                                      setForm({...form, villas: newV});
-                                    }
-                                    setNewBedType("");
-                                    setAddingBedIdx(null);
-                                  }} className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold">Add</button>
+                                    let currentBeds = typeof villa.bedType === 'string' ? villa.bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.bedType || []);
+                                    const newBeds = currentBeds.filter((_: any, i: number) => i !== bIdx);
+                                    const newV = [...form.villas]; newV[idx].bedType = newBeds.join(', '); setForm({...form, villas: newV});
+                                  }} className="text-gray-400 hover:text-rose-500 ml-1">
+                                    <X className="w-3 h-3" />
+                                  </button>
                                 </div>
-                              ) : (
-                                <button type="button" onClick={() => setAddingBedIdx(idx)} className="text-[#1a84ff] text-[11px] font-bold hover:underline mt-1 col-span-2 text-left">+ Add Custom Bed Type</button>
-                              )}
+                              ))}
                             </div>
+
+                            {addingBedIdx === idx ? (
+                              <div className="flex items-center gap-2 mt-1">
+                                <input type="text" value={newBedType} onChange={e => setNewBedType(e.target.value)} placeholder="E.g. 1 King Bed" className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff] w-full" autoFocus onKeyDown={e => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    if (newBedType.trim()) {
+                                      let currentBeds = typeof villa.bedType === 'string' ? villa.bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.bedType || []);
+                                      if (!currentBeds.includes(newBedType.trim())) { currentBeds.push(newBedType.trim()); const newV = [...form.villas]; newV[idx].bedType = currentBeds.join(', '); setForm({...form, villas: newV}); }
+                                      setNewBedType(""); setAddingBedIdx(null);
+                                    } else { setAddingBedIdx(null); }
+                                  }
+                                }} />
+                                <button type="button" onClick={() => {
+                                  if (newBedType.trim()) {
+                                    let currentBeds = typeof villa.bedType === 'string' ? villa.bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.bedType || []);
+                                    if (!currentBeds.includes(newBedType.trim())) { currentBeds.push(newBedType.trim()); const newV = [...form.villas]; newV[idx].bedType = currentBeds.join(', '); setForm({...form, villas: newV}); }
+                                    setNewBedType(""); setAddingBedIdx(null);
+                                  } else { setAddingBedIdx(null); }
+                                }} className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold">Add</button>
+                                <button type="button" onClick={() => { setAddingBedIdx(null); setNewBedType(""); }} className="text-gray-400 hover:text-gray-600 p-1.5">
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            ) : (
+                              <button type="button" onClick={() => setAddingBedIdx(idx)} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold rounded-[6px] hover:bg-[#1a84ff] hover:text-white transition-colors">
+                                <Plus className="w-3.5 h-3.5" /> Add Bed Type
+                              </button>
+                            )}
                           </div>
                         </div>
                         <div className="mb-4">

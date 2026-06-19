@@ -24,8 +24,6 @@ const CONTACT = {
 };
 
 // ── Helpers ──────────────────────────────────────────────────────
-function hex(r:number,g:number,b:number){ return `#${[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('')}`; }
-
 function setFill(doc: jsPDF, rgb: [number,number,number]){ doc.setFillColor(rgb[0],rgb[1],rgb[2]); }
 function setDraw(doc: jsPDF, rgb: [number,number,number]){ doc.setDrawColor(rgb[0],rgb[1],rgb[2]); }
 function setTxt (doc: jsPDF, rgb: [number,number,number]){ doc.setTextColor(rgb[0],rgb[1],rgb[2]); }
@@ -104,14 +102,8 @@ export async function generateResortBrochure(resort: any) {
     setFill(doc, NAVY); doc.rect(0, 0, pW, pH, 'F');
   }
 
-  // Dark gradient overlay (bottom half)
-  for (let i = 0; i < 80; i++) {
-    const alpha = i / 80;
-    doc.setFillColor(4, 29, 60);
-    doc.setGState({ opacity: alpha * 0.85 } as any);
-    doc.rect(0, pH - 80 + i, pW, 1.5, 'F');
-  }
-  doc.setGState({ opacity: 1 } as any);
+  // Dark overlay panel covering bottom 40% of page for text legibility
+  setFill(doc, NAVY); doc.rect(0, pH * 0.55, pW, pH * 0.45, 'F');
 
   // Logo on cover
   if (logoB64) {
@@ -341,19 +333,15 @@ export async function generateTourBrochure(tour: any) {
   ]);
 
   // ── PAGE 1: COVER ───────────────────────────────────────────────
+  // Full-bleed hero image
   if (heroB64) {
     doc.addImage(heroB64, 'JPEG', 0, 0, pW, pH);
   } else {
     setFill(doc, NAVY); doc.rect(0, 0, pW, pH, 'F');
   }
 
-  // Dark gradient overlay
-  for (let i = 0; i < 90; i++) {
-    doc.setFillColor(4, 29, 60);
-    doc.setGState({ opacity: (i / 90) * 0.9 } as any);
-    doc.rect(0, pH - 90 + i, pW, 1.5, 'F');
-  }
-  doc.setGState({ opacity: 1 } as any);
+  // Dark overlay covering bottom 45% for text legibility
+  setFill(doc, NAVY); doc.rect(0, pH * 0.5, pW, pH * 0.5, 'F');
 
   if (logoB64) {
     try { doc.addImage(logoB64, 'PNG', 14, 12, 50, 18); } catch { drawTextLogo(doc, 14, 26); }
@@ -390,9 +378,7 @@ export async function generateTourBrochure(tour: any) {
   }
 
   // Destinations strip
-  setFill(doc, NAVY); doc.setFillColor(4, 29, 60); doc.setGState({ opacity: 0.7 } as any);
-  doc.rect(0, pH - 28, pW, 28, 'F');
-  doc.setGState({ opacity: 1 } as any);
+  setFill(doc, NAVY); doc.rect(0, pH - 28, pW, 28, 'F');
   const dests: string[] = tour.destinations ? tour.destinations.split(',').map((s:string)=>s.trim()).filter(Boolean) : [];
   if (dests.length > 0) {
     doc.setFontSize(7.5); doc.setFont('helvetica','bold');

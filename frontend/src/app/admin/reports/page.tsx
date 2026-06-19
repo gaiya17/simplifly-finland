@@ -47,7 +47,6 @@ export default function AdminReports() {
       toast.success(`Brochure downloaded successfully!`);
     } catch (e: any) {
       toast.error('Failed to generate brochure. Please try again.');
-      console.error(e);
     } finally {
       setGeneratingId(null);
     }
@@ -62,7 +61,6 @@ export default function AdminReports() {
       toast.success(`Brochure downloaded successfully!`);
     } catch (e: any) {
       toast.error('Failed to generate brochure. Please try again.');
-      console.error(e);
     } finally {
       setGeneratingId(null);
     }

@@ -600,7 +600,7 @@ export default function AdminTours() {
                 <div className="space-y-6 animate-in fade-in">
                   <h4 className="text-[15px] font-bold text-[#041d3c] border-b pb-2">6. Review & Publish</h4>
                   <div className="bg-blue-50 p-6 rounded-[16px] border border-blue-100 flex gap-6">
-                    <img src={form.packageImage || 'https://via.placeholder.com/150'} alt="Preview" className="w-[120px] h-[120px] rounded-[12px] object-cover" />
+                    <img src={form.packageImage || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect width='150' height='150' fill='%23f0f4f9'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23c0c8d8' font-size='12' font-family='sans-serif'%3ENo Image%3C/text%3E%3C/svg%3E"} alt="Preview" className="w-[120px] h-[120px] rounded-[12px] object-cover" />
                     <div>
                       <h5 className="text-[18px] font-extrabold text-[#041d3c]">{form.title || 'Untitled Tour'}</h5>
                       <p className="text-gray-500 text-[13px] mt-1">{form.nights} Nights / {form.days} Days</p>
