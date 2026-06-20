@@ -88,7 +88,7 @@ export default function AdminReports() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-[17px] font-extrabold text-[#041d3c]">Client Brochures</h2>
-          <p className="text-[12px] text-gray-400 font-medium mt-0.5">Generate & download professional PDF brochures to send to clients</p>
+          <div className="text-[12px] text-gray-400 font-medium mt-0.5">Generate & download professional PDF brochures to send to clients</div>
         </div>
         <div className="flex items-center gap-2 px-4 py-2.5 bg-[#f4f7fb] border border-[#e8edf4] rounded-[12px] text-[12px] font-semibold text-gray-500">
           <FileDown className="w-4 h-4 text-[#1a84ff]" />
@@ -99,9 +99,9 @@ export default function AdminReports() {
       {/* ── Info Banner ── */}
       <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-[14px] px-5 py-4">
         <AlertCircle className="w-4 h-4 text-[#1a84ff] shrink-0 mt-0.5" />
-        <p className="text-[12.5px] text-[#1a84ff] font-medium leading-relaxed">
+        <div className="text-[12.5px] text-[#1a84ff] font-medium leading-relaxed">
           Click <strong>"Generate PDF"</strong> next to any Resort or Tour to instantly download a professionally branded client brochure. The PDF includes all images, villa details, itinerary, and your Simplifly contact information.
-        </p>
+        </div>
       </div>
 
       {/* ── Tabs + Search ── */}
@@ -139,7 +139,7 @@ export default function AdminReports() {
       {isLoading ? (
         <div className="py-20 text-center text-gray-400">
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2 text-[#1a84ff]" />
-          <p className="text-[13px] font-semibold">Loading data…</p>
+          <div className="text-[13px] font-semibold">Loading data…</div>
         </div>
       ) : (
         <div className="bg-white rounded-[20px] border border-[#e8edf4] overflow-hidden">
@@ -159,11 +159,11 @@ export default function AdminReports() {
                     {resort.packageImage && <img src={resort.packageImage} alt={resort.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[13px] font-bold text-[#041d3c] truncate">{resort.title}</p>
-                    <p className="text-[11px] text-gray-400 font-medium mt-0.5">
+                    <div className="text-[13px] font-bold text-[#041d3c] truncate">{resort.title}</div>
+                    <div className="text-[11px] text-gray-400 font-medium mt-0.5">
                       <span className={`inline-block w-1.5 h-1.5 rounded-full mr-1.5 ${resort.status === 'active' ? 'bg-emerald-400' : 'bg-gray-300'}`} />
                       {resort.status === 'active' ? 'Active' : 'Inactive'}
-                    </p>
+                    </div>
                   </div>
                 </div>
                 <div className="text-[12.5px] font-semibold text-gray-500 truncate">📍 {resort.location}</div>
@@ -191,8 +191,8 @@ export default function AdminReports() {
                     {tour.packageImage && <img src={tour.packageImage} alt={tour.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[13px] font-bold text-[#041d3c] truncate">{tour.title}</p>
-                    <p className="text-[11px] text-gray-400 font-medium mt-0.5">{tour.nights}N / {tour.days}D</p>
+                    <div className="text-[13px] font-bold text-[#041d3c] truncate">{tour.title}</div>
+                    <div className="text-[11px] text-gray-400 font-medium mt-0.5">{tour.nights}N / {tour.days}D</div>
                   </div>
                 </div>
                 <div className="text-[12.5px] font-semibold text-gray-500 truncate">{tour.category?.name || '—'}</div>
@@ -219,7 +219,7 @@ export default function AdminReports() {
               (activeTab === 'tours'   && filteredTours.length   === 0)) && (
               <div className="py-16 text-center">
                 <FileDown className="w-8 h-8 text-gray-200 mx-auto mb-3" />
-                <p className="text-[13px] font-bold text-gray-300">No results found</p>
+                <div className="text-[13px] font-bold text-gray-300">No results found</div>
               </div>
             )}
           </div>

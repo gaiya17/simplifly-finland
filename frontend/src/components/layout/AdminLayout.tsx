@@ -76,7 +76,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-5 space-y-0.5 overflow-y-auto">
-          <p className="text-[9.5px] font-extrabold uppercase tracking-[0.18em] text-white/25 px-3 mb-3">Main Menu</p>
+          <div className="text-[9.5px] font-extrabold uppercase tracking-[0.18em] text-white/25 px-3 mb-3">Main Menu</div>
           {menuItems.map(({ name, path, icon: Icon }) => {
             const isActive = pathname === path || pathname.startsWith(`${path}/`);
             return (
@@ -99,7 +99,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
         <div className="px-3 py-4 border-t border-white/6 shrink-0 space-y-2">
           {/* System status */}
           <div className="px-3 py-3 rounded-[11px] bg-white/4 border border-white/6">
-            <p className="text-[9px] uppercase tracking-[0.18em] font-extrabold text-white/25 mb-2">System Status</p>
+            <div className="text-[9px] uppercase tracking-[0.18em] font-extrabold text-white/25 mb-2">System Status</div>
             <div className="space-y-1.5">
               {[
                 { label: "Database", status: "Stable", color: "bg-emerald-400", text: "text-emerald-400" },
@@ -136,7 +136,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           {/* Page title */}
           <div>
             <h1 className="text-[15px] font-extrabold text-[#041d3c] ">{getPageTitle()}</h1>
-            <p className="text-[11px] text-gray-400 font-medium mt-px">Simplifly Finland — Admin Console</p>
+            <div className="text-[11px] text-gray-400 font-medium mt-px">Simplifly Finland — Admin Console</div>
           </div>
 
           {/* Actions */}
@@ -147,8 +147,8 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                 {initials}
               </div>
               <div className="hidden sm:block text-left">
-                <p className="text-[12px] font-extrabold text-[#041d3c] leading-none">{adminName}</p>
-                <p className="text-[9.5px] text-gray-400 font-semibold mt-0.5 uppercase tracking-wider">Administrator</p>
+                <div className="text-[12px] font-extrabold text-[#041d3c] leading-none">{adminName}</div>
+                <div className="text-[9.5px] text-gray-400 font-semibold mt-0.5 uppercase tracking-wider">Administrator</div>
               </div>
             </div>
           </div>
