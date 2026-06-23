@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { Plus, X, Search, MapPin, Trash2, Filter, Edit, Check, ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
+import { Plus, X, Search, MapPin, Trash2, Filter, Edit, Check, ChevronRight, ChevronLeft, Loader2, GripVertical } from "lucide-react";
+import { Reorder } from "framer-motion";
 import { toast } from "sonner";
 import { resortApi } from "../../../lib/resortApi";
 import { ImageUpload } from "../../../components/admin/ImageUpload";
@@ -101,6 +102,7 @@ export default function AdminResorts() {
           villas: fullResort.villas.map((v: any) => {
             return {
               ...v,
+              _uiId: Math.random().toString(36).substring(7),
               capacityList: v.capacity ? v.capacity.split('|').map((s:string) => {
                 const matchAdults = s.match(/(\d+)\s+Adult/);
                 const matchChildren = s.match(/(\d+)\s+Child/);
@@ -116,6 +118,7 @@ export default function AdminResorts() {
           }),
           restaurants: fullResort.restaurants.map((r: any) => ({
             ...r,
+            _uiId: Math.random().toString(36).substring(7),
             schedules: r.schedules.map((s: any) => {
               const [from, to] = (s.time || "").split(" - ");
               return { ...s, timeFrom: from || "07:00", timeTo: to || "10:30" };
@@ -557,7 +560,7 @@ export default function AdminResorts() {
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-[13px] text-gray-500 font-medium">Add all available villas and their specifications.</p>
-                    <button onClick={() => setForm({...form, villas: [...(form.villas||[]), { title: "", description: "", size: "", capacity: "", bedType: "", features: "", images: [] }]})} className="px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold uppercase tracking-wider rounded-[8px] hover:bg-[#1a84ff] hover:text-white transition-colors">
+                    <button onClick={() => setForm({...form, villas: [...(form.villas||[]), { _uiId: Math.random().toString(36).substring(7), title: "", description: "", size: "", capacity: "", bedType: "", features: "", images: [] }]})} className="px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold uppercase tracking-wider rounded-[8px] hover:bg-[#1a84ff] hover:text-white transition-colors">
                       + Add Villa
                     </button>
                   </div>
@@ -567,16 +570,20 @@ export default function AdminResorts() {
                       <span className="text-gray-400 text-[13px] font-semibold">No villas added yet</span>
                     </div>
                   ) : (
-                    form.villas.map((villa: any, idx: number) => (
-                      <div key={idx} className="bg-white border border-[#e8edf4] rounded-[16px] p-5 relative shadow-sm">
-                        <button onClick={() => {
-                          const newV = [...form.villas];
-                          newV.splice(idx, 1);
-                          setForm({...form, villas: newV});
-                        }} className="absolute top-4 right-4 text-rose-400 hover:text-rose-600">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                        <h4 className="text-[14px] font-bold text-[#041d3c] mb-4">Villa {idx + 1}</h4>
+                    <Reorder.Group axis="y" values={form.villas} onReorder={(newVillas) => setForm({...form, villas: newVillas})} className="space-y-4">
+                      {form.villas.map((villa: any, idx: number) => (
+                        <Reorder.Item key={villa._uiId || (villa._uiId = Math.random().toString(36).substring(7))} value={villa} className="bg-white border border-[#e8edf4] rounded-[16px] p-5 relative shadow-sm">
+                          <div className="absolute top-4 left-4 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 transition-colors">
+                            <GripVertical className="w-5 h-5" />
+                          </div>
+                          <button onClick={() => {
+                            const newV = [...form.villas];
+                            newV.splice(idx, 1);
+                            setForm({...form, villas: newV});
+                          }} className="absolute top-4 right-4 text-rose-400 hover:text-rose-600">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                          <h4 className="text-[14px] font-bold text-[#041d3c] mb-4 pl-8">Villa {idx + 1}</h4>
                           <div className="grid grid-cols-2 gap-4 mb-4 items-start">
                           <div>
                             <label className={labelCls}>Villa Title</label>
@@ -790,8 +797,9 @@ export default function AdminResorts() {
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))
+                      </Reorder.Item>
+                    ))}
+                    </Reorder.Group>
                   )}
                 </div>
               )}
@@ -800,7 +808,7 @@ export default function AdminResorts() {
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-[13px] text-gray-500 font-medium">Add restaurants and their dining schedules.</p>
-                    <button onClick={() => setForm({...form, restaurants: [...(form.restaurants||[]), { title: "", description: "", schedules: [] }]})} className="px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold uppercase tracking-wider rounded-[8px] hover:bg-[#1a84ff] hover:text-white transition-colors">
+                    <button onClick={() => setForm({...form, restaurants: [...(form.restaurants||[]), { _uiId: Math.random().toString(36).substring(7), title: "", description: "", schedules: [] }]})} className="px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold uppercase tracking-wider rounded-[8px] hover:bg-[#1a84ff] hover:text-white transition-colors">
                       + Add Restaurant
                     </button>
                   </div>
@@ -810,16 +818,20 @@ export default function AdminResorts() {
                       <span className="text-gray-400 text-[13px] font-semibold">No restaurants added yet</span>
                     </div>
                   ) : (
-                    form.restaurants.map((rest: any, idx: number) => (
-                      <div key={idx} className="bg-white border border-[#e8edf4] rounded-[16px] p-5 relative shadow-sm">
-                        <button onClick={() => {
-                          const newR = [...form.restaurants];
-                          newR.splice(idx, 1);
-                          setForm({...form, restaurants: newR});
-                        }} className="absolute top-4 right-4 text-rose-400 hover:text-rose-600">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                        <h4 className="text-[14px] font-bold text-[#041d3c] mb-4">Restaurant {idx + 1}</h4>
+                    <Reorder.Group axis="y" values={form.restaurants} onReorder={(newRests) => setForm({...form, restaurants: newRests})} className="space-y-4">
+                      {form.restaurants.map((rest: any, idx: number) => (
+                        <Reorder.Item key={rest._uiId || (rest._uiId = Math.random().toString(36).substring(7))} value={rest} className="bg-white border border-[#e8edf4] rounded-[16px] p-5 relative shadow-sm">
+                          <div className="absolute top-4 left-4 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 transition-colors">
+                            <GripVertical className="w-5 h-5" />
+                          </div>
+                          <button onClick={() => {
+                            const newR = [...form.restaurants];
+                            newR.splice(idx, 1);
+                            setForm({...form, restaurants: newR});
+                          }} className="absolute top-4 right-4 text-rose-400 hover:text-rose-600">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                          <h4 className="text-[14px] font-bold text-[#041d3c] mb-4 pl-8">Restaurant {idx + 1}</h4>
                         
                         <div className="mb-4">
                           <label className={labelCls}>Restaurant Name</label>
@@ -894,8 +906,9 @@ export default function AdminResorts() {
                                 ))}
                               </div>
                         </div>
-                      </div>
-                    ))
+                      </Reorder.Item>
+                    ))}
+                    </Reorder.Group>
                   )}
                 </div>
               )}
