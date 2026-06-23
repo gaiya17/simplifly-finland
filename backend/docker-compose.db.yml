@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  simplifly-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: simplifly
+      POSTGRES_PASSWORD: simplifly_password
+      POSTGRES_DB: simplifly
+    ports:
+      - "5433:5432"
+    volumes:
+      - simplifly_pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  simplifly_pgdata:

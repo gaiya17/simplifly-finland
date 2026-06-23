@@ -85,9 +85,11 @@ export class ResortController {
           categories: true,
           gallery: { orderBy: { order: 'asc' } },
           villas: {
+            orderBy: { order: 'asc' },
             include: { images: { orderBy: { order: 'asc' } } }
           },
           restaurants: {
+            orderBy: { order: 'asc' },
             include: { schedules: true }
           },
           factSheets: true
@@ -115,9 +117,11 @@ export class ResortController {
           categories: true,
           gallery: { orderBy: { order: 'asc' } },
           villas: {
+            orderBy: { order: 'asc' },
             include: { images: { orderBy: { order: 'asc' } } }
           },
           restaurants: {
+            orderBy: { order: 'asc' },
             include: { schedules: true }
           },
           factSheets: true
@@ -168,13 +172,14 @@ export class ResortController {
             }))
           },
           villas: {
-            create: (villas || []).map((v: any) => ({
+            create: (villas || []).map((v: any, index: number) => ({
               title: v.title,
               description: v.description,
               size: v.size,
               capacity: v.capacity,
               bedType: v.bedType,
               features: v.features || [],
+              order: index,
               images: {
                 create: (v.images || []).map((img: any, index: number) => ({
                   url: img.url || img.src,
@@ -185,11 +190,12 @@ export class ResortController {
             }))
           },
           restaurants: {
-            create: (restaurants || []).map((r: any) => ({
+            create: (restaurants || []).map((r: any, index: number) => ({
               title: r.title,
               description: r.description,
               image: r.image,
               imagePublicId: r.imagePublicId,
+              order: index,
               schedules: {
                 create: (r.schedules || []).map((s: any) => ({
                   meal: s.meal,
@@ -260,13 +266,14 @@ export class ResortController {
             }))
           },
           villas: {
-            create: (villas || []).map((v: any) => ({
+            create: (villas || []).map((v: any, index: number) => ({
               title: v.title,
               description: v.description,
               size: v.size,
               capacity: v.capacity,
               bedType: v.bedType,
               features: v.features || [],
+              order: index,
               images: {
                 create: (v.images || []).map((img: any, index: number) => ({
                   url: img.url || img.src,
@@ -277,11 +284,12 @@ export class ResortController {
             }))
           },
           restaurants: {
-            create: (restaurants || []).map((r: any) => ({
+            create: (restaurants || []).map((r: any, index: number) => ({
               title: r.title,
               description: r.description,
               image: r.image,
               imagePublicId: r.imagePublicId,
+              order: index,
               schedules: {
                 create: (r.schedules || []).map((s: any) => ({
                   meal: s.meal,

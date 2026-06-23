@@ -162,6 +162,7 @@ model ResortVilla {
   capacity    String?
   bedType     String?
   features    String[] 
+  order       Int      @default(0)
   images      ResortVillaImage[]
   resortId    String
   resort      Resort   @relation(fields: [resortId], references: [id], onDelete: Cascade)
@@ -182,6 +183,7 @@ model ResortRestaurant {
   description     String?
   image           String?
   imagePublicId   String?
+  order           Int      @default(0)
   schedules       RestaurantSchedule[]
   resortId        String
   resort          Resort   @relation(fields: [resortId], references: [id], onDelete: Cascade)
