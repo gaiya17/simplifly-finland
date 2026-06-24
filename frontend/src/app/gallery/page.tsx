@@ -44,15 +44,15 @@ export default function GalleryPage() {
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
 
       {/* ── HERO ── */}
-      <section className="relative w-full aspect-video min-h-[400px] max-h-[70vh] flex items-end pb-12 md:pb-16 justify-start overflow-hidden bg-[#041d3c]">
+      <section className="relative w-full aspect-video min-h-[400px] max-h-[70vh] flex items-end pb-12 md:pb-16 justify-start overflow-hidden">
         <div className="absolute inset-0">
           <ImageWithFallback
             src={galleryHero}
             alt="Gallery - Simplifly Finland Oy"
-            className="w-full h-full object-cover opacity-60 mix-blend-overlay"
+            className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c] via-[#041d3c]/80 to-[#041d3c]/40" />
-          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#041d3c]/95 via-[#041d3c]/60 to-[#041d3c]/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/80 via-transparent to-[#041d3c]/20" />
         </div>
 
         <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 flex flex-col items-start text-left">
