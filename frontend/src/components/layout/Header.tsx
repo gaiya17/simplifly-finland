@@ -217,7 +217,7 @@ export function Header() {
 
               {/* WhatsApp CTA */}
               <a
-                href="https://wa.me/358408192758"
+                href="https://wa.me/358408192758?text=Hi%20Simplifly!%20I'm%20looking%20to%20plan%20a%20trip%20and%20would%20like%20some%20assistance."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[12px] bg-gradient-to-r from-[#075e54] to-[#128c7e] hover:from-[#128c7e] hover:to-[#075e54] text-white text-[13px] font-semibold hover:-translate-y-0.5 shadow-[0_4px_14px_rgba(7,94,84,0.35)] hover:shadow-[0_8px_20px_rgba(7,94,84,0.45)] transition-all duration-250 whitespace-nowrap"
@@ -365,7 +365,7 @@ export function Header() {
           </div>
 
           <a
-            href="https://wa.me/358408192758"
+            href="https://wa.me/358408192758?text=Hi%20Simplifly!%20I'm%20looking%20to%20plan%20a%20trip%20and%20would%20like%20some%20assistance."
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setMobileOpen(false)}

@@ -313,7 +313,7 @@ export function ArticlePageClient({ initialPost, initialRelated }: { initialPost
                 </button>
 
                 <a
-                  href="https://wa.me/358408192758"
+                  href={`https://wa.me/358408192758?text=Hi! I just read your article "${encodeURIComponent(post.title)}" and would like to learn more.`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 px-4 py-3 bg-[#075e54]/8 hover:bg-[#075e54]/14 border border-[#075e54]/15 text-[#075e54] rounded-[12px] text-[13px] font-bold transition-all duration-200 group"
@@ -370,7 +370,7 @@ export function ArticlePageClient({ initialPost, initialRelated }: { initialPost
                 Talk to our travel experts on WhatsApp and plan your dream trip.
               </p>
               <a
-                href="https://wa.me/358408192758"
+                href={`https://wa.me/358408192758?text=Hi! I just read your article "${encodeURIComponent(post.title)}" and would like to learn more.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full text-center bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-[13px] py-2.5 rounded-[12px] transition-colors duration-200"
