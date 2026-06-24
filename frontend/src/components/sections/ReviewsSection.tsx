@@ -1,8 +1,5 @@
 "use client";
 import { Star, BadgeCheck, ExternalLink } from 'lucide-react';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 
 const reviews = [
   {
@@ -49,38 +46,18 @@ const GoogleIcon = () => (
 );
 
 export function ReviewsSection() {
-  const settings = {
-    dots: true,
-    infinite: true,
-    autoplay: true,
-    autoplaySpeed: 4500,
-    speed: 800,
-    slidesToShow: 2,
-    slidesToScroll: 1,
-    arrows: false,
-    pauseOnHover: true,
-    cssEase: 'cubic-bezier(0.25, 1, 0.5, 1)',
-    dotsClass: 'slick-dots !bottom-[-32px]',
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: { 
-          slidesToShow: 2,
-          slidesToScroll: 1
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: { 
-          slidesToShow: 1,
-          slidesToScroll: 1
-        },
-      },
-    ],
-  };
-
   return (
     <section className="w-full bg-[#f8fafc] py-[90px] lg:py-[110px] font-poppins overflow-hidden relative">
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+          animation: marquee 35s linear infinite;
+        }
+      `}} />
+
       {/* Ambient blobs */}
       <div className="absolute top-0 left-0 w-[450px] h-[450px] bg-[radial-gradient(circle,_rgba(26,132,255,0.04)_0%,_transparent_70%)] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[350px] h-[350px] bg-[radial-gradient(circle,_rgba(4,29,60,0.03)_0%,_transparent_70%)] pointer-events-none" />
@@ -93,7 +70,6 @@ export function ReviewsSection() {
 
             {/* Brand logo circle */}
             <div className="w-[80px] h-[80px] rounded-full bg-black shadow-[0_8px_28px_rgba(4,29,60,0.10)] border border-[#041d3c]/6 overflow-hidden flex items-center justify-center">
-              {/* Replace the src below with your SVG path */}
               <img src="/images/simplifly-bird-logo.svg" alt="Simplifly" className="w-[90%] h-[90%] object-contain" />
             </div>
 
@@ -137,61 +113,126 @@ export function ReviewsSection() {
             </a>
           </div>
 
-          {/* ── RIGHT: Review Cards Carousel ── */}
-          <div className="w-full lg:flex-1 min-w-0 pb-10">
-            <Slider {...settings}>
-              {reviews.map((review) => (
-                <div key={review.id} className="px-3 outline-none">
-                  <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_24px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_40px_rgba(4,29,60,0.09)] transition-all duration-300 hover:-translate-y-1 cursor-default group flex flex-col gap-4 min-h-[220px]">
+          {/* ── RIGHT: Pure CSS Marquee Cards ── */}
+          <div className="w-full lg:flex-1 min-w-0 pb-10 relative">
+            
+            {/* Fade gradients to make it look premium */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 lg:w-16 bg-gradient-to-r from-[#f8fafc] to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-8 lg:w-16 bg-gradient-to-l from-[#f8fafc] to-transparent z-10 pointer-events-none" />
 
-                    {/* Header: avatar + name + google icon */}
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        {/* Avatar */}
-                        {review.avatar.startsWith('http') ? (
-                          <img
-                            src={review.avatar}
-                            alt={review.name}
-                            className="w-[44px] h-[44px] rounded-full object-cover shrink-0 ring-2 ring-[#041d3c]/6"
-                          />
-                        ) : (
-                          <div
-                            className="w-[44px] h-[44px] rounded-full flex items-center justify-center text-white font-black text-[16px] shrink-0 ring-2 ring-white shadow-sm"
-                            style={{ backgroundColor: review.avatarColor }}
-                          >
-                            {review.avatar}
+            <div className="flex overflow-hidden w-full group py-4">
+              
+              {/* First Track */}
+              <div className="flex animate-marquee shrink-0 group-hover:[animation-play-state:paused]">
+                {reviews.map((review) => (
+                  <div key={review.id} className="w-[85vw] sm:w-[320px] lg:w-[350px] shrink-0 pr-6 outline-none">
+                    <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_24px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_40px_rgba(4,29,60,0.09)] transition-all duration-300 hover:-translate-y-1 cursor-default group/card flex flex-col gap-4 min-h-[220px]">
+
+                      {/* Header: avatar + name + google icon */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          {/* Avatar */}
+                          {review.avatar.startsWith('http') ? (
+                            <img
+                              src={review.avatar}
+                              alt={review.name}
+                              className="w-[44px] h-[44px] rounded-full object-cover shrink-0 ring-2 ring-[#041d3c]/6"
+                            />
+                          ) : (
+                            <div
+                              className="w-[44px] h-[44px] rounded-full flex items-center justify-center text-white font-black text-[16px] shrink-0 ring-2 ring-white shadow-sm"
+                              style={{ backgroundColor: review.avatarColor }}
+                            >
+                              {review.avatar}
+                            </div>
+                          )}
+                          {/* Name & time */}
+                          <div>
+                            <p className="text-[#041d3c] font-bold text-[14px] leading-tight">{review.name}</p>
+                            <p className="text-gray-400 text-[12px] font-medium mt-0.5">{review.time}</p>
                           </div>
-                        )}
-                        {/* Name & time */}
-                        <div>
-                          <p className="text-[#041d3c] font-bold text-[14px] leading-tight">{review.name}</p>
-                          <p className="text-gray-400 text-[12px] font-medium mt-0.5">{review.time}</p>
                         </div>
+                        <GoogleIcon />
                       </div>
-                      <GoogleIcon />
-                    </div>
 
-                    {/* Stars + verified */}
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-0.5">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-[14px] h-[14px] fill-[#fbbc04] text-[#fbbc04]" />
-                        ))}
+                      {/* Stars + verified */}
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-0.5">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-[14px] h-[14px] fill-[#fbbc04] text-[#fbbc04]" />
+                          ))}
+                        </div>
+                        <BadgeCheck className="w-[15px] h-[15px] fill-[#1a84ff] text-white" strokeWidth={2.5} />
                       </div>
-                      <BadgeCheck className="w-[15px] h-[15px] fill-[#1a84ff] text-white" strokeWidth={2.5} />
+
+                      {/* Review text */}
+                      <p className="text-gray-600 text-[14px] leading-[1.7] line-clamp-3 font-normal flex-1">
+                        {review.review}
+                      </p>
+
+                      {/* Thin accent bottom border on hover */}
+                      <div className="h-[2px] w-0 group-hover/card:w-full bg-gradient-to-r from-[#1a84ff]/60 to-transparent rounded-full transition-all duration-500 ease-out" />
                     </div>
-
-                    {/* Review text */}
-                    <p className="text-gray-600 text-[14px] leading-[1.7] line-clamp-3 font-normal flex-1">
-                      {review.review}
-                    </p>
-
-                    {/* Thin accent bottom border on hover */}
-                    <div className="h-[2px] w-0 group-hover:w-full bg-gradient-to-r from-[#1a84ff]/60 to-transparent rounded-full transition-all duration-500 ease-out" />
                   </div>
-                </div>
-              ))}
-            </Slider>
+                ))}
+              </div>
+
+              {/* Second Track (Duplicate for Seamless Loop) */}
+              <div className="flex animate-marquee shrink-0 group-hover:[animation-play-state:paused]" aria-hidden="true">
+                {reviews.map((review) => (
+                  <div key={review.id + '-dup'} className="w-[85vw] sm:w-[320px] lg:w-[350px] shrink-0 pr-6 outline-none">
+                    <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_24px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_40px_rgba(4,29,60,0.09)] transition-all duration-300 hover:-translate-y-1 cursor-default group/card flex flex-col gap-4 min-h-[220px]">
+
+                      {/* Header: avatar + name + google icon */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          {/* Avatar */}
+                          {review.avatar.startsWith('http') ? (
+                            <img
+                              src={review.avatar}
+                              alt={review.name}
+                              className="w-[44px] h-[44px] rounded-full object-cover shrink-0 ring-2 ring-[#041d3c]/6"
+                            />
+                          ) : (
+                            <div
+                              className="w-[44px] h-[44px] rounded-full flex items-center justify-center text-white font-black text-[16px] shrink-0 ring-2 ring-white shadow-sm"
+                              style={{ backgroundColor: review.avatarColor }}
+                            >
+                              {review.avatar}
+                            </div>
+                          )}
+                          {/* Name & time */}
+                          <div>
+                            <p className="text-[#041d3c] font-bold text-[14px] leading-tight">{review.name}</p>
+                            <p className="text-gray-400 text-[12px] font-medium mt-0.5">{review.time}</p>
+                          </div>
+                        </div>
+                        <GoogleIcon />
+                      </div>
+
+                      {/* Stars + verified */}
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-0.5">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-[14px] h-[14px] fill-[#fbbc04] text-[#fbbc04]" />
+                          ))}
+                        </div>
+                        <BadgeCheck className="w-[15px] h-[15px] fill-[#1a84ff] text-white" strokeWidth={2.5} />
+                      </div>
+
+                      {/* Review text */}
+                      <p className="text-gray-600 text-[14px] leading-[1.7] line-clamp-3 font-normal flex-1">
+                        {review.review}
+                      </p>
+
+                      {/* Thin accent bottom border on hover */}
+                      <div className="h-[2px] w-0 group-hover/card:w-full bg-gradient-to-r from-[#1a84ff]/60 to-transparent rounded-full transition-all duration-500 ease-out" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
           </div>
 
         </div>
@@ -199,3 +240,4 @@ export function ReviewsSection() {
     </section>
   );
 }
+
