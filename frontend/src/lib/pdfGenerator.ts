@@ -120,8 +120,8 @@ function addPageFooter(doc: jsPDF, pageNum: number, totalPages: number, type: 'r
   setFill(doc, NAVY); doc.rect(0, pH - 12, pW, 12, 'F');
   setTxt(doc, WHITE);
   doc.setFontSize(7); doc.setFont('Poppins','normal');
-  const email = type === 'resort' ? CONTACT.emailMV : CONTACT.emailSL;
-  doc.text(`${CONTACT.web}  |  ${email}  |  ${CONTACT.finland}`, pW/2, pH - 4.5, { align: 'center' });
+  const email = CONTACT.emailFI;
+  doc.text(`${CONTACT.web}  |  ${email}  |  ${CONTACT.finland}  |  ${CONTACT.srilanka}`, pW/2, pH - 4.5, { align: 'center' });
   setTxt(doc, MGRAY);
   doc.text(`${pageNum} / ${totalPages}`, pW - 12, pH - 4.5, { align: 'right' });
 }
