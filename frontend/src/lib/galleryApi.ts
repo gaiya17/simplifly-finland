@@ -9,11 +9,13 @@ const API_URL = getApiUrl();
 export const galleryApi = {
   // Get all assets, optionally filtered by category
   getAssets: async (category?: string) => {
-    const url = new URL(`${API_URL}/gallery`);
-    if (category && category !== 'All') {
-      url.searchParams.append('category', category);
-    }
-    const res = await fetch(url.toString());
+    // Use string concatenation instead of new URL() — new URL() requires
+    // an absolute base, but API_URL may be a relative path like '/api'.
+    // fetch() handles relative URLs natively in browsers.
+    const params = category && category !== 'All'
+      ? `?category=${encodeURIComponent(category)}`
+      : '';
+    const res = await fetch(`${API_URL}/gallery${params}`);
     if (!res.ok) throw new Error("Failed to fetch gallery assets");
     return res.json();
   },
