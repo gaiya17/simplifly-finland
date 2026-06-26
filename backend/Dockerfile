@@ -1,20 +1,45 @@
+########################################
+# Stage 1: Build
+########################################
 FROM node:20-alpine AS builder
 WORKDIR /app
+
 RUN npm install -g pnpm
+
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
+
 COPY . .
 RUN pnpm prisma:generate
 RUN pnpm build
 
-FROM node:20-alpine
+########################################
+# Stage 2: Production runtime
+########################################
+FROM node:20-alpine AS runner
 WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Create a non-root user/group for security.
+# Running as root inside a container is a security risk.
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 expressjs
+
 RUN npm install -g pnpm
+
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --prod --frozen-lockfile
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/dist ./dist
+
+# Copy compiled output and Prisma schema from builder
+COPY --from=builder --chown=expressjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=expressjs:nodejs /app/dist ./dist
+
+# Generate Prisma client in production stage
 RUN npx prisma@6 generate
 
+# Switch to non-root user
+USER expressjs
+
 EXPOSE 5000
-CMD ["npm", "run", "start"]
+CMD ["node", "dist/server.js"]

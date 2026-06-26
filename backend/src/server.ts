@@ -23,10 +23,23 @@ import { prisma } from "./config/db";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Enable CORS and JSON parsing
+// Enable CORS — only allow requests from our own frontend domain.
+// ALLOWED_ORIGIN is set in the backend .env on the VPS.
+// Falls back to localhost for local development.
+const allowedOrigins = (process.env.ALLOWED_ORIGIN || "http://localhost:3000")
+  .split(",")
+  .map((o) => o.trim());
+
 app.use(cors({
-  origin: true, // Allow all origins during local integration
-  credentials: true
+  origin: (origin, callback) => {
+    // Allow server-to-server requests (no Origin header) and allowed origins
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: origin '${origin}' is not allowed`));
+    }
+  },
+  credentials: true,
 }));
 app.use(express.json());
 

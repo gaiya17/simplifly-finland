@@ -12,6 +12,12 @@ import type { NextConfig } from "next";
  */
 const nextConfig: NextConfig = {
   // ------------------------------------------------------------------
+  // Standalone output — produces a minimal self-contained build.
+  // No full node_modules at runtime; ~70% smaller Docker image.
+  // ------------------------------------------------------------------
+  output: "standalone",
+
+  // ------------------------------------------------------------------
   // Compression — gzip/brotli on all responses for faster transfer
   // ------------------------------------------------------------------
   compress: true,
