@@ -5,6 +5,15 @@ simpliflyfinland.com, www.simpliflyfinland.com {
     # ── Reverse proxy to Next.js frontend ───────────────────────────────
     reverse_proxy frontend:3000
 
+    # ── Static asset caching ────────────────────────────────────────────
+    # Next.js fingerprints all static assets with a hash in the filename,
+    # so it's safe to cache them for 1 year. This drastically speeds up
+    # repeat visits — browser loads assets from cache, not the server.
+    @static {
+        path /_next/static/* /favicon.ico /images/* /fonts/* *.svg *.png *.jpg *.webp *.avif *.ico *.woff *.woff2
+    }
+    header @static Cache-Control "public, max-age=31536000, immutable"
+
     # ── Security Headers ────────────────────────────────────────────────
     header {
         # Enforce HTTPS for 1 year (including subdomains). Browsers will
