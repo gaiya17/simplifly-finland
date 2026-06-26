@@ -4,6 +4,13 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# NEXT_PUBLIC_* vars must be set at BUILD TIME — they get baked into
+# the JavaScript bundle. We use a relative path (/api) so client-side
+# calls go through the Next.js rewrite proxy, which forwards to the
+# backend container internally. This works on any domain.
+ARG NEXT_PUBLIC_API_URL=/api
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 # Copy dependency manifests and install
 COPY package.json package-lock.json ./
 RUN npm ci --legacy-peer-deps
