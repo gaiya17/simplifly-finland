@@ -38,6 +38,13 @@ COPY --from=builder --chown=expressjs:nodejs /app/dist ./dist
 # Generate Prisma client in production stage
 RUN npx prisma@6 generate
 
+# Create the uploads directory that documentController needs at startup.
+# Must be done as root (before USER switch) so we can also chown it.
+# Using a named Docker volume (see docker-compose.yml) ensures uploaded
+# files persist across container rebuilds.
+RUN mkdir -p /app/uploads/docs && \
+    chown -R expressjs:nodejs /app/uploads
+
 # Switch to non-root user
 USER expressjs
 
