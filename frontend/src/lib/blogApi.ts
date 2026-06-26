@@ -47,11 +47,14 @@ export interface BlogPostData {
 
 export const blogApi = {
   async getPosts(params?: { category?: string; status?: string }) {
-    const url = new URL(`${API_URL}/blogs`);
-    if (params?.category) url.searchParams.append('category', params.category);
-    if (params?.status) url.searchParams.append('status', params.status);
+    // Use string concatenation instead of new URL() — new URL() requires
+    // an absolute base, but API_URL may be a relative path like '/api'.
+    const searchParams = new URLSearchParams();
+    if (params?.category) searchParams.append('category', params.category);
+    if (params?.status) searchParams.append('status', params.status);
+    const query = searchParams.toString() ? `?${searchParams.toString()}` : '';
 
-    const res = await fetch(url.toString());
+    const res = await fetch(`${API_URL}/blogs${query}`);
     if (!res.ok) throw new Error('Failed to fetch blogs');
     return res.json();
   },
