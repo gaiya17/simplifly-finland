@@ -122,20 +122,24 @@ export const submitInquiry = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    // Configure nodemailer transport
-    // Note: The user should define SMTP_USER and SMTP_PASS in the .env file
+    // Configure nodemailer transport using standard SMTP
+    // Hostinger SMTP settings are typically: host: smtp.hostinger.com, port: 465
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: process.env.SMTP_HOST || 'smtp.hostinger.com',
+      port: Number(process.env.SMTP_PORT) || 465,
+      secure: true, // true for 465, false for other ports
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
     });
 
+    const adminEmail = process.env.ADMIN_EMAIL || 'nirmalgayantha55@gmail.com';
+
     // Email to Admin
     const adminMailOptions = {
       from: `"Simplifly Finland System" <${process.env.SMTP_USER}>`,
-      to: 'nirmalgayantha55@gmail.com',
+      to: adminEmail,
       subject: `New Inquiry: ${data.packageTitle} from ${data.firstName} ${data.surname}`,
       html: generateAdminEmailHtml(data),
       replyTo: data.email,
