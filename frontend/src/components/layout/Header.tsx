@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { useLanguage, useTranslation, LANGUAGES, LanguageCode } from '../../lib/i18n/LanguageContext';
+import { useTranslation } from '../../lib/i18n/LanguageContext';
 import { resortApi } from '../../lib/resortApi';
 import { tourApi } from '../../lib/tourApi';
 
@@ -11,9 +11,7 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
-  const [langOpen, setLangOpen] = useState(false);
 
-  const { language, setLanguage } = useLanguage();
   const { t } = useTranslation();
 
   const [maldivesCategories, setMaldivesCategories] = useState<{ id: string; name: string; slug: string }[]>([]);
@@ -46,24 +44,8 @@ export function Header() {
     return () => { document.body.style.overflow = ''; };
   }, [mobileOpen]);
 
-  // Close lang dropdown when clicking outside
-  useEffect(() => {
-    if (!langOpen) return;
-    const handler = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('[data-lang-picker]')) setLangOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [langOpen]);
-
   const toggleMobile = (key: string) =>
     setMobileExpanded((prev) => (prev === key ? null : key));
-
-  const handleLangSelect = (code: LanguageCode) => {
-    setLanguage(code);
-    setLangOpen(false);
-  };
 
   return (
     <>
@@ -180,40 +162,7 @@ export function Header() {
           <div className="flex items-center justify-end gap-2.5">
             <div className="hidden lg:flex items-center gap-2.5">
 
-              {/* Language picker — click-controlled */}
-              <div className="relative" data-lang-picker>
-                <button
-                  onClick={() => setLangOpen((prev) => !prev)}
-                  className="flex items-center gap-2 px-3.5 py-2 rounded-[12px] border border-white/10 bg-white/5 backdrop-blur-sm text-white text-[13px] font-semibold hover:bg-white/10 hover:border-white/20 transition-all duration-200"
-                >
-                  <img src={`https://flagcdn.com/w40/${language.flag}.png`} alt={language.name} className="w-4 h-auto rounded-sm" />
-                  <span>{language.name}</span>
-                  <ChevronDown className={`w-3.5 h-3.5 opacity-60 transition-transform duration-300 ${langOpen ? 'rotate-180' : ''}`} />
-                </button>
 
-                {/* Dropdown */}
-                <div
-                  className={`absolute top-[calc(100%+4px)] right-0 pt-2 transition-all duration-200 z-50 ${langOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'
-                    }`}
-                >
-                  <div className="relative bg-[#041d3c]/95 backdrop-blur-2xl border border-white/10 rounded-[16px] shadow-2xl py-2 min-w-[170px]">
-                    {LANGUAGES.map((lang) => {
-                      const isActive = lang.code === language.code;
-                      return (
-                        <button
-                          key={lang.code}
-                          onClick={() => handleLangSelect(lang.code)}
-                          className={`w-full flex items-center gap-3 px-5 py-2.5 text-[13px] hover:bg-white/5 transition-all duration-150 ${isActive ? 'text-white font-semibold' : 'text-white/60 font-medium'
-                            }`}
-                        >
-                          <img src={`https://flagcdn.com/w40/${lang.flag}.png`} alt={lang.name} className="w-4 h-auto rounded-sm" />
-                          {lang.name}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
 
               {/* WhatsApp CTA */}
               <a
@@ -341,28 +290,7 @@ export function Header() {
         </nav>
 
         <div className="px-5 py-5 border-t border-white/8 flex flex-col gap-3">
-          {/* Mobile language grid */}
-          <div>
-            <p className="text-white/40 text-[10px] font-extrabold uppercase tracking-widest mb-2 px-1">Language</p>
-            <div className="grid grid-cols-2 gap-1.5">
-              {LANGUAGES.map((lang) => {
-                const isActive = lang.code === language.code;
-                return (
-                  <button
-                    key={lang.code}
-                    onClick={() => { handleLangSelect(lang.code); setMobileOpen(false); }}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-[10px] text-[12px] font-semibold transition-all ${isActive
-                        ? 'bg-[#1a84ff] text-white'
-                        : 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10'
-                      }`}
-                  >
-                    <img src={`https://flagcdn.com/w40/${lang.flag}.png`} alt={lang.name} className="w-4 h-auto rounded-sm" />
-                    {lang.name}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+
 
           <a
             href="https://wa.me/358408192758?text=Hi%20Simplifly!%20I'm%20looking%20to%20plan%20a%20trip%20and%20would%20like%20some%20assistance."
