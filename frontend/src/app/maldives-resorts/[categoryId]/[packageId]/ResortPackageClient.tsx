@@ -12,86 +12,9 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { ImageWithFallback } from '../../../../components/shared/ImageWithFallback';
 import { ReviewsSection } from '../../../../components/sections/ReviewsSection';
+import { CountrySelect } from '@/components/ui/CountrySelect';
+import { COUNTRIES } from '@/lib/countries';
 import Link from 'next/link';
-
-// ── Country → Phone code map ───────────────────────────────────────────────────
-const COUNTRIES: { name: string; code: string; dial: string; flag: string }[] = [
-  { name: 'Afghanistan', code: 'AF', dial: '+93', flag: '🇦🇫' },
-  { name: 'Albania', code: 'AL', dial: '+355', flag: '🇦🇱' },
-  { name: 'Algeria', code: 'DZ', dial: '+213', flag: '🇩🇿' },
-  { name: 'Argentina', code: 'AR', dial: '+54', flag: '🇦🇷' },
-  { name: 'Australia', code: 'AU', dial: '+61', flag: '🇦🇺' },
-  { name: 'Austria', code: 'AT', dial: '+43', flag: '🇦🇹' },
-  { name: 'Bahrain', code: 'BH', dial: '+973', flag: '🇧🇭' },
-  { name: 'Bangladesh', code: 'BD', dial: '+880', flag: '🇧🇩' },
-  { name: 'Belgium', code: 'BE', dial: '+32', flag: '🇧🇪' },
-  { name: 'Brazil', code: 'BR', dial: '+55', flag: '🇧🇷' },
-  { name: 'Canada', code: 'CA', dial: '+1', flag: '🇨🇦' },
-  { name: 'Chile', code: 'CL', dial: '+56', flag: '🇨🇱' },
-  { name: 'China', code: 'CN', dial: '+86', flag: '🇨🇳' },
-  { name: 'Colombia', code: 'CO', dial: '+57', flag: '🇨🇴' },
-  { name: 'Croatia', code: 'HR', dial: '+385', flag: '🇭🇷' },
-  { name: 'Czech Republic', code: 'CZ', dial: '+420', flag: '🇨🇿' },
-  { name: 'Denmark', code: 'DK', dial: '+45', flag: '🇩🇰' },
-  { name: 'Egypt', code: 'EG', dial: '+20', flag: '🇪🇬' },
-  { name: 'Estonia', code: 'EE', dial: '+372', flag: '🇪🇪' },
-  { name: 'Ethiopia', code: 'ET', dial: '+251', flag: '🇪🇹' },
-  { name: 'Finland', code: 'FI', dial: '+358', flag: '🇫🇮' },
-  { name: 'France', code: 'FR', dial: '+33', flag: '🇫🇷' },
-  { name: 'Germany', code: 'DE', dial: '+49', flag: '🇩🇪' },
-  { name: 'Ghana', code: 'GH', dial: '+233', flag: '🇬🇭' },
-  { name: 'Greece', code: 'GR', dial: '+30', flag: '🇬🇷' },
-  { name: 'Hungary', code: 'HU', dial: '+36', flag: '🇭🇺' },
-  { name: 'India', code: 'IN', dial: '+91', flag: '🇮🇳' },
-  { name: 'Indonesia', code: 'ID', dial: '+62', flag: '🇮🇩' },
-  { name: 'Iran', code: 'IR', dial: '+98', flag: '🇮🇷' },
-  { name: 'Iraq', code: 'IQ', dial: '+964', flag: '🇮🇶' },
-  { name: 'Ireland', code: 'IE', dial: '+353', flag: '🇮🇪' },
-  { name: 'Israel', code: 'IL', dial: '+972', flag: '🇮🇱' },
-  { name: 'Italy', code: 'IT', dial: '+39', flag: '🇮🇹' },
-  { name: 'Japan', code: 'JP', dial: '+81', flag: '🇯🇵' },
-  { name: 'Jordan', code: 'JO', dial: '+962', flag: '🇯🇴' },
-  { name: 'Kazakhstan', code: 'KZ', dial: '+7', flag: '🇰🇿' },
-  { name: 'Kenya', code: 'KE', dial: '+254', flag: '🇰🇪' },
-  { name: 'Kuwait', code: 'KW', dial: '+965', flag: '🇰🇼' },
-  { name: 'Latvia', code: 'LV', dial: '+371', flag: '🇱🇻' },
-  { name: 'Lebanon', code: 'LB', dial: '+961', flag: '🇱🇧' },
-  { name: 'Lithuania', code: 'LT', dial: '+370', flag: '🇱🇹' },
-  { name: 'Luxembourg', code: 'LU', dial: '+352', flag: '🇱🇺' },
-  { name: 'Malaysia', code: 'MY', dial: '+60', flag: '🇲🇾' },
-  { name: 'Maldives', code: 'MV', dial: '+960', flag: '🇲🇻' },
-  { name: 'Malta', code: 'MT', dial: '+356', flag: '🇲🇹' },
-  { name: 'Mexico', code: 'MX', dial: '+52', flag: '🇲🇽' },
-  { name: 'Morocco', code: 'MA', dial: '+212', flag: '🇲🇦' },
-  { name: 'Netherlands', code: 'NL', dial: '+31', flag: '🇳🇱' },
-  { name: 'New Zealand', code: 'NZ', dial: '+64', flag: '🇳🇿' },
-  { name: 'Nigeria', code: 'NG', dial: '+234', flag: '🇳🇬' },
-  { name: 'Norway', code: 'NO', dial: '+47', flag: '🇳🇴' },
-  { name: 'Oman', code: 'OM', dial: '+968', flag: '🇴🇲' },
-  { name: 'Pakistan', code: 'PK', dial: '+92', flag: '🇵🇰' },
-  { name: 'Philippines', code: 'PH', dial: '+63', flag: '🇵🇭' },
-  { name: 'Poland', code: 'PL', dial: '+48', flag: '🇵🇱' },
-  { name: 'Portugal', code: 'PT', dial: '+351', flag: '🇵🇹' },
-  { name: 'Qatar', code: 'QA', dial: '+974', flag: '🇶🇦' },
-  { name: 'Romania', code: 'RO', dial: '+40', flag: '🇷🇴' },
-  { name: 'Russia', code: 'RU', dial: '+7', flag: '🇷🇺' },
-  { name: 'Saudi Arabia', code: 'SA', dial: '+966', flag: '🇸🇦' },
-  { name: 'Singapore', code: 'SG', dial: '+65', flag: '🇸🇬' },
-  { name: 'Slovakia', code: 'SK', dial: '+421', flag: '🇸🇰' },
-  { name: 'South Africa', code: 'ZA', dial: '+27', flag: '🇿🇦' },
-  { name: 'South Korea', code: 'KR', dial: '+82', flag: '🇰🇷' },
-  { name: 'Spain', code: 'ES', dial: '+34', flag: '🇪🇸' },
-  { name: 'Sri Lanka', code: 'LK', dial: '+94', flag: '🇱🇰' },
-  { name: 'Sweden', code: 'SE', dial: '+46', flag: '🇸🇪' },
-  { name: 'Switzerland', code: 'CH', dial: '+41', flag: '🇨🇭' },
-  { name: 'Thailand', code: 'TH', dial: '+66', flag: '🇹🇭' },
-  { name: 'Turkey', code: 'TR', dial: '+90', flag: '🇹🇷' },
-  { name: 'UAE', code: 'AE', dial: '+971', flag: '🇦🇪' },
-  { name: 'Ukraine', code: 'UA', dial: '+380', flag: '🇺🇦' },
-  { name: 'United Kingdom', code: 'GB', dial: '+44', flag: '🇬🇧' },
-  { name: 'United States', code: 'US', dial: '+1', flag: '🇺🇸' },
-  { name: 'Vietnam', code: 'VN', dial: '+84', flag: '🇻🇳' },
-].sort((a, b) => a.name.localeCompare(b.name));
 
 const TABS = [
   { id: 'villas',       label: 'Villas' },
@@ -158,7 +81,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [phoneCode, setPhoneCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm({
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
     defaultValues: {
       firstName: '', surname: '', email: '',
       country: '', phone: '',
@@ -599,21 +522,14 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
 
                 {/* Country + Phone with auto-code */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="relative">
-                    <select
-                      {...register('country', { required: 'Country is required' })}
-                      className={`w-full appearance-none bg-[#f8fafc] border ${
-                        errors.country ? 'border-red-400' : 'border-[#e4eaf2]'
-                      } rounded-[12px] px-4 py-3 text-[13px] font-medium focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer`}
-                      style={{ color: watchedCountry ? '#041d3c' : '#9ca3af' }}
-                    >
-                      <option value="" disabled>Country *</option>
-                      {COUNTRIES.map(c => (
-                        <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-[22px] -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                    {errors.country && <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">{errors.country.message as string}</span>}
+                  <div className="relative z-20">
+                    <CountrySelect 
+                      value={watchedCountry}
+                      onChange={(val) => {
+                        setValue('country', val, { shouldValidate: true });
+                      }}
+                      error={errors.country?.message as string}
+                    />
                   </div>
 
                   {/* Phone with animated dial-code badge */}
@@ -698,7 +614,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                         {...register('adults')}
                         className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer"
                       >
-                        {[1,2,3,4,5,6].map(n => (
+                        {Array.from({ length: 50 }, (_, i) => i + 1).map(n => (
                           <option key={n} value={String(n)}>{n} Adult{n > 1 ? 's' : ''}</option>
                         ))}
                       </select>
@@ -712,7 +628,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                         {...register('children')}
                         className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer"
                       >
-                        {[0,1,2,3,4].map(n => (
+                        {Array.from({ length: 51 }, (_, i) => i).map(n => (
                           <option key={n} value={String(n)}>{n} Child{n !== 1 ? 'ren' : ''}</option>
                         ))}
                       </select>
@@ -726,7 +642,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                         {...register('infants')}
                         className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer"
                       >
-                        {[0,1,2,3].map(n => (
+                        {Array.from({ length: 21 }, (_, i) => i).map(n => (
                           <option key={n} value={String(n)}>{n} Infant{n !== 1 ? 's' : ''}</option>
                         ))}
                       </select>
