@@ -21,7 +21,7 @@ export async function generateMetadata(
       openGraph: {
         title: res.title,
         description: res.summary || res.title,
-        images: image ? [image, ...previousImages] : previousImages,
+        images: image ? [{ url: image, alt: res.title }, ...previousImages] : previousImages,
         type: 'website',
       },
     };
