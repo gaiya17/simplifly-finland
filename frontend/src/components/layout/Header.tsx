@@ -55,7 +55,7 @@ export function Header() {
             : 'bg-transparent'
           }`}
       >
-        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 h-[72px] grid grid-cols-3 items-center">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 h-[72px] grid grid-cols-[1fr_auto_1fr] items-center">
 
           {/* ── Logo ── */}
           <div className="flex items-center justify-start">
