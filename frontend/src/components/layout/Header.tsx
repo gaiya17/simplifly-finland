@@ -60,7 +60,7 @@ export function Header() {
           {/* ── Logo ── */}
           <div className="flex items-center justify-start">
             <Link href="/" className="flex-shrink-0">
-              <img src="/simplifly-logo.svg" alt="Simplifly Finland" className="h-14 w-auto transition-opacity duration-300 hover:opacity-80" />
+              <img src="/simplifly-logo.svg" alt="Simplifly Finland" className="h-10 w-auto transition-opacity duration-300 hover:opacity-80" />
             </Link>
           </div>
 
@@ -199,7 +199,7 @@ export function Header() {
         className={`fixed top-0 right-0 h-full w-[300px] max-w-[85vw] bg-[#041d3c] z-[70] flex flex-col transition-transform duration-400 ease-out lg:hidden shadow-[-20px_0_60px_rgba(0,0,0,0.4)] ${mobileOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/8">
-          <img src="/simplifly-logo.svg" alt="Simplifly Finland" className="h-10 w-auto" />
+          <img src="/simplifly-logo.svg" alt="Simplifly Finland" className="h-8 w-auto" />
           <button
             className="w-9 h-9 rounded-full bg-white/8 border border-white/12 flex items-center justify-center text-white hover:bg-white/15 transition-all"
             onClick={() => setMobileOpen(false)}
