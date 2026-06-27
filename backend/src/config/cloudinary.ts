@@ -33,7 +33,7 @@ const storage = new CloudinaryStorage({
 export const upload = multer({ storage });
 export { cloudinary };
 
-export const extractPublicIdFromUrl = (url: string | null | undefined): string | null => {
+const extractPublicIdFromUrl = (url: string | null | undefined): string | null => {
   if (!url || !url.includes('cloudinary.com')) return null;
   try {
     const parts = url.split('/upload/');
