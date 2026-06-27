@@ -36,6 +36,7 @@ const poppins = Poppins({
 // Individual pages can override any of these values by exporting their
 // own `metadata` constant.
 export const metadata: Metadata = {
+  metadataBase: new URL("https://simpliflyfinland.com"),
   title: {
     // The %s placeholder is filled by child pages that export metadata.title
     template: "%s | Simplifly Finland",
