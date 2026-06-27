@@ -432,12 +432,12 @@ export function TourPackageClient({ data }: { data: any }) {
                           type="tel"
                           placeholder={phoneCode ? '' : 'Phone (+code)'}
                           value={phoneNumber}
-                          onChange={e => setPhoneNumber(e.target.value)}
+                          onChange={e => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
                           className="w-full bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400"
                           style={{ paddingLeft: phoneCode ? `${phoneCode.length * 8 + 18}px` : '16px', paddingRight: '12px' }}
                         />
                       </div>
-                      {(!phoneNumber || phoneNumber.replace(/\\D/g, '').length < 7) && phoneNumber.length > 0 && (
+                      {(!phoneNumber || phoneNumber.replace(/\D/g, '').length < 7) && phoneNumber.length > 0 && (
                         <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">Valid phone required</span>
                       )}
                     </div>
@@ -448,14 +448,15 @@ export function TourPackageClient({ data }: { data: any }) {
                     <div className="relative">
                       <input
                         type="text"
-                        placeholder="Travel Date"
-                        {...register('travelDate')}
+                        placeholder="Travel Date *"
+                        {...register('travelDate', { required: 'Travel date is required' })}
                         min={new Date().toISOString().split('T')[0]}
                         onFocus={(e) => { e.target.type = 'date'; try { (e.target as any).showPicker(); } catch(err){} }}
                         onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                        className="w-full bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+                        className={`w-full bg-[#f8fafc] border ${errors.travelDate ? 'border-red-400' : 'border-[#e4eaf2]'} rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer`}
                       />
                       <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      {errors.travelDate && <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">{errors.travelDate.message as string}</span>}
                     </div>
 
                     <div className="relative">
