@@ -14,7 +14,7 @@ import pl from '../translations/pl';
 
 export type LanguageCode = 'en' | 'fi' | 'sv' | 'de' | 'fr' | 'ru' | 'es' | 'pl';
 
-export interface Language {
+interface Language {
   code: LanguageCode;
   name: string;
   flag: string;
@@ -22,7 +22,7 @@ export interface Language {
 
 // ── Language Definitions ───────────────────────────────────────────────────────
 
-export const LANGUAGES: Language[] = [
+const LANGUAGES: Language[] = [
   { code: 'en', name: 'English', flag: 'gb' },
   { code: 'fi', name: 'Suomi', flag: 'fi' },
   { code: 'sv', name: 'Svenska', flag: 'se' },
@@ -140,10 +140,4 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 export function useTranslation() {
   const { t } = useContext(LanguageContext);
   return { t };
-}
-
-/** Returns language state + setter */
-export function useLanguage() {
-  const { language, setLanguage, isDetecting } = useContext(LanguageContext);
-  return { language, setLanguage, isDetecting };
 }
