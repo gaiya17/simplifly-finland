@@ -1,6 +1,33 @@
 import { ArticlePageClient } from './ArticlePageClient';
 import { blogApi } from '../../../lib/blogApi';
 import { notFound } from 'next/navigation';
+import type { Metadata, ResolvingMetadata } from 'next';
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const post = await blogApi.getPostBySlug(slug);
+    if (!post || post.error) return { title: 'Post Not Found | Simplifly Finland' };
+
+    const previousImages = (await parent).openGraph?.images || [];
+
+    return {
+      title: `${post.title} | Simplifly Finland Blog`,
+      description: post.excerpt || post.title,
+      openGraph: {
+        title: post.title,
+        description: post.excerpt || post.title,
+        images: post.coverImage ? [post.coverImage, ...previousImages] : previousImages,
+        type: 'article',
+      },
+    };
+  } catch (e) {
+    return { title: 'Blog | Simplifly Finland' };
+  }
+}
 
 export const revalidate = 60;
 

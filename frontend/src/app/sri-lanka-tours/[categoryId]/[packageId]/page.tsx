@@ -1,6 +1,34 @@
 import Link from 'next/link';
 import { tourApi } from '../../../../lib/tourApi';
 import { TourPackageClient } from './TourPackageClient';
+import type { Metadata, ResolvingMetadata } from 'next';
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ packageId: string }> },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { packageId } = await params;
+  try {
+    const res = await tourApi.getTourBySlug(packageId);
+    if (!res) return { title: 'Tour Not Found | Simplifly Finland' };
+
+    const previousImages = (await parent).openGraph?.images || [];
+    const image = res.heroImage || res.packageImage;
+
+    return {
+      title: `${res.title} | Sri Lanka Tours | Simplifly Finland`,
+      description: res.summary || res.title,
+      openGraph: {
+        title: res.title,
+        description: res.summary || res.title,
+        images: image ? [image, ...previousImages] : previousImages,
+        type: 'website',
+      },
+    };
+  } catch (e) {
+    return { title: 'Sri Lanka Tours | Simplifly Finland' };
+  }
+}
 
 export default async function TourPackagePage({ params }: { params: Promise<{ packageId: string }> }) {
   const { packageId } = await params;
