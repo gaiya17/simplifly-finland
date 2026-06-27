@@ -356,7 +356,7 @@ export const FloatingContact = () => {
       {/* ── WhatsApp floating button (left) ── */}
       <div className="fixed bottom-8 left-6 lg:bottom-10 lg:left-10 z-50">
         <div className="relative flex items-center group">
-          <div className="absolute left-full ml-3 px-3 py-1.5 bg-white text-[#041d3c] text-[12px] font-semibold rounded-[10px] shadow-lg opacity-0 pointer-events-none transition-all duration-300 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap border border-gray-100">
+          <div className="absolute left-full ml-3 px-3 py-1.5 bg-white text-[#041d3c] text-[12px] font-semibold rounded-[10px] shadow-lg opacity-100 translate-x-0 whitespace-nowrap border border-gray-100">
             WhatsApp Us
           </div>
           <a
@@ -534,7 +534,7 @@ export const FloatingContact = () => {
         {/* Toggle button */}
         <div className="relative flex items-center justify-end group">
           {!isOpen && (
-            <div className="absolute right-full mr-3 px-3 py-1.5 bg-white text-[#041d3c] text-[12px] font-semibold rounded-[10px] shadow-lg opacity-0 pointer-events-none transition-all duration-300 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap border border-gray-100">
+            <div className="absolute right-full mr-3 px-3 py-1.5 bg-white text-[#041d3c] text-[12px] font-semibold rounded-[10px] shadow-lg opacity-100 translate-x-0 whitespace-nowrap border border-gray-100">
               Plan Your Trip
             </div>
           )}
