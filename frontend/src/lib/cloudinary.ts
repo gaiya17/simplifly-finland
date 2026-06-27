@@ -29,9 +29,4 @@ export function cloudinaryUrl(
   return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transforms}/${publicId}`;
 }
 
-export const cloudinaryPresets = {
-  hero:      (id: string) => cloudinaryUrl(id, { width: 1920, quality: 'auto' }),
-  card:      (id: string) => cloudinaryUrl(id, { width: 800,  height: 600, crop: 'fill' }),
-  thumbnail: (id: string) => cloudinaryUrl(id, { width: 400,  height: 300, crop: 'fill' }),
-  gallery:   (id: string) => cloudinaryUrl(id, { width: 1080, crop: 'fit' }),
-};
+
