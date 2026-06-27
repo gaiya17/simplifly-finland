@@ -194,7 +194,7 @@ export function TourPackageClient({ data }: { data: any }) {
         packageTitle: data.title,
       };
 
-      const res = await fetch('http://localhost:5000/api/inquiries', {
+      const res = await fetch('/api/inquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
