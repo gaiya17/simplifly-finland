@@ -20,10 +20,10 @@ const GOLD    = [212, 175, 55] as [number, number, number];
 const CONTACT = {
   finland : '+358 40 819 2758',
   srilanka: '+94 76 342 7054',
-  emailFI : 'sales@simpliflyfinland.fi',
+  emailFI : 'sales@simpliflyfinland.com',
   emailSL : 'sales@simpliflysrilanka.com',
   emailMV : 'sales@simpliflymaldives.com',
-  web     : 'www.simpliflyfinland.fi',
+  web     : 'www.simpliflyfinland.com',
 };
 
 // ── Helpers ──────────────────────────────────────────────────────
