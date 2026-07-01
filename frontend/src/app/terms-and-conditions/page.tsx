@@ -123,7 +123,7 @@ export default function TermsAndConditionsPage() {
               </div>
 
               <p className="mt-8">
-                Any cancellations must be sent in writing to the sales department at Simplifly Finland OY; <a href="mailto:sales@simpliflyfinland.fi">sales@simpliflyfinland.fi</a>
+                Any cancellations must be sent in writing to the sales department at Simplifly Finland OY; <a href="mailto:sales@simpliflyfinland.com">sales@simpliflyfinland.com</a>
               </p>
 
               <div className="overflow-x-auto my-8">

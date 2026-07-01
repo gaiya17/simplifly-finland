@@ -249,7 +249,7 @@ const FLOW: Record<string, FlowNode> = {
   email: {
     id: 'email',
     from: 'bot',
-    message: '📧 You can reach us at:\n\n🇫🇮 sales@simpliflyfinland.fi\n🇱🇰 sales@simpliflysrilanka.com\n🏝️ sales@simpliflymaldives.com\n\nOr chat directly on WhatsApp for the fastest reply!',
+    message: '📧 You can reach us at:\n\n🇫🇮 sales@simpliflyfinland.com\n🇱🇰 sales@simpliflysrilanka.com\n🏝️ sales@simpliflymaldives.com\n\nOr chat directly on WhatsApp for the fastest reply!',
     options: [
       { label: '💬 Switch to WhatsApp', next: 'wa_general' },
       { label: '🔙 Main Menu', next: 'restart' },
