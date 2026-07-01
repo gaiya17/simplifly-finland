@@ -29,6 +29,7 @@ export default function AdminTours() {
   const [isLoading, setIsLoading] = useState(true);
   const [availableDestinations, setAvailableDestinations] = useState<string[]>([]);
   const [newDestination, setNewDestination] = useState("");
+  const [destinationSearch, setDestinationSearch] = useState("");
 
   // Modals
   const [isWizardOpen, setIsWizardOpen] = useState(false);
@@ -62,7 +63,7 @@ export default function AdminTours() {
       ]);
       setTours(fetchedTours);
       setCategories(fetchedCategories);
-      setAvailableDestinations(fetchedDestinations.map((d: any) => d.name));
+      setAvailableDestinations(fetchedDestinations.map((d: any) => d.name).sort((a: string, b: string) => a.localeCompare(b)));
     } catch (err) {
       toast.error("Failed to load tour data");
     } finally {
@@ -110,6 +111,7 @@ export default function AdminTours() {
       });
     }
     setStep(1);
+    setDestinationSearch("");
     setIsWizardOpen(true);
   };
 
@@ -405,8 +407,26 @@ export default function AdminTours() {
                   <h4 className="text-[15px] font-bold text-[#041d3c] border-b pb-2">3. Tour Content</h4>
                   <div>
                     <label className="block text-[11px] font-bold text-gray-500 uppercase mb-2">Destinations Overview</label>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {availableDestinations.map(dest => {
+                    {/* Search filter */}
+                    <div className="relative mb-3 max-w-sm">
+                      <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" /></svg>
+                      <input
+                        type="text"
+                        value={destinationSearch}
+                        onChange={e => setDestinationSearch(e.target.value)}
+                        placeholder="Search destinations..."
+                        className="w-full pl-8 pr-3 py-2 bg-[#f4f7fb] border border-[#e2e8f0] rounded-[8px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff]"
+                      />
+                      {destinationSearch && (
+                        <button type="button" onClick={() => setDestinationSearch("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2 mb-4 max-h-[340px] overflow-y-auto pr-1">
+                      {availableDestinations
+                        .filter(dest => dest.toLowerCase().includes(destinationSearch.toLowerCase()))
+                        .map(dest => {
                         const isSelected = form.destinations.includes(dest);
                         return (
                           <button
