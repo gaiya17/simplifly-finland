@@ -224,8 +224,31 @@ export default function AllSriLankaTours() {
             </div>
 
             {isLoading ? (
-              <div className="py-20 flex justify-center w-full">
-                <Loader2 className="w-8 h-8 text-[#1a84ff] animate-spin" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] animate-pulse">
+                    {/* Image area */}
+                    <div className="h-[220px] w-full bg-[#e8edf3] shrink-0" />
+                    {/* Content area */}
+                    <div className="p-5 flex flex-col gap-3 flex-1">
+                      {/* Tag */}
+                      <div className="h-3 w-20 rounded-full bg-[#e8edf3]" />
+                      {/* Title */}
+                      <div className="h-5 w-4/5 rounded-full bg-[#e8edf3]" />
+                      <div className="h-4 w-3/5 rounded-full bg-[#e8edf3]" />
+                      {/* Days/nights chips */}
+                      <div className="flex gap-2 mt-1">
+                        <div className="h-6 w-16 rounded-full bg-[#e8edf3]" />
+                        <div className="h-6 w-16 rounded-full bg-[#e8edf3]" />
+                      </div>
+                      {/* Price row */}
+                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#f0f4f9]">
+                        <div className="h-5 w-24 rounded-full bg-[#e8edf3]" />
+                        <div className="h-8 w-28 rounded-full bg-[#e8edf3]" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : filteredAndSortedTours.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-[24px] shadow-sm border border-gray-100 flex flex-col items-center">
