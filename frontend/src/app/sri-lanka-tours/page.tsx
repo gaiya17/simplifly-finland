@@ -188,9 +188,23 @@ export default function SriLankaTours() {
           {/* 4-column overlay photo card grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {isLoading ? (
-              <div className="col-span-1 sm:col-span-2 lg:col-span-4 py-10 flex justify-center">
-                <Loader2 className="w-8 h-8 text-[#1a84ff] animate-spin" />
-              </div>
+              <>
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="relative rounded-[24px] overflow-hidden h-[320px] bg-[#e8edf3] animate-pulse">
+                    {/* Badge skeleton top-left */}
+                    <div className="absolute top-4 left-4 w-10 h-10 rounded-[12px] bg-[#041d3c]/10" />
+                    {/* Bottom content skeleton */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5 flex flex-col gap-2">
+                      <div className="h-4 w-3/4 rounded-full bg-[#041d3c]/15" />
+                      <div className="h-3 w-1/2 rounded-full bg-[#041d3c]/10 mt-1" />
+                      <div className="flex items-center justify-between mt-4">
+                        <div className="h-3 w-24 rounded-full bg-[#041d3c]/10" />
+                        <div className="h-3 w-3 rounded-full bg-[#041d3c]/10" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </>
             ) : displayCategories.map((cat, idx) => {
               const Icon = cat.icon;
               return (
