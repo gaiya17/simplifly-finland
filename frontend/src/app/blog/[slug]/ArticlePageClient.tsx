@@ -107,6 +107,67 @@ function RenderBlock({ block }: { block: ContentBlock }) {
         </div>
       );
 
+    case 'link':
+      return (
+        <a
+          href={block.href || '#'}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="my-6 flex items-center gap-4 p-4 bg-gradient-to-r from-[#f0f6ff] to-[#e8f2ff] border border-[#1a84ff]/20 rounded-[14px] hover:border-[#1a84ff]/50 hover:shadow-md transition-all duration-300 group no-underline"
+        >
+          <div className="shrink-0 w-9 h-9 rounded-[10px] bg-[#1a84ff]/10 border border-[#1a84ff]/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-[#1a84ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </div>
+          <span className="flex-1 text-[#1a84ff] font-bold text-[15px] group-hover:underline leading-snug">
+            {block.text || block.href}
+          </span>
+          <svg className="w-4 h-4 text-[#1a84ff]/50 group-hover:text-[#1a84ff] group-hover:translate-x-0.5 transition-all shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      );
+
+    case 'table':
+      return (
+        <div className="my-8 overflow-x-auto rounded-[16px] border border-slate-100 shadow-sm">
+          <table className="w-full border-collapse text-[14px]">
+            {block.headers && block.headers.length > 0 && (
+              <thead>
+                <tr>
+                  {block.headers.map((header, i) => (
+                    <th
+                      key={i}
+                      className="px-5 py-3.5 text-left text-white font-black text-[12px] uppercase tracking-wider bg-[#041d3c] first:rounded-tl-[14px] last:rounded-tr-[14px] whitespace-nowrap"
+                    >
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {(block.rows || []).map((row, rowIdx) => (
+                <tr
+                  key={rowIdx}
+                  className={rowIdx % 2 === 0 ? 'bg-white' : 'bg-[#f8fafc]'}
+                >
+                  {row.map((cell, colIdx) => (
+                    <td
+                      key={colIdx}
+                      className="px-5 py-3.5 text-[#374151] text-[14px] leading-relaxed border-t border-slate-100"
+                    >
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+
     default:
       return null;
   }

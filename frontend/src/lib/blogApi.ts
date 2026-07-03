@@ -17,12 +17,17 @@ export const categoryColors: Record<string, string> = {
 };
 
 export interface ContentBlock {
-  type: 'paragraph' | 'heading' | 'quote' | 'tip' | 'list' | 'image';
+  type: 'paragraph' | 'heading' | 'quote' | 'tip' | 'list' | 'image' | 'link' | 'table';
   text?: string;
   items?: string[];
   url?: string;
   caption?: string;
   publicId?: string;
+  // link block
+  href?: string;
+  // table block
+  headers?: string[];
+  rows?: string[][];
 }
 
 export interface BlogPostData {
