@@ -195,10 +195,15 @@ function checkNewPage(
   return y;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// RESORT BROCHURE
-// ═══════════════════════════════════════════════════════════════════
-export async function generateResortBrochure(resort: any) {
+// ═══════════════════════════════════════════════════════════════
+// RESORT BROCHURE — PRIVATE PAGE BUILDER
+// Returns the doc object without saving so callers can append extra pages.
+// ═══════════════════════════════════════════════════════════════
+async function _buildResortBrochurePages(resort: any): Promise<{
+  doc: jsPDF;
+  logoB64: string | null;
+  birdLogoB64: string | null;
+}> {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const pW = doc.internal.pageSize.getWidth();  // 210
   const pH = doc.internal.pageSize.getHeight(); // 297
@@ -289,8 +294,6 @@ export async function generateResortBrochure(resort: any) {
 
     y += sumLines.length * lh + 8;
   }
-
-  addPageFooter(doc, 1, 1, 'resort'); // placeholder, updated at end
 
   // ══════════════════════════════════════════════════════════════
   // PAGE 2: INFO CHIPS
@@ -492,8 +495,6 @@ export async function generateResortBrochure(resort: any) {
     y = finalY + 8;
   }
 
-  addPageFooter(doc, 2, 1, 'resort'); // placeholder
-
   // ══════════════════════════════════════════════════════════════
   // PAGE 3: RESORT GALLERY
   // ══════════════════════════════════════════════════════════════
@@ -550,8 +551,6 @@ export async function generateResortBrochure(resort: any) {
     setTxt(doc, MGRAY); doc.text('No gallery images available.', pW / 2, y + 15, { align: 'center' });
     y += 30;
   }
-
-  addPageFooter(doc, 3, 1, 'resort'); // placeholder
 
   // PAGE 4+: VILLA TYPES
   // ══════════════════════════════════════════════════════════════
@@ -677,8 +676,6 @@ export async function generateResortBrochure(resort: any) {
 
       y += cardH + 7;
     }
-
-    addPageFooter(doc, (doc.internal as any).getNumberOfPages(), 1, 'resort');
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -782,18 +779,181 @@ export async function generateResortBrochure(resort: any) {
     addPageFooter(doc, (doc.internal as any).getNumberOfPages(), 1, 'resort');
   }
 
-  // ── Fix all page footers with correct total ───────────────────
+  return { doc, logoB64, birdLogoB64 };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RESORT BROCHURE — PUBLIC API  (unchanged external behaviour)
+// ═══════════════════════════════════════════════════════════════════
+export async function generateResortBrochure(resort: any) {
+  const { doc, birdLogoB64 } = await _buildResortBrochurePages(resort);
   const totalPages = (doc.internal as any).getNumberOfPages();
   for (let p = 1; p <= totalPages; p++) {
     doc.setPage(p);
-    if (p > 1) {
-      drawWatermark(doc, birdLogoB64);
-    }
+    if (p > 1) drawWatermark(doc, birdLogoB64);
+    addPageFooter(doc, p, totalPages, 'resort');
+  }
+  doc.save(`Simplifly-${resort.title.replace(/[^a-z0-9]/gi,'_')}-Brochure.pdf`);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RATES PAGE — DATA TYPES
+// ═══════════════════════════════════════════════════════════════════
+export interface RatesPageData {
+  pageTitle:    string;    // e.g. "Special Rates for 2 Adults…"
+  currency:     string;    // '$' | '€' | '£'
+  nightColumns: string[];  // e.g. ['4 Nights', '5 Nights', '7 Nights', 'Extra Night Rate']
+  villaGroups: {
+    villaName: string;
+    rows: { travelPeriod: string; prices: string[] }[];
+  }[];
+  inclusions:   string[];  // 'Above Rate Includes' bullet points
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RATES PAGE — INTERNAL PDF RENDERER
+// ═══════════════════════════════════════════════════════════════════
+async function addRatesPage(
+  doc: jsPDF,
+  logoB64: string | null,
+  rates: RatesPageData
+) {
+  const pH   = doc.internal.pageSize.getHeight();
+  const pW   = doc.internal.pageSize.getWidth();
+  const margin   = 12;
+  const contentW = pW - margin * 2;
+
+  doc.addPage();
+  addPageHeader(doc, logoB64, 'Accommodation Rates');
+  let y = 27;
+
+  // ── Section header chip ────────────────────────────────────────
+  y = sectionHeader(doc, 'ACCOMMODATION RATES', margin, y, contentW);
+  y += 5;
+
+  // ── Page title ─────────────────────────────────────────────────
+  doc.setFontSize(9.5); doc.setFont('Poppins', 'bold');
+  setTxt(doc, NAVY);
+  const titleLines = doc.splitTextToSize(rates.pageTitle, contentW);
+  doc.text(titleLines, margin, y);
+  y += titleLines.length * 5.5 + 8;
+
+  // ── Build autoTable data ───────────────────────────────────────
+  const headRow: any[] = [
+    { content: 'Villa Type',    styles: { halign: 'left'  } },
+    { content: 'Travel Period', styles: { halign: 'left'  } },
+    ...rates.nightColumns.map(col => ({ content: col, styles: { halign: 'right' } })),
+  ];
+
+  const body: any[][] = [];
+  rates.villaGroups.forEach(group => {
+    group.rows.forEach((row, rowIdx) => {
+      const rowData: any[] = [];
+
+      // Villa Type column: first row only — spans all season rows for this villa
+      if (rowIdx === 0) {
+        rowData.push({
+          content: group.villaName,
+          rowSpan: group.rows.length,
+          styles: {
+            fontStyle:  'bold',
+            textColor:  NAVY,
+            fillColor:  [238, 244, 252] as [number, number, number],
+            valign:     'middle',
+            halign:     'left',
+          },
+        });
+      }
+
+      // Travel Period
+      rowData.push({ content: row.travelPeriod || '—', styles: { halign: 'left' } });
+
+      // Price columns — prepend currency if value is bare numeric
+      rates.nightColumns.forEach((_col, ci) => {
+        const raw = (row.prices[ci] || '').toString().trim();
+        const fmt = raw && !raw.startsWith(rates.currency) && /[\d,.]/.test(raw)
+          ? `${rates.currency}${raw}`
+          : raw || '—';
+        rowData.push({ content: fmt, styles: { halign: 'right', textColor: [50, 65, 90] as [number,number,number] } });
+      });
+
+      body.push(rowData);
+    });
+  });
+
+  // ── Render table ───────────────────────────────────────────────
+  autoTable(doc, {
+    startY: y,
+    head:   [headRow],
+    body,
+    margin: { left: margin, right: margin },
+    styles: {
+      font:        'Poppins',
+      fontSize:    8,
+      cellPadding: { top: 3.5, bottom: 3.5, left: 4, right: 4 },
+      lineColor:   [210, 220, 235] as [number, number, number],
+      lineWidth:   0.3,
+      textColor:   [70, 80, 100]  as [number, number, number],
+    },
+    headStyles: {
+      fillColor:   NAVY  as unknown as [number, number, number],
+      textColor:   WHITE as unknown as [number, number, number],
+      fontStyle:   'bold',
+      fontSize:    8,
+      cellPadding: { top: 4, bottom: 4, left: 4, right: 4 },
+    },
+    alternateRowStyles: { fillColor: [248, 251, 255] as [number, number, number] },
+    columnStyles: {
+      0: { minCellWidth: 35, fontStyle: 'bold' }, // Villa Type
+      1: { minCellWidth: 42 },                     // Travel Period
+    },
+    theme: 'grid',
+  });
+
+  y = (doc as any).lastAutoTable.finalY + 10;
+
+  // ── Above Rate Includes ────────────────────────────────────────
+  const validInclusions = rates.inclusions.filter(s => s.trim());
+  if (validInclusions.length > 0) {
+    y = checkNewPage(doc, y, 35, logoB64, 'Accommodation Rates', pH);
+    y = sectionHeader(doc, 'ABOVE RATE INCLUDES', margin, y, contentW);
+    y += 5;
+
+    doc.setFontSize(8.5); doc.setFont('Poppins', 'normal');
+    validInclusions.forEach(item => {
+      setFill(doc, GOLD);
+      doc.circle(margin + 2.5, y - 1.8, 1.5, 'F');
+      setTxt(doc, [60, 70, 90]);
+      const lines = doc.splitTextToSize(item, contentW - 12);
+      doc.text(lines, margin + 8, y);
+      y += lines.length * 5.2 + 2;
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RESORT BROCHURE WITH RATES PAGE — PUBLIC API
+// ═══════════════════════════════════════════════════════════════════
+export async function generateResortBrochureWithRates(
+  resort: any,
+  rates: RatesPageData
+): Promise<void> {
+  const { doc, logoB64, birdLogoB64 } = await _buildResortBrochurePages(resort);
+
+  // Append the rates page as the very last page
+  await addRatesPage(doc, logoB64, rates);
+
+  // Fix all footers now that we know the final page total
+  const totalPages = (doc.internal as any).getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    if (p > 1) drawWatermark(doc, birdLogoB64);
     addPageFooter(doc, p, totalPages, 'resort');
   }
 
-  doc.save(`Simplifly-${resort.title.replace(/[^a-z0-9]/gi,'_')}-Brochure.pdf`);
+  doc.save(`Simplifly-${resort.title.replace(/[^a-z0-9]/gi, '_')}-Rates-Brochure.pdf`);
 }
+
 
 // ═══════════════════════════════════════════════════════════════════
 // TOUR BROCHURE
