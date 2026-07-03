@@ -66,6 +66,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  // Google Search Console ownership verification
+  verification: {
+    google: '9z11o1IO7QPKPYwda4LUAdDI32x5qkUdsUOYcWpPVug',
+  },
 };
 
 export const viewport: Viewport = {
