@@ -81,8 +81,141 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // ── Structured Data (JSON-LD) ──────────────────────────────────────────────
+  // These schemas tell Google exactly who we are, what our website is,
+  // and what pages exist — the technical requirement for sitelinks eligibility.
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Simplifly Finland',
+    alternateName: 'Simplifly Finland Oy',
+    url: 'https://simpliflyfinland.com',
+    description:
+      'Premium luxury travel packages to Sri Lanka and Maldives — curated by Simplifly Finland.',
+    inLanguage: ['en', 'fi', 'ru', 'es'],
+    publisher: {
+      '@type': 'Organization',
+      name: 'Simplifly Finland',
+    },
+  };
+
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'TravelAgency',
+    name: 'Simplifly Finland',
+    legalName: 'Simplifly Finland Oy',
+    url: 'https://simpliflyfinland.com',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://simpliflyfinland.com/simplifly-logo-color.png',
+    },
+    image: 'https://simpliflyfinland.com/simplifly-logo-color.png',
+    email: 'sales@simpliflyfinland.com',
+    telephone: '+358408192758',
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'FI',
+    },
+    areaServed: ['FI', 'LK', 'MV'],
+    knowsAbout: [
+      'Sri Lanka Tours',
+      'Maldives Resorts',
+      'Luxury Travel',
+      'Holiday Packages',
+    ],
+    sameAs: [
+      'https://www.facebook.com/simpliflyfinland',
+      'https://www.instagram.com/simpliflyfinland',
+    ],
+  };
+
+  const navigationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Main Navigation',
+    itemListElement: [
+      {
+        '@type': 'SiteLinksSearchBox',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: 'https://simpliflyfinland.com/sri-lanka-tours/all?q={search_term_string}',
+          },
+          'query-input': 'required name=search_term_string',
+        },
+        url: 'https://simpliflyfinland.com',
+      },
+    ],
+  };
+
+  const navLinksSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Site Navigation',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Sri Lanka Tours',
+        description: 'Curated luxury tour packages to Sri Lanka',
+        url: 'https://simpliflyfinland.com/sri-lanka-tours',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Maldives Resorts',
+        description: 'Premium Maldives resort packages and overwater villas',
+        url: 'https://simpliflyfinland.com/maldives-resorts',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: 'Blog',
+        description: 'Travel guides, tips and inspiration for Sri Lanka and Maldives',
+        url: 'https://simpliflyfinland.com/blog',
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        name: 'Gallery',
+        description: 'Photos from our Sri Lanka and Maldives tours',
+        url: 'https://simpliflyfinland.com/gallery',
+      },
+      {
+        '@type': 'ListItem',
+        position: 5,
+        name: 'Who We Are',
+        description: 'About Simplifly Finland — your luxury travel partner',
+        url: 'https://simpliflyfinland.com/who-we-are',
+      },
+    ],
+  };
+
   return (
     <html lang="en" suppressHydrationWarning className="overflow-x-hidden w-full max-w-[100vw]">
+      <head>
+        {/* WebSite Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        {/* Organization / TravelAgency Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        {/* SiteLinks Search Box Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(navigationSchema) }}
+        />
+        {/* Site Navigation (ItemList) Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(navLinksSchema) }}
+        />
+      </head>
       <body
         suppressHydrationWarning
         className={`${poppins.variable} font-sans min-h-full flex flex-col antialiased overflow-x-hidden w-full max-w-[100vw]`}
