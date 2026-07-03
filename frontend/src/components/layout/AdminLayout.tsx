@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import {
   LayoutDashboard, Map, Hotel, CalendarCheck, FileText,
-  Image, Shield, LogOut, MessageCircle, LayoutTemplate, Globe, FileDown, Loader2
+  Image, Shield, LogOut, MessageCircle, LayoutTemplate, Globe, FileDown, Loader2, Tag
 } from "lucide-react";
+
 import { toast } from "sonner";
 
 const menuItems = [
@@ -14,7 +15,9 @@ const menuItems = [
   { name: "Homepage Manager", path: "/admin/homepage",      icon: LayoutTemplate  },
   { name: "Tour Packages",    path: "/admin/tours",         icon: Map             },
   { name: "Maldives Resorts", path: "/admin/resorts",       icon: Hotel           },
+  { name: "Rates",            path: "/admin/rates",         icon: Tag             },
   { name: "Category Manager", path: "/admin/categories",    icon: CalendarCheck   },
+
   { name: "Blog Hub",         path: "/admin/blogs",         icon: FileText        },
   { name: "Gallery Manager",  path: "/admin/gallery",       icon: Image           },
   { name: "Global Assets",    path: "/admin/global-assets", icon: Globe           },
