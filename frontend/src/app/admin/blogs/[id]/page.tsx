@@ -49,10 +49,11 @@ export default function EditBlogPage() {
   const addBlock = (type: ContentBlock['type']) => {
     if (!blog) return;
     const currentContent = Array.isArray(blog.content) ? blog.content : [];
-    setBlog({
-      ...blog,
-      content: [...currentContent, { type, text: '', items: type === 'list' ? [''] : undefined }],
-    });
+    let newBlock: ContentBlock = { type, text: '' };
+    if (type === 'list') newBlock.items = [''];
+    if (type === 'link') { newBlock.text = ''; newBlock.href = ''; }
+    if (type === 'table') { newBlock.headers = ['Column 1', 'Column 2']; newBlock.rows = [['', '']]; }
+    setBlog({ ...blog, content: [...currentContent, newBlock] });
   };
 
   const removeBlock = (index: number) => {
@@ -245,6 +246,121 @@ export default function EditBlogPage() {
                           className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500"
                         />
                       </div>
+                    ) : block.type === 'link' ? (
+                      <div className="space-y-2">
+                        <input
+                          type="text"
+                          value={block.text || ''}
+                          onChange={(e) => handleBlockChange(index, 'text', e.target.value)}
+                          placeholder="Display text (e.g. Read more about Sri Lanka)"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+                        />
+                        <input
+                          type="url"
+                          value={block.href || ''}
+                          onChange={(e) => handleBlockChange(index, 'href', e.target.value)}
+                          placeholder="URL (e.g. https://example.com)"
+                          className="w-full px-3 py-2 bg-white border border-blue-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 font-mono text-xs"
+                        />
+                        {block.href && (
+                          <a href={block.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-blue-600 text-[11px] font-bold hover:underline">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                            Preview link
+                          </a>
+                        )}
+                      </div>
+                    ) : block.type === 'table' ? (
+                      <div className="space-y-3 overflow-x-auto">
+                        <table className="w-full border-collapse text-xs">
+                          <thead>
+                            <tr>
+                              {(block.headers || []).map((header, colIdx) => (
+                                <th key={colIdx} className="relative p-0 border border-slate-200">
+                                  <input
+                                    type="text"
+                                    value={header}
+                                    onChange={(e) => {
+                                      const newHeaders = [...(block.headers || [])];
+                                      newHeaders[colIdx] = e.target.value;
+                                      handleBlockChange(index, 'headers', newHeaders);
+                                    }}
+                                    className="w-full px-2 py-1.5 bg-[#041d3c] text-white font-bold text-[11px] focus:outline-none focus:bg-[#062c5b] placeholder-white/40 min-w-[80px]"
+                                    placeholder={`Header ${colIdx + 1}`}
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newHeaders = (block.headers || []).filter((_, i) => i !== colIdx);
+                                      const newRows = (block.rows || []).map(row => row.filter((_, i) => i !== colIdx));
+                                      handleBlockChange(index, 'headers', newHeaders);
+                                      handleBlockChange(index, 'rows', newRows);
+                                    }}
+                                    className="absolute -top-2 -right-2 w-4 h-4 bg-rose-500 text-white rounded-full text-[9px] flex items-center justify-center hover:bg-rose-600 z-10"
+                                    title="Delete column"
+                                  >✕</button>
+                                </th>
+                              ))}
+                              <th className="p-1 border border-dashed border-slate-300">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newHeaders = [...(block.headers || []), `Column ${(block.headers?.length || 0) + 1}`];
+                                    const newRows = (block.rows || []).map(row => [...row, '']);
+                                    handleBlockChange(index, 'headers', newHeaders);
+                                    handleBlockChange(index, 'rows', newRows);
+                                  }}
+                                  className="text-blue-500 font-bold text-[11px] whitespace-nowrap hover:text-blue-700 px-1"
+                                >+ Col</button>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {(block.rows || []).map((row, rowIdx) => (
+                              <tr key={rowIdx}>
+                                {row.map((cell, colIdx) => (
+                                  <td key={colIdx} className="p-0 border border-slate-200">
+                                    <input
+                                      type="text"
+                                      value={cell}
+                                      onChange={(e) => {
+                                        const newRows = (block.rows || []).map((r, ri) =>
+                                          ri === rowIdx ? r.map((c, ci) => ci === colIdx ? e.target.value : c) : r
+                                        );
+                                        handleBlockChange(index, 'rows', newRows);
+                                      }}
+                                      className="w-full px-2 py-1.5 bg-white text-[12px] focus:outline-none focus:bg-blue-50 min-w-[80px]"
+                                      placeholder="Cell value"
+                                    />
+                                  </td>
+                                ))}
+                                <td className="p-1 border border-dashed border-slate-300">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newRows = (block.rows || []).filter((_, ri) => ri !== rowIdx);
+                                      handleBlockChange(index, 'rows', newRows);
+                                    }}
+                                    className="text-rose-400 hover:text-rose-600 text-[11px] font-bold px-1"
+                                    title="Delete row"
+                                  >✕</button>
+                                </td>
+                              </tr>
+                            ))}
+                            <tr>
+                              <td colSpan={(block.headers?.length || 0) + 1} className="p-1 border border-dashed border-slate-300 text-center">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newRow = new Array(block.headers?.length || 0).fill('');
+                                    handleBlockChange(index, 'rows', [...(block.rows || []), newRow]);
+                                  }}
+                                  className="text-blue-500 font-bold text-[11px] hover:text-blue-700"
+                                >+ Add Row</button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     ) : (
                       <textarea
                         rows={block.type === 'paragraph' ? 4 : 2}
@@ -270,6 +386,8 @@ export default function EditBlogPage() {
               <button onClick={() => addBlock('tip')} className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold text-slate-600 transition-colors">Tip</button>
               <button onClick={() => addBlock('list')} className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold text-slate-600 transition-colors">List</button>
               <button onClick={() => addBlock('image')} className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 border border-blue-100 rounded-lg text-xs font-bold text-blue-600 transition-colors">Image</button>
+              <button onClick={() => addBlock('link')} className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 rounded-lg text-xs font-bold text-emerald-600 transition-colors">🔗 Link</button>
+              <button onClick={() => addBlock('table')} className="px-3 py-1.5 bg-violet-50 hover:bg-violet-100 border border-violet-100 rounded-lg text-xs font-bold text-violet-600 transition-colors">📊 Table</button>
             </div>
           </div>
 
