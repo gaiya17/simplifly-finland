@@ -890,19 +890,19 @@ async function addRatesPage(
         });
       }
 
-      // Travel Period — format as "01 Jun 2026 – 30 Jul 2026" in BLUE
+      // Travel Period — format as "01 Jun 2026 – 30 Jul 2026"
       const fromStr = fmtDate(row.period?.from || '');
       const toStr   = fmtDate(row.period?.to   || '');
       const periodLabel = fromStr && toStr ? `${fromStr} – ${toStr}` : fromStr || toStr || '—';
-      rowData.push({ content: periodLabel, styles: { halign: 'left', textColor: BLUE as unknown as [number,number,number], fontStyle: 'normal' } });
+      rowData.push({ content: periodLabel, styles: { halign: 'left', fontStyle: 'normal' } });
 
-      // Price columns — prepend currency, render in BLUE like screenshot
+      // Price columns — prepend currency, render in dark gray like original
       rates.nightColumns.forEach((_col, ci) => {
         const raw = (row.prices[ci] || '').toString().trim();
         const fmt = raw && !raw.startsWith(rates.currency) && /[\d,.]/.test(raw)
           ? `${rates.currency}${raw}`
           : raw || '—';
-        rowData.push({ content: fmt, styles: { halign: 'right', textColor: BLUE as unknown as [number,number,number], fontStyle: 'bold' } });
+        rowData.push({ content: fmt, styles: { halign: 'right', textColor: [50, 65, 90] as [number,number,number], fontStyle: 'bold' } });
       });
 
       body.push(rowData);
