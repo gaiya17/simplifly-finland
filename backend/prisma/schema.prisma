@@ -141,6 +141,8 @@ model Resort {
   factSheets           ResortFactSheet[]
   offers               String[]
   
+  rates                ResortRates?
+  
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 }
@@ -283,4 +285,20 @@ model ResortOfferOption {
   id        String   @id @default(uuid())
   name      String   @unique
   createdAt DateTime @default(now())
+}
+
+model ResortRates {
+  id              String   @id @default(uuid())
+  resortId        String   @unique
+  resort          Resort   @relation(fields: [resortId], references: [id], onDelete: Cascade)
+  pageTitle       String   @default("")
+  bookBefore      String?                    // ISO date string e.g. "2026-09-30"
+  currency        String   @default("$")
+  nightColumns    String[]
+  villaGroups     Json     @default("[]")
+  transferDetails Json     @default("[]")
+  mealPlan        String?                    // "Half Board" | "Full Board" | "All Inclusive"
+  inclusions      String[]
+  specialBenefits String[]
+  updatedAt       DateTime @updatedAt
 }
