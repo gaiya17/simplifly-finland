@@ -865,13 +865,13 @@ export default function AdminRatesPage() {
                                 {group.villaName}
                               </td>
                             )}
-                            <td className="text-[#1a84ff] px-3 py-3 border border-[#e2e8f0] whitespace-nowrap">
+                            <td className="text-gray-600 px-3 py-3 border border-[#e2e8f0] whitespace-nowrap">
                               {row.period.from && row.period.to
                                 ? `${fmtDisplay(row.period.from)} – ${fmtDisplay(row.period.to)}`
                                 : <span className="text-gray-300">—</span>}
                             </td>
                             {form.nightColumns.map((_col, ci) => (
-                              <td key={ci} className="text-[#1a84ff] font-bold px-3 py-3 border border-[#e2e8f0] text-right">
+                              <td key={ci} className="text-gray-900 font-bold px-3 py-3 border border-[#e2e8f0] text-right">
                                 {row.prices[ci] ? `${form.currency}${row.prices[ci]}` : <span className="text-gray-300">—</span>}
                               </td>
                             ))}
