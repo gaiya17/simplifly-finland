@@ -918,7 +918,7 @@ async function addRatesPage(
     styles: {
       font:        'Poppins',
       fontSize:    8,
-      cellPadding: { top: 4.5, bottom: 4.5, left: 5, right: 5 },
+      cellPadding: { top: 4.5, bottom: 4.5, left: 2, right: 2 },
       lineColor:   [220, 228, 240] as [number, number, number],
       lineWidth:   0.25,
       textColor:   [70, 80, 100]  as [number, number, number],
@@ -928,12 +928,12 @@ async function addRatesPage(
       textColor:   WHITE as unknown as [number, number, number],
       fontStyle:   'bold',
       fontSize:    8.5,
-      cellPadding: { top: 5, bottom: 5, left: 5, right: 5 },
+      cellPadding: { top: 5, bottom: 5, left: 2, right: 2 },
     },
     alternateRowStyles: { fillColor: [248, 251, 255] as [number, number, number] },
     columnStyles: {
-      0: { minCellWidth: 38, fontStyle: 'bold', textColor: NAVY as unknown as [number,number,number], fillColor: [238, 244, 252] as [number,number,number] },
-      1: { minCellWidth: 46 },
+      0: { minCellWidth: 32, fontStyle: 'bold', textColor: NAVY as unknown as [number,number,number], fillColor: [238, 244, 252] as [number,number,number] },
+      1: { minCellWidth: 38 },
     },
     theme: 'grid',
   });
@@ -948,12 +948,12 @@ async function addRatesPage(
   if (hasInfoBox) {
     y = checkNewPage(doc, y, 45, logoB64, 'Accommodation Rates', pH);
     const colW  = (contentW - 6) / 2;
+    const initialY = y; // Capture exactly where the block starts
 
     // Left: Transfer Method
     if (validTransfer.length > 0) {
       y = sectionHeader(doc, 'TRANSFER DETAILS', margin, y, colW);
       y += 4;
-      const startY = y;
       doc.setFontSize(8); doc.setFont('Poppins', 'normal');
       validTransfer.forEach(row => {
         setTxt(doc, MGRAY); doc.text(row.label, margin, y);
@@ -966,7 +966,7 @@ async function addRatesPage(
       // Right: Meal Plan (if both exist, render at same starting Y)
       if (hasMeal) {
         const rightX = margin + colW + 6;
-        let ry = startY - 8; // align with section header
+        let ry = initialY; // perfectly align with left section header
         ry = sectionHeader(doc, 'MEAL PLAN', rightX, ry, colW);
         ry += 4;
         doc.setFontSize(9); doc.setFont('Poppins', 'bold');
