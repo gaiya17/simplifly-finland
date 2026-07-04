@@ -800,14 +800,29 @@ export async function generateResortBrochure(resort: any) {
 // RATES PAGE — DATA TYPES
 // ═══════════════════════════════════════════════════════════════════
 export interface RatesPageData {
-  pageTitle:    string;    // e.g. "Special Rates for 2 Adults…"
-  currency:     string;    // '$' | '€' | '£'
-  nightColumns: string[];  // e.g. ['4 Nights', '5 Nights', '7 Nights', 'Extra Night Rate']
+  pageTitle:    string;
+  bookBefore:   string | null;     // ISO date e.g. "2026-09-30", or null
+  currency:     string;            // '$' | '€' | '£'
+  nightColumns: string[];
   villaGroups: {
     villaName: string;
-    rows: { travelPeriod: string; prices: string[] }[];
+    rows: {
+      period: { from: string; to: string };  // ISO dates
+      prices: string[];
+    }[];
   }[];
-  inclusions:   string[];  // 'Above Rate Includes' bullet points
+  transferDetails: { label: string; value: string }[];
+  mealPlan:     string | null;
+  inclusions:   string[];
+  specialBenefits: string[];
+}
+
+// ── Helper: Format ISO date → "01 Jun 2026" ───────────────────────
+function fmtDate(iso: string): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -836,7 +851,17 @@ async function addRatesPage(
   setTxt(doc, NAVY);
   const titleLines = doc.splitTextToSize(rates.pageTitle, contentW);
   doc.text(titleLines, margin, y);
-  y += titleLines.length * 5.5 + 8;
+  y += titleLines.length * 5.5 + 3;
+
+  // ── Book Before ────────────────────────────────────────────────
+  if (rates.bookBefore) {
+    doc.setFontSize(8); doc.setFont('Poppins', 'normal');
+    setTxt(doc, MGRAY);
+    doc.text(`Book Before: ${fmtDate(rates.bookBefore)}`, margin, y);
+    y += 7;
+  } else {
+    y += 4;
+  }
 
   // ── Build autoTable data ───────────────────────────────────────
   const headRow: any[] = [
@@ -865,8 +890,11 @@ async function addRatesPage(
         });
       }
 
-      // Travel Period
-      rowData.push({ content: row.travelPeriod || '—', styles: { halign: 'left' } });
+      // Travel Period — format as "01 Jun 2026 – 30 Jul 2026"
+      const fromStr = fmtDate(row.period?.from || '');
+      const toStr   = fmtDate(row.period?.to   || '');
+      const periodLabel = fromStr && toStr ? `${fromStr} – ${toStr}` : fromStr || toStr || '—';
+      rowData.push({ content: periodLabel, styles: { halign: 'left' } });
 
       // Price columns — prepend currency if value is bare numeric
       rates.nightColumns.forEach((_col, ci) => {
@@ -881,7 +909,7 @@ async function addRatesPage(
     });
   });
 
-  // ── Render table ───────────────────────────────────────────────
+  // ── Render rates table ─────────────────────────────────────────
   autoTable(doc, {
     startY: y,
     head:   [headRow],
@@ -904,16 +932,62 @@ async function addRatesPage(
     },
     alternateRowStyles: { fillColor: [248, 251, 255] as [number, number, number] },
     columnStyles: {
-      0: { minCellWidth: 35, fontStyle: 'bold' }, // Villa Type
-      1: { minCellWidth: 42 },                     // Travel Period
+      0: { minCellWidth: 35, fontStyle: 'bold' },
+      1: { minCellWidth: 42 },
     },
     theme: 'grid',
   });
 
   y = (doc as any).lastAutoTable.finalY + 10;
 
+  // ── Transfer Method & Meal Plan (side by side 2-col info boxes) ─
+  const validTransfer = (rates.transferDetails || []).filter(r => r.label || r.value);
+  const hasMeal       = !!(rates.mealPlan);
+  const hasInfoBox    = validTransfer.length > 0 || hasMeal;
+
+  if (hasInfoBox) {
+    y = checkNewPage(doc, y, 45, logoB64, 'Accommodation Rates', pH);
+    const colW  = (contentW - 6) / 2;
+
+    // Left: Transfer Method
+    if (validTransfer.length > 0) {
+      y = sectionHeader(doc, 'TRANSFER DETAILS', margin, y, colW);
+      y += 4;
+      const startY = y;
+      doc.setFontSize(8); doc.setFont('Poppins', 'normal');
+      validTransfer.forEach(row => {
+        setTxt(doc, MGRAY); doc.text(row.label, margin, y);
+        setTxt(doc, NAVY);  doc.setFont('Poppins', 'bold');
+        doc.text(row.value, margin + colW * 0.45, y);
+        doc.setFont('Poppins', 'normal');
+        y += 6;
+      });
+
+      // Right: Meal Plan (if both exist, render at same starting Y)
+      if (hasMeal) {
+        const rightX = margin + colW + 6;
+        let ry = startY - 8; // align with section header
+        ry = sectionHeader(doc, 'MEAL PLAN', rightX, ry, colW);
+        ry += 4;
+        doc.setFontSize(9); doc.setFont('Poppins', 'bold');
+        setTxt(doc, NAVY);
+        doc.text(rates.mealPlan!, rightX, ry);
+      }
+      y += 8;
+
+    } else if (hasMeal) {
+      // Only meal plan, no transfer
+      y = sectionHeader(doc, 'MEAL PLAN', margin, y, contentW);
+      y += 4;
+      doc.setFontSize(9); doc.setFont('Poppins', 'bold');
+      setTxt(doc, NAVY);
+      doc.text(rates.mealPlan!, margin, y);
+      y += 10;
+    }
+  }
+
   // ── Above Rate Includes ────────────────────────────────────────
-  const validInclusions = rates.inclusions.filter(s => s.trim());
+  const validInclusions = (rates.inclusions || []).filter(s => s.trim());
   if (validInclusions.length > 0) {
     y = checkNewPage(doc, y, 35, logoB64, 'Accommodation Rates', pH);
     y = sectionHeader(doc, 'ABOVE RATE INCLUDES', margin, y, contentW);
@@ -928,8 +1002,28 @@ async function addRatesPage(
       doc.text(lines, margin + 8, y);
       y += lines.length * 5.2 + 2;
     });
+    y += 4;
+  }
+
+  // ── Special Benefits ───────────────────────────────────────────
+  const validBenefits = (rates.specialBenefits || []).filter(s => s.trim());
+  if (validBenefits.length > 0) {
+    y = checkNewPage(doc, y, 35, logoB64, 'Accommodation Rates', pH);
+    y = sectionHeader(doc, 'SPECIAL BENEFITS', margin, y, contentW);
+    y += 5;
+
+    doc.setFontSize(8.5); doc.setFont('Poppins', 'normal');
+    validBenefits.forEach(item => {
+      setFill(doc, GOLD);
+      doc.circle(margin + 2.5, y - 1.8, 1.5, 'F');
+      setTxt(doc, [60, 70, 90]);
+      const lines = doc.splitTextToSize(item, contentW - 12);
+      doc.text(lines, margin + 8, y);
+      y += lines.length * 5.2 + 2;
+    });
   }
 }
+
 
 // ═══════════════════════════════════════════════════════════════════
 // RESORT BROCHURE WITH RATES PAGE — PUBLIC API
