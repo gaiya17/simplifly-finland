@@ -853,10 +853,10 @@ async function addRatesPage(
   doc.text(titleLines, margin, y);
   y += titleLines.length * 5.5 + 3;
 
-  // ── Book Before ────────────────────────────────────────────────
+  // ── Book Before — same style as title ────────────────────────
   if (rates.bookBefore) {
-    doc.setFontSize(8); doc.setFont('Poppins', 'normal');
-    setTxt(doc, MGRAY);
+    doc.setFontSize(9.5); doc.setFont('Poppins', 'bold');
+    setTxt(doc, NAVY);
     doc.text(`Book Before: ${fmtDate(rates.bookBefore)}`, margin, y);
     y += 7;
   } else {
@@ -890,26 +890,26 @@ async function addRatesPage(
         });
       }
 
-      // Travel Period — format as "01 Jun 2026 – 30 Jul 2026"
+      // Travel Period — format as "01 Jun 2026 – 30 Jul 2026" in BLUE
       const fromStr = fmtDate(row.period?.from || '');
       const toStr   = fmtDate(row.period?.to   || '');
       const periodLabel = fromStr && toStr ? `${fromStr} – ${toStr}` : fromStr || toStr || '—';
-      rowData.push({ content: periodLabel, styles: { halign: 'left' } });
+      rowData.push({ content: periodLabel, styles: { halign: 'left', textColor: BLUE as unknown as [number,number,number], fontStyle: 'normal' } });
 
-      // Price columns — prepend currency if value is bare numeric
+      // Price columns — prepend currency, render in BLUE like screenshot
       rates.nightColumns.forEach((_col, ci) => {
         const raw = (row.prices[ci] || '').toString().trim();
         const fmt = raw && !raw.startsWith(rates.currency) && /[\d,.]/.test(raw)
           ? `${rates.currency}${raw}`
           : raw || '—';
-        rowData.push({ content: fmt, styles: { halign: 'right', textColor: [50, 65, 90] as [number,number,number] } });
+        rowData.push({ content: fmt, styles: { halign: 'right', textColor: BLUE as unknown as [number,number,number], fontStyle: 'bold' } });
       });
 
       body.push(rowData);
     });
   });
 
-  // ── Render rates table ─────────────────────────────────────────
+  // ── Render rates table — matches screenshot exactly ───────────
   autoTable(doc, {
     startY: y,
     head:   [headRow],
@@ -918,22 +918,22 @@ async function addRatesPage(
     styles: {
       font:        'Poppins',
       fontSize:    8,
-      cellPadding: { top: 3.5, bottom: 3.5, left: 4, right: 4 },
-      lineColor:   [210, 220, 235] as [number, number, number],
-      lineWidth:   0.3,
+      cellPadding: { top: 4.5, bottom: 4.5, left: 5, right: 5 },
+      lineColor:   [220, 228, 240] as [number, number, number],
+      lineWidth:   0.25,
       textColor:   [70, 80, 100]  as [number, number, number],
     },
     headStyles: {
       fillColor:   NAVY  as unknown as [number, number, number],
       textColor:   WHITE as unknown as [number, number, number],
       fontStyle:   'bold',
-      fontSize:    8,
-      cellPadding: { top: 4, bottom: 4, left: 4, right: 4 },
+      fontSize:    8.5,
+      cellPadding: { top: 5, bottom: 5, left: 5, right: 5 },
     },
     alternateRowStyles: { fillColor: [248, 251, 255] as [number, number, number] },
     columnStyles: {
-      0: { minCellWidth: 35, fontStyle: 'bold' },
-      1: { minCellWidth: 42 },
+      0: { minCellWidth: 38, fontStyle: 'bold', textColor: NAVY as unknown as [number,number,number], fillColor: [238, 244, 252] as [number,number,number] },
+      1: { minCellWidth: 46 },
     },
     theme: 'grid',
   });
