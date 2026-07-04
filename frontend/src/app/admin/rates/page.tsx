@@ -840,9 +840,9 @@ export default function AdminRatesPage() {
               <div className={sectionCard}>
                 <h2 className={sectionTitle}>Live Preview</h2>
                 <p className="text-[11px] text-gray-400 mb-4">Approximate preview of the rates table layout.</p>
-                {form.pageTitle && <p className="text-[11px] font-bold text-[#041d3c] mb-1 px-1">{form.pageTitle}</p>}
+                {form.pageTitle && <p className="text-[12px] font-bold text-[#041d3c] mb-1 px-1">{form.pageTitle}</p>}
                 {form.bookBefore && (
-                  <p className="text-[10px] text-gray-400 mb-3 px-1">Book Before: {fmtDisplay(form.bookBefore)}</p>
+                  <p className="text-[12px] font-bold text-[#041d3c] mb-3 px-1">Book Before: {fmtDisplay(form.bookBefore)}</p>
                 )}
                 <div className="overflow-x-auto rounded-[10px] border border-[#e2e8f0]">
                   <table className="w-full text-[11px] border-collapse">
@@ -861,17 +861,17 @@ export default function AdminRatesPage() {
                           <tr key={row.id} className={ri % 2 === 0 ? 'bg-white' : 'bg-[#f8fbff]'}>
                             {ri === 0 && (
                               <td rowSpan={group.rows.length}
-                                className="font-bold text-[#041d3c] px-3 py-2 border border-[#e2e8f0] align-middle bg-[#eef4fc]">
+                                className="font-bold text-[#041d3c] px-3 py-3 border border-[#e2e8f0] align-middle bg-[#eef4fc]">
                                 {group.villaName}
                               </td>
                             )}
-                            <td className="text-gray-600 px-3 py-2 border border-[#e2e8f0] whitespace-nowrap">
+                            <td className="text-[#1a84ff] px-3 py-3 border border-[#e2e8f0] whitespace-nowrap">
                               {row.period.from && row.period.to
                                 ? `${fmtDisplay(row.period.from)} – ${fmtDisplay(row.period.to)}`
                                 : <span className="text-gray-300">—</span>}
                             </td>
                             {form.nightColumns.map((_col, ci) => (
-                              <td key={ci} className="text-gray-600 px-3 py-2 border border-[#e2e8f0] text-right">
+                              <td key={ci} className="text-[#1a84ff] font-bold px-3 py-3 border border-[#e2e8f0] text-right">
                                 {row.prices[ci] ? `${form.currency}${row.prices[ci]}` : <span className="text-gray-300">—</span>}
                               </td>
                             ))}
