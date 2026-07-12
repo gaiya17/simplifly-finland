@@ -815,6 +815,7 @@ export interface RatesPageData {
   mealPlan:     string | null;
   inclusions:   string[];
   specialBenefits: string[];
+  customSections?: any[];
 }
 
 // ── Helper: Format ISO date → "01 Jun 2026" ───────────────────────
@@ -1021,6 +1022,93 @@ async function addRatesPage(
       doc.text(lines, margin + 8, y);
       y += lines.length * 5.2 + 2;
     });
+  }
+
+  // ── Custom Sections ────────────────────────────────────────────
+  if (rates.customSections && rates.customSections.length > 0) {
+    for (const section of rates.customSections) {
+      if (!section.title && !section.content) continue;
+
+      y = checkNewPage(doc, y, 40, logoB64, 'Accommodation Rates', pH);
+      
+      if (section.title) {
+        y = sectionHeader(doc, section.title.toUpperCase(), margin, y, contentW);
+        y += 5;
+      }
+
+      if (section.type === 'paragraph' && section.content) {
+        doc.setFontSize(8.5); doc.setFont('Poppins', 'normal');
+        setTxt(doc, [60, 70, 90]);
+        const paragraphs = (section.content as string).split('\n');
+        for (const pText of paragraphs) {
+          if (!pText.trim()) {
+            y += 3;
+            continue;
+          }
+          const lines = doc.splitTextToSize(pText, contentW);
+          y = checkNewPage(doc, y, lines.length * 5.2, logoB64, 'Accommodation Rates', pH);
+          doc.text(lines, margin, y);
+          y += lines.length * 5.2 + 2;
+        }
+        y += 4;
+      }
+
+      if (section.type === 'list' && section.content) {
+        doc.setFontSize(8.5); doc.setFont('Poppins', 'normal');
+        const items = (section.content as string[]).filter(s => s.trim());
+        for (const item of items) {
+          y = checkNewPage(doc, y, 10, logoB64, 'Accommodation Rates', pH);
+          setFill(doc, GOLD);
+          doc.circle(margin + 2.5, y - 1.8, 1.5, 'F');
+          setTxt(doc, [60, 70, 90]);
+          const lines = doc.splitTextToSize(item, contentW - 8);
+          doc.text(lines, margin + 8, y);
+          y += lines.length * 5.2 + 2;
+        }
+        y += 4;
+      }
+
+      if (section.type === 'table' && section.content) {
+        const headers = section.content.headers || [];
+        const rows = section.content.rows || [];
+        if (headers.length > 0 || rows.length > 0) {
+          autoTable(doc, {
+            startY: y,
+            head: [headers],
+            body: rows,
+            margin: { left: margin, right: margin },
+            theme: 'grid',
+            headStyles: { fillColor: NAVY, textColor: WHITE, fontSize: 8, fontStyle: 'bold', halign: 'left', cellPadding: 2 },
+            bodyStyles: { textColor: [60, 70, 90], fontSize: 8, cellPadding: 2, halign: 'left' },
+            alternateRowStyles: { fillColor: [248, 250, 252] },
+          });
+          y = (doc as any).lastAutoTable.finalY + 8;
+        }
+      }
+
+      if (section.type === 'image' && section.content) {
+        try {
+          const imgB64 = await loadImageAsBase64(section.content as string);
+          if (imgB64) {
+            y = checkNewPage(doc, y, 60, logoB64, 'Accommodation Rates', pH);
+            // We give it a fixed max height of 60, calculate width by aspect ratio
+            const dims = await getImageDimensions(imgB64);
+            const aspect = dims.w / dims.h;
+            let imgH = 60;
+            let imgW = imgH * aspect;
+            // Cap width to contentW
+            if (imgW > contentW) {
+              imgW = contentW;
+              imgH = imgW / aspect;
+            }
+            doc.addImage(imgB64, 'JPEG', margin, y, imgW, imgH);
+            y += imgH + 8;
+          }
+        } catch (e) {
+          console.error("Failed to add custom image section", e);
+        }
+      }
+    }
   }
 }
 

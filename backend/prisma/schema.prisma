@@ -300,5 +300,6 @@ model ResortRates {
   mealPlan        String?                    // "Half Board" | "Full Board" | "All Inclusive"
   inclusions      String[]
   specialBenefits String[]
+  customSections  Json     @default("[]")
   updatedAt       DateTime @updatedAt
 }
