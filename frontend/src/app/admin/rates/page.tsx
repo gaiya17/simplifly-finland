@@ -3,9 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   Tag, ChevronDown, Plus, X, Trash2, Download,
-  Loader2, AlertCircle, MoveUp, MoveDown, Save, Clock,
+  Loader2, AlertCircle, MoveUp, MoveDown, Save, Clock, GripVertical
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { ImageUpload } from '../../../components/admin/ImageUpload';
 import { resortApi }   from '../../../lib/resortApi';
 import { getRates, saveRates } from '../../../lib/ratesApi';
 import {
@@ -33,6 +34,13 @@ type VillaGroup = {
 
 type TransferRow = { id: string; label: string; value: string };
 
+type CustomSection = {
+  id: string;
+  title: string;
+  type: 'paragraph' | 'list' | 'table' | 'image';
+  content: any;
+};
+
 type RatesForm = {
   resortId:        string;
   resort:          any | null;
@@ -45,6 +53,7 @@ type RatesForm = {
   mealPlan:        string;
   inclusions:      string[];
   specialBenefits: string[];
+  customSections:  CustomSection[];
 };
 
 // ══════════════════════════════════════════════════════════════════
@@ -97,6 +106,7 @@ const buildEmptyForm = (): RatesForm => ({
   mealPlan:        'Half Board',
   inclusions:      [...DEFAULT_INCL],
   specialBenefits: [],
+  customSections:  [],
 });
 
 // Date display helper (ISO → "01 Jun 2026")
@@ -134,6 +144,9 @@ export default function AdminRatesPage() {
   const [resortSearch,      setResortSearch]      = useState('');
   const [dropdownOpen,      setDropdownOpen]      = useState(false);
   const [editingColIdx,     setEditingColIdx]     = useState<number | null>(null);
+
+  // Drag and Drop state for Custom Sections
+  const [draggedSectionIndex, setDraggedSectionIndex] = useState<number | null>(null);
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') || '' : '';
 
@@ -189,6 +202,7 @@ export default function AdminRatesPage() {
           mealPlan:        saved.mealPlan        || 'Half Board',
           inclusions:      saved.inclusions,
           specialBenefits: saved.specialBenefits,
+          customSections:  saved.customSections || [],
         });
         toast.success('Saved rates loaded for this resort.');
       } else {
@@ -224,6 +238,7 @@ export default function AdminRatesPage() {
     mealPlan:        form.mealPlan || null,
     inclusions:      form.inclusions.filter(s => s.trim()),
     specialBenefits: form.specialBenefits.filter(s => s.trim()),
+    customSections:  form.customSections,
   });
 
   const buildPdfPayload = (): RatesPageData => ({
@@ -231,6 +246,7 @@ export default function AdminRatesPage() {
     bookBefore:   form.bookBefore || null,
     mealPlan:     form.mealPlan || null,
     transferDetails: form.transferDetails.map(({ label, value }) => ({ label, value })),
+    customSections: form.customSections,
   });
 
   // ══════════════════════════════════════════════════════════════════
@@ -327,6 +343,55 @@ export default function AdminRatesPage() {
         }),
       }),
     }));
+
+  // ══════════════════════════════════════════════════════════════════
+  // CUSTOM SECTIONS MANAGEMENT
+  // ══════════════════════════════════════════════════════════════════
+  const addCustomSection = () => {
+    setForm(p => ({
+      ...p,
+      customSections: [
+        ...p.customSections,
+        { id: uid(), title: 'New Section', type: 'paragraph', content: '' }
+      ]
+    }));
+  };
+
+  const updateCustomSection = (id: string, field: keyof CustomSection, value: any) => {
+    setForm(p => ({
+      ...p,
+      customSections: p.customSections.map(s => {
+        if (s.id !== id) return s;
+        // If type changed, reset content
+        if (field === 'type') {
+          let newContent: any = '';
+          if (value === 'list') newContent = [''];
+          if (value === 'table') newContent = { headers: ['Col 1', 'Col 2'], rows: [['', '']] };
+          return { ...s, type: value, content: newContent };
+        }
+        return { ...s, [field]: value };
+      })
+    }));
+  };
+
+  const removeCustomSection = (id: string) => {
+    setForm(p => ({
+      ...p,
+      customSections: p.customSections.filter(s => s.id !== id)
+    }));
+  };
+
+  const moveCustomSection = (index: number, direction: 'up' | 'down') => {
+    setForm(p => {
+      const newSections = [...p.customSections];
+      if (direction === 'up' && index > 0) {
+        [newSections[index - 1], newSections[index]] = [newSections[index], newSections[index - 1]];
+      } else if (direction === 'down' && index < newSections.length - 1) {
+        [newSections[index + 1], newSections[index]] = [newSections[index], newSections[index + 1]];
+      }
+      return { ...p, customSections: newSections };
+    });
+  };
 
   // ══════════════════════════════════════════════════════════════════
   // TRANSFER DETAILS
@@ -835,6 +900,239 @@ export default function AdminRatesPage() {
               </div>
             </div>
 
+            {/* ── STEP 9: Custom Sections ── */}
+            <div className={sectionCard}>
+              <h2 className={sectionTitle}>Step 9 — Custom Sections (Optional)</h2>
+              <p className="text-[11px] text-gray-400 mb-4">
+                Add flexible blocks to the end of your PDF. Drag blocks using the grip handle to reorder them.
+              </p>
+              
+              <div className="space-y-4">
+                {form.customSections.map((section, index) => (
+                  <div 
+                    key={section.id} 
+                    draggable
+                    onDragStart={() => setDraggedSectionIndex(index)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      if (draggedSectionIndex !== null && draggedSectionIndex !== index) {
+                        setForm(p => {
+                          const newSections = [...p.customSections];
+                          const draggedItem = newSections[draggedSectionIndex];
+                          newSections.splice(draggedSectionIndex, 1);
+                          newSections.splice(index, 0, draggedItem);
+                          return { ...p, customSections: newSections };
+                        });
+                      }
+                      setDraggedSectionIndex(null);
+                    }}
+                    className={`bg-white border ${draggedSectionIndex === index ? 'border-[#1a84ff] shadow-md opacity-50' : 'border-[#e4eaf2]'} rounded-[12px] p-4 transition-all flex gap-3`}
+                  >
+                    {/* Drag Handle */}
+                    <div className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-[#1a84ff] pt-2 shrink-0">
+                      <GripVertical className="w-5 h-5" />
+                    </div>
+                    
+                    <div className="flex-1 space-y-4">
+                      {/* Section Header (Title & Type) */}
+                      <div className="flex gap-3 items-start">
+                        <div className="flex-1">
+                          <label className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1 block">Section Title</label>
+                          <input 
+                            value={section.title} 
+                            onChange={(e) => updateCustomSection(section.id, 'title', e.target.value)}
+                            className={inputCls} 
+                            placeholder="e.g. Terms & Conditions" 
+                          />
+                        </div>
+                        <div className="w-1/3">
+                          <label className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1 block">Type</label>
+                          <div className="relative">
+                            <select 
+                              value={section.type}
+                              onChange={(e) => updateCustomSection(section.id, 'type', e.target.value)}
+                              className={`${inputCls} appearance-none pr-8 cursor-pointer`}
+                            >
+                              <option value="paragraph">Paragraph</option>
+                              <option value="list">List</option>
+                              <option value="table">Table</option>
+                              <option value="image">Image</option>
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => removeCustomSection(section.id)}
+                          className="mt-5 w-9 h-9 flex items-center justify-center rounded-lg border border-[#e4eaf2] bg-white text-gray-400 hover:text-red-500 hover:border-red-100 hover:bg-red-50 transition-colors shrink-0"
+                          title="Remove Section"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Dynamic Content Editor */}
+                      <div className="bg-[#f8fafc] border border-[#e4eaf2] rounded-[8px] p-3">
+                        {section.type === 'paragraph' && (
+                          <div>
+                            <label className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1 block">Content</label>
+                            <textarea 
+                              value={section.content} 
+                              onChange={(e) => updateCustomSection(section.id, 'content', e.target.value)}
+                              className={`${inputCls} min-h-[100px] resize-y`}
+                              placeholder="Type your paragraph here. Leave a blank line to separate multiple paragraphs."
+                            />
+                          </div>
+                        )}
+
+                        {section.type === 'list' && (
+                          <div>
+                            <label className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1 block">List Items</label>
+                            <div className="space-y-2">
+                              {(section.content as string[]).map((item, i) => (
+                                <div key={i} className="flex gap-2">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-[#1a84ff] shrink-0 mt-3" />
+                                  <input 
+                                    value={item} 
+                                    onChange={(e) => {
+                                      const newContent = [...(section.content as string[])];
+                                      newContent[i] = e.target.value;
+                                      updateCustomSection(section.id, 'content', newContent);
+                                    }}
+                                    className={`${inputCls} flex-1`}
+                                    placeholder={`List item ${i + 1}`}
+                                  />
+                                  <button onClick={() => {
+                                      const newContent = [...(section.content as string[])];
+                                      newContent.splice(i, 1);
+                                      updateCustomSection(section.id, 'content', newContent);
+                                    }}
+                                    className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors shrink-0">
+                                    <X className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              ))}
+                              <button onClick={() => {
+                                  updateCustomSection(section.id, 'content', [...(section.content as string[]), '']);
+                                }}
+                                className="mt-2 flex items-center gap-1.5 text-[11px] text-[#1a84ff] hover:text-[#0055cc] font-semibold transition-colors">
+                                <Plus className="w-3.5 h-3.5" /> Add Item
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {section.type === 'table' && (
+                          <div>
+                            <label className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-2 block">Table Editor</label>
+                            <div className="overflow-x-auto pb-2">
+                              <table className="w-full text-left text-[12px] border-collapse">
+                                <thead>
+                                  <tr>
+                                    {(section.content.headers as string[]).map((header, hIndex) => (
+                                      <th key={hIndex} className="border border-[#e4eaf2] bg-[#edf2f7] p-1">
+                                        <div className="flex items-center gap-1">
+                                          <input 
+                                            value={header}
+                                            onChange={(e) => {
+                                              const newHeaders = [...section.content.headers];
+                                              newHeaders[hIndex] = e.target.value;
+                                              updateCustomSection(section.id, 'content', { ...section.content, headers: newHeaders });
+                                            }}
+                                            className="w-full bg-transparent border-none focus:ring-0 p-1 font-bold text-[#041d3c]"
+                                            placeholder={`Column ${hIndex + 1}`}
+                                          />
+                                          {section.content.headers.length > 1 && (
+                                            <button onClick={() => {
+                                              const newHeaders = [...section.content.headers];
+                                              const newRows = (section.content.rows as string[][]).map(row => {
+                                                const r = [...row];
+                                                r.splice(hIndex, 1);
+                                                return r;
+                                              });
+                                              newHeaders.splice(hIndex, 1);
+                                              updateCustomSection(section.id, 'content', { headers: newHeaders, rows: newRows });
+                                            }} className="text-gray-400 hover:text-red-500 p-1"><Trash2 className="w-3 h-3"/></button>
+                                          )}
+                                        </div>
+                                      </th>
+                                    ))}
+                                    <th className="border border-[#e4eaf2] bg-[#edf2f7] p-1 w-[40px] text-center">
+                                      <button onClick={() => {
+                                        const newHeaders = [...section.content.headers, `Col ${section.content.headers.length + 1}`];
+                                        const newRows = (section.content.rows as string[][]).map(row => [...row, '']);
+                                        updateCustomSection(section.id, 'content', { headers: newHeaders, rows: newRows });
+                                      }} className="text-[#1a84ff] hover:text-[#0055cc] p-1"><Plus className="w-3 h-3 mx-auto"/></button>
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {(section.content.rows as string[][]).map((row, rIndex) => (
+                                    <tr key={rIndex} className={rIndex % 2 === 0 ? 'bg-white' : 'bg-[#f8fafc]'}>
+                                      {row.map((cell, cIndex) => (
+                                        <td key={cIndex} className="border border-[#e4eaf2] p-1">
+                                          <input 
+                                            value={cell}
+                                            onChange={(e) => {
+                                              const newRows = [...section.content.rows];
+                                              newRows[rIndex][cIndex] = e.target.value;
+                                              updateCustomSection(section.id, 'content', { ...section.content, rows: newRows });
+                                            }}
+                                            className="w-full bg-transparent border-none focus:ring-0 p-1 text-gray-700"
+                                            placeholder="..."
+                                          />
+                                        </td>
+                                      ))}
+                                      <td className="border border-[#e4eaf2] p-1 text-center">
+                                        <button onClick={() => {
+                                          const newRows = [...section.content.rows];
+                                          newRows.splice(rIndex, 1);
+                                          updateCustomSection(section.id, 'content', { ...section.content, rows: newRows });
+                                        }} className="text-gray-400 hover:text-red-500 p-1"><Trash2 className="w-3 h-3 mx-auto"/></button>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                  <tr>
+                                    <td colSpan={section.content.headers.length + 1} className="border border-[#e4eaf2] p-2 bg-white text-center">
+                                      <button onClick={() => {
+                                        const newRows = [...section.content.rows, Array(section.content.headers.length).fill('')];
+                                        updateCustomSection(section.id, 'content', { ...section.content, rows: newRows });
+                                      }} className="text-[11px] text-[#1a84ff] hover:text-[#0055cc] font-semibold flex items-center gap-1 justify-center w-full">
+                                        <Plus className="w-3 h-3"/> Add Row
+                                      </button>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        )}
+
+                        {section.type === 'image' && (
+                          <div>
+                            <label className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-2 block">Upload Image</label>
+                            <ImageUpload 
+                              value={section.content as string} 
+                              folder="simplifly/rates"
+                              onChange={(url) => updateCustomSection(section.id, 'content', url)}
+                              className="max-w-[300px]"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                <button 
+                  onClick={addCustomSection}
+                  className="w-full py-3 border-2 border-dashed border-[#1a84ff]/30 text-[#1a84ff] rounded-[12px] font-bold text-[13px] hover:bg-[#1a84ff]/5 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Plus className="w-4 h-4" /> Add Custom Section
+                </button>
+              </div>
+            </div>
+
             {/* ── Live Preview ── */}
             {form.villaGroups.length > 0 && (
               <div className={sectionCard}>
@@ -932,6 +1230,68 @@ export default function AdminRatesPage() {
                         </ul>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* Custom Sections preview */}
+                {form.customSections.length > 0 && (
+                  <div className="mt-4 space-y-4">
+                    {form.customSections.map(section => (
+                      <div key={section.id} className="p-4 bg-white rounded-[10px] border border-[#e2e8f0]">
+                        <p className="text-[12px] font-black text-[#041d3c] uppercase tracking-wider mb-3 pb-2 border-b border-[#e2e8f0]">
+                          {section.title || 'Untitled Section'}
+                        </p>
+                        
+                        {section.type === 'paragraph' && (
+                          <div className="text-[11px] text-gray-600 space-y-2 whitespace-pre-wrap">
+                            {section.content || '...'}
+                          </div>
+                        )}
+                        
+                        {section.type === 'list' && (
+                          <ul className="space-y-1.5">
+                            {((section.content as string[]) || []).map((item, i) => item.trim() && (
+                              <li key={i} className="flex items-start gap-2 text-[11px] text-gray-600">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#d4af37] shrink-0 mt-1" />{item}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        
+                        {section.type === 'table' && (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-left text-[11px] border-collapse">
+                              <thead>
+                                <tr>
+                                  {(section.content?.headers || []).map((h: string, i: number) => (
+                                    <th key={i} className="bg-[#f8fafc] text-[#041d3c] font-bold p-2 border border-[#e2e8f0]">{h}</th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {(section.content?.rows || []).map((row: string[], rIdx: number) => (
+                                  <tr key={rIdx}>
+                                    {row.map((cell: string, cIdx: number) => (
+                                      <td key={cIdx} className="p-2 border border-[#e2e8f0] text-gray-600">{cell}</td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                        
+                        {section.type === 'image' && (
+                          <div className="flex items-center justify-center bg-[#f8fafc] rounded-lg border border-[#e2e8f0] overflow-hidden">
+                            {section.content ? (
+                              <img src={section.content as string} alt={section.title} className="max-h-[300px] object-contain" />
+                            ) : (
+                              <div className="p-10 text-gray-400 text-[11px] italic">No image uploaded</div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>

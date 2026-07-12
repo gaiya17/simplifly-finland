@@ -44,6 +44,7 @@ export class RatesController {
         mealPlan,
         inclusions,
         specialBenefits,
+        customSections,
       } = req.body;
 
       // Verify resort exists
@@ -73,6 +74,7 @@ export class RatesController {
         mealPlan:        mealPlan     || null,
         inclusions:      Array.isArray(inclusions)      ? inclusions      : [],
         specialBenefits: Array.isArray(specialBenefits) ? specialBenefits : [],
+        customSections:  Array.isArray(customSections)  ? customSections  : [],
       };
 
       const rates = await prisma.resortRates.upsert({

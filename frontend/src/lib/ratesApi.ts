@@ -6,6 +6,13 @@ const getApiUrl = () => {
 };
 
 // ── Types ──────────────────────────────────────────────────────────
+export interface CustomSection {
+  id: string;
+  title: string;
+  type: 'paragraph' | 'list' | 'table' | 'image';
+  content: any; // string for paragraph/image, string[] for list, { headers: string[], rows: string[][] } for table
+}
+
 export interface SavedRatesData {
   id:              string;
   resortId:        string;
@@ -18,6 +25,7 @@ export interface SavedRatesData {
   mealPlan:        string | null;
   inclusions:      string[];
   specialBenefits: string[];
+  customSections:  CustomSection[];
   updatedAt:       string;
 }
 
