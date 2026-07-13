@@ -42,7 +42,7 @@ export default function AdminResorts() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [discountModalId, setDiscountModalId] = useState<string | null>(null);
-  const [discountForm, setDiscountForm] = useState<{ discount: string; offerPoster: string; offerPosterPublicId: string; customOffers: { nights: number; offerPrice: number; adults: number; children: number; posterUrl?: string; posterPublicId?: string }[] }>({ discount: '', offerPoster: '', offerPosterPublicId: '', customOffers: [] });
+  const [discountForm, setDiscountForm] = useState<{ discount: string; offerPoster: string; offerPosterPublicId: string; customOffers: { nights: number; offerPrice: number; adults: number; children: number; posterUrl?: string; posterPublicId?: string; villas?: string[] }[] }>({ discount: '', offerPoster: '', offerPosterPublicId: '', customOffers: [] });
 
   // Form State
   const [step, setStep] = useState(1);
@@ -493,7 +493,7 @@ export default function AdminResorts() {
 
                     <div className="flex items-center justify-between mb-1.5 mt-2">
                       <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">Custom Package Offers (Nights/Price)</label>
-                      <button type="button" onClick={() => setForm({...form, customOffers: [...(form.customOffers||[]), { nights: 1, adults: 2, children: 0, offerPrice: 0 }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Package</button>
+                      <button type="button" onClick={() => setForm({...form, customOffers: [...(form.customOffers||[]), { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [] }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Package</button>
                     </div>
                     <div className="space-y-4">
                       {(!form.customOffers || form.customOffers.length === 0) ? (
@@ -525,6 +525,33 @@ export default function AdminResorts() {
                                 <div>
                                   <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Price ($)</label>
                                   <input type="number" min="0" value={co.offerPrice} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                </div>
+                                
+                                <div className="col-span-2 sm:col-span-4 mt-2">
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-2">Valid Villa Types</label>
+                                  <div className="flex flex-wrap gap-2">
+                                    {form.villas?.map((v: any, idx: number) => {
+                                      const isSelected = co.villas?.includes(v.title);
+                                      return (
+                                        <label key={idx} className={`cursor-pointer px-3 py-1.5 rounded-[8px] text-[11px] font-bold border transition-colors ${isSelected ? 'bg-[#1a84ff] text-white border-[#1a84ff]' : 'bg-white text-gray-500 border-gray-200 hover:border-blue-300'}`}>
+                                          <input type="checkbox" className="hidden" checked={isSelected || false} onChange={(e) => {
+                                            const n = [...form.customOffers];
+                                            const currentVillas = n[i].villas || [];
+                                            if (e.target.checked) {
+                                              n[i].villas = [...currentVillas, v.title];
+                                            } else {
+                                              n[i].villas = currentVillas.filter((val: string) => val !== v.title);
+                                            }
+                                            setForm({...form, customOffers: n});
+                                          }} />
+                                          {v.title}
+                                        </label>
+                                      );
+                                    })}
+                                    {(!form.villas || form.villas.length === 0) && (
+                                      <span className="text-[11px] text-gray-400">No villas added to this resort yet. Go to Step 4.</span>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                               <div className="flex items-center justify-between mt-1">
@@ -1151,7 +1178,7 @@ export default function AdminResorts() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className={labelCls}>Custom Package Offers</label>
-                  <button type="button" onClick={() => setDiscountForm({...discountForm, customOffers: [...discountForm.customOffers, { nights: 1, adults: 2, children: 0, offerPrice: 0 }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Offer</button>
+                  <button type="button" onClick={() => setDiscountForm({...discountForm, customOffers: [...discountForm.customOffers, { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [] }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Offer</button>
                 </div>
                 <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2">
                   {discountForm.customOffers.length === 0 ? (
@@ -1193,6 +1220,33 @@ export default function AdminResorts() {
                               <input type="number" min="0" value={co.offerPrice}
                                 onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
                                 className={inputCls} />
+                            </div>
+
+                            <div className="col-span-2 sm:col-span-4 mt-2">
+                              <label className="block text-[10px] font-bold text-gray-400 mb-2">Valid Villa Types</label>
+                              <div className="flex flex-wrap gap-2">
+                                {resortForModal?.villas?.map((v: any, idx: number) => {
+                                  const isSelected = co.villas?.includes(v.title);
+                                  return (
+                                    <label key={idx} className={`cursor-pointer px-3 py-1.5 rounded-[8px] text-[11px] font-bold border transition-colors ${isSelected ? 'bg-[#1a84ff] text-white border-[#1a84ff]' : 'bg-white text-gray-500 border-gray-200 hover:border-blue-300'}`}>
+                                      <input type="checkbox" className="hidden" checked={isSelected || false} onChange={(e) => {
+                                        const n = [...discountForm.customOffers];
+                                        const currentVillas = n[i].villas || [];
+                                        if (e.target.checked) {
+                                          n[i].villas = [...currentVillas, v.title];
+                                        } else {
+                                          n[i].villas = currentVillas.filter((val: string) => val !== v.title);
+                                        }
+                                        setDiscountForm({...discountForm, customOffers: n});
+                                      }} />
+                                      {v.title}
+                                    </label>
+                                  );
+                                })}
+                                {(!resortForModal?.villas || resortForModal.villas.length === 0) && (
+                                  <span className="text-[11px] text-gray-400">No villas available.</span>
+                                )}
+                              </div>
                             </div>
                           </div>
                           

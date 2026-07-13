@@ -107,6 +107,9 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
       setValue('nights', String(match.nights));
       setValue('adults', String(match.adults ?? 2));
       setValue('children', String(match.children ?? 0));
+      if (match.villas && match.villas.length > 0) {
+        setValue('roomType', match.villas.join(' or '));
+      }
     }
   }, [watchedSelectedOffer, resort.customOffers, setValue]);
 
@@ -394,7 +397,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                     Special Package
                   </span>
                   <h4 className="text-[#041d3c] text-[28px] lg:text-[32px] font-black mb-2">{resort.customOffers[0].nights} Nights Offer</h4>
-                  <p className="text-gray-500 font-bold text-[15px] mb-8">{resort.customOffers[0].adults ?? 2} Adults {resort.customOffers[0].children ? `· ${resort.customOffers[0].children} Children` : ''}</p>
+                  <p className="text-gray-500 font-bold text-[15px] mb-8">{resort.customOffers[0].adults ?? 2} Adults {resort.customOffers[0].children ? `· ${resort.customOffers[0].children} Children` : ''}{resort.customOffers[0].villas?.length > 0 ? ` · ${resort.customOffers[0].villas.join(' or ')}` : ''}</p>
                   
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-gray-400 text-[18px] font-bold line-through">${(Number(resort.price) || 0) * (Number(resort.customOffers[0].nights) || 0)}</span>
@@ -607,7 +610,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                   <div className="relative">
                     <select
                       {...register('nights')}
-                      className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer"
+                      className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${watchedSelectedOffer ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
                     >
                       {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,21,28].map(n => (
                         <option key={n} value={String(n)}>{n} {n === 1 ? 'Night' : 'Nights'}</option>
@@ -640,7 +643,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                       {resort.customOffers.map((co: any, i: number) => {
                         const adults = co.adults ?? 2;
                         const children = co.children ?? 0;
-                        const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ''} · $${co.offerPrice}`;
+                        const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ''}${co.villas?.length > 0 ? ` · ${co.villas.join(' or ')}` : ''} · $${co.offerPrice}`;
                         return (
                           <option key={i} value={valString}>
                             {valString}
@@ -662,7 +665,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                     <div className="relative">
                       <select
                         {...register('adults')}
-                        className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer"
+                        className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${watchedSelectedOffer ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
                       >
                         {Array.from({ length: 50 }, (_, i) => i + 1).map(n => (
                           <option key={n} value={String(n)}>{n} Adult{n > 1 ? 's' : ''}</option>
@@ -676,7 +679,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                     <div className="relative">
                       <select
                         {...register('children')}
-                        className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer"
+                        className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${watchedSelectedOffer ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
                       >
                         {Array.from({ length: 51 }, (_, i) => i).map(n => (
                           <option key={n} value={String(n)}>{n} Child{n !== 1 ? 'ren' : ''}</option>
@@ -710,7 +713,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
 
                 {/* Room type */}
                 <div className="relative">
-                  <select defaultValue="" {...register('roomType')} className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer">
+                  <select defaultValue="" {...register('roomType')} className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${watchedSelectedOffer ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}>
                     <option value="" disabled className="text-gray-400">Room Type</option>
                     {resort.villas?.length > 0 ? (
                       resort.villas.map((villa: any, idx: number) => (
@@ -718,6 +721,10 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                       ))
                     ) : (
                       <option value="Standard Room">Standard Room</option>
+                    )}
+                    {/* Add dynamic option if custom offer has multiple villas that don't match exactly */}
+                    {watchedSelectedOffer && watch('roomType') && !resort.villas?.some((v: any) => v.title === watch('roomType')) && (
+                      <option value={watch('roomType')} hidden>{watch('roomType')}</option>
                     )}
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -899,7 +906,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                       const actualPrice = (Number(resort.price) || 0) * (Number(co.nights) || 0);
                       const adults = co.adults ?? 2;
                       const children = co.children ?? 0;
-                      const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ''} at ${resort.title} for $${co.offerPrice}. Can you check availability?`;
+                      const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ''}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(' or ')}` : ''} at ${resort.title} for $${co.offerPrice}. Can you check availability?`;
                       return (
                         <div key={i} className="bg-white border-2 border-rose-100 rounded-[24px] overflow-hidden shadow-sm relative group hover:border-rose-300 transition-colors flex flex-col">
                           {co.posterUrl && (
@@ -910,7 +917,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                           <div className="p-6 relative z-10 flex flex-col items-center text-center flex-1">
                             <span className="bg-rose-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full mb-3 inline-block">Special Package</span>
                             <h4 className="text-[#041d3c] text-[24px] font-black mb-1">{co.nights} Nights Offer</h4>
-                            <p className="text-gray-500 text-[13px] font-bold mb-3">{adults} Adults {children > 0 && `· ${children} Children`}</p>
+                            <p className="text-gray-500 text-[13px] font-bold mb-3">{adults} Adults {children > 0 && `· ${children} Children`}{co.villas?.length > 0 && ` · ${co.villas.join(' or ')}`}</p>
                             
                             <div className="flex items-center justify-center gap-2 mt-auto pt-4 mb-1">
                               <span className="text-gray-400 text-[14px] font-bold line-through">${actualPrice}</span>
