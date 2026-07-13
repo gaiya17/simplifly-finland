@@ -24,7 +24,7 @@ router.post('/options/transfers', ResortController.createTransferOption);
 router.post('/options/facilities', ResortController.createFacilityOption);
 router.post('/options/offers', ResortController.createOfferOption);
 
-router.get('/', ResortController.getAdminResorts); // List for admin dashboard
+router.get('/admin', ResortController.getAdminResorts); // List for admin dashboard
 router.post('/', ResortController.createResort);
 router.put('/:id', ResortController.updateResort);
 router.delete('/:id', ResortController.deleteResort);
