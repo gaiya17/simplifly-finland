@@ -19,7 +19,12 @@ export function SupportCTA() {
     ]).then(([tours, resorts]) => {
       const tourOffers = Array.isArray(tours) ? tours.map((t: any) => ({ ...t, offerType: 'tour' })) : [];
       const resortOffers = Array.isArray(resorts) ? resorts.map((r: any) => ({ ...r, offerType: 'resort' })) : [];
-      const allOffers = [...tourOffers, ...resortOffers].filter(offer => offer.offerPoster);
+      
+      const allOffers = [...tourOffers, ...resortOffers].map(offer => {
+        const displayPoster = offer.offerPoster || (Array.isArray(offer.customOffers) && offer.customOffers.find((co: any) => co.posterUrl)?.posterUrl);
+        return { ...offer, displayPoster };
+      }).filter(offer => offer.displayPoster);
+      
       setOffers(allOffers);
       setIsLoading(false);
     });
@@ -130,7 +135,7 @@ export function SupportCTA() {
                         {/* First Poster Card */}
                         <Link href={`/${offers[currentIndex].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[currentIndex].category?.slug || 'all'}/${offers[currentIndex].slug}`} className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
                           <img 
-                            src={offers[currentIndex].offerPoster} 
+                            src={offers[currentIndex].displayPoster} 
                             alt={offers[currentIndex].title} 
                             className="w-full h-full object-cover select-none" 
                           />
@@ -141,7 +146,7 @@ export function SupportCTA() {
                         {offers.length > 1 && (
                           <Link href={`/${offers[(currentIndex + 1) % offers.length].offerType === 'resort' ? 'maldives-resorts' : 'sri-lanka-tours'}/${offers[(currentIndex + 1) % offers.length].category?.slug || 'all'}/${offers[(currentIndex + 1) % offers.length].slug}`} className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform hidden sm:block">
                             <img 
-                              src={offers[(currentIndex + 1) % offers.length].offerPoster} 
+                              src={offers[(currentIndex + 1) % offers.length].displayPoster} 
                               alt={offers[(currentIndex + 1) % offers.length].title} 
                               className="w-full h-full object-cover select-none" 
                             />
