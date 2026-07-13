@@ -70,6 +70,7 @@ export default async function TourPackagePage({ params }: { params: Promise<{ pa
       activity: day.title,
       details: day.description,
       stay: day.stay,
+      mealPlan: day.mealPlan,
     })) || [],
     included: res.inclusions?.filter((inc: any) => inc.isIncluded).map((inc: any) => inc.text) || [],
     notIncluded: res.inclusions?.filter((inc: any) => !inc.isIncluded).map((inc: any) => inc.text) || [],

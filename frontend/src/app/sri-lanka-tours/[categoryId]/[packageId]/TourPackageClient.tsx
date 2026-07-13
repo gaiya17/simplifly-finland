@@ -632,6 +632,26 @@ export function TourPackageClient({ data }: { data: any }) {
                             >
                               <div className="px-5 pb-5 pt-1 border-t border-[#041d3c]/5">
                                 <p className="text-gray-500 text-[14px] leading-[1.8] font-medium">{item.details}</p>
+                                {(item.stay || item.mealPlan) && (
+                                  <div className="mt-4 flex flex-col sm:flex-row border border-gray-100 bg-[#f8fafc] rounded-lg text-[13px] overflow-hidden">
+                                    {item.stay && (
+                                      <div className={`p-3 ${item.mealPlan ? 'sm:w-1/2 border-b sm:border-b-0 sm:border-r border-gray-100' : 'w-full'}`}>
+                                        <span className="font-bold text-[#041d3c]">Over Night Stay:</span> <span className="text-gray-600">{item.stay}</span>
+                                      </div>
+                                    )}
+                                    {item.mealPlan && (
+                                      <div className={`p-3 ${item.stay ? 'sm:w-1/2' : 'w-full'}`}>
+                                        <span className="font-bold text-[#041d3c]">Meal Plan:</span> <span className="text-gray-600">
+                                          {item.mealPlan === 'BB' ? 'Bed & Breakfast Meal Plan' : 
+                                           item.mealPlan === 'HB' ? 'Half Board Meal Plan' : 
+                                           item.mealPlan === 'FB' ? 'Full Board Meal Plan' : 
+                                           item.mealPlan === 'AI' ? 'All Inclusive Meal Plan' : 
+                                           item.mealPlan}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                             </motion.div>
                           )}
