@@ -42,7 +42,7 @@ export default function AdminResorts() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [discountModalId, setDiscountModalId] = useState<string | null>(null);
-  const [discountForm, setDiscountForm] = useState<{ discount: string; offerPoster: string; offerPosterPublicId: string; customOffers: { nights: number; offerPrice: number }[] }>({ discount: '', offerPoster: '', offerPosterPublicId: '', customOffers: [] });
+  const [discountForm, setDiscountForm] = useState<{ discount: string; offerPoster: string; offerPosterPublicId: string; customOffers: { nights: number; offerPrice: number; adults: number; children: number; posterUrl?: string; posterPublicId?: string }[] }>({ discount: '', offerPoster: '', offerPosterPublicId: '', customOffers: [] });
 
   // Form State
   const [step, setStep] = useState(1);
@@ -435,18 +435,18 @@ export default function AdminResorts() {
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">Deals & Offers</label>
+                      <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">Global Special Offers (Tags)</label>
                       <button type="button" onClick={() => {
-                        const name = prompt("Enter new offer:");
+                        const name = prompt("Enter new global offer tag:");
                         if (name) {
                           resortApi.createOfferOption(token, { name }).then(opt => {
                             setOfferOptions([...offerOptions, opt]);
                             setForm({...form, offers: [...(form.offers || []), opt.name]});
                           }).catch(e => toast.error(e.message));
                         }
-                      }} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add New Offer</button>
+                      }} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Global Tag</button>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 bg-[#f8fafc] border border-[#e8edf4] p-4 rounded-[12px]">
+                    <div className="grid grid-cols-2 gap-3 bg-[#f8fafc] border border-[#e8edf4] p-4 rounded-[12px] mb-4">
                       {offerOptions.map(offer => (
                         <label key={offer.id} className="flex items-center gap-2.5 cursor-pointer">
                           <input
@@ -463,6 +463,90 @@ export default function AdminResorts() {
                           <span className="text-[13px] font-semibold text-[#041d3c]">{offer.name}</span>
                         </label>
                       ))}
+                    </div>
+
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">Custom Resort-Specific Text Offers</label>
+                      <button type="button" onClick={() => {
+                        const name = prompt("Enter a special offer text unique to this resort:");
+                        if (name) {
+                          setForm({...form, offers: [...(form.offers || []), name]});
+                        }
+                      }} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Custom Text Offer</button>
+                    </div>
+                    <div className="bg-[#f8fafc] border border-[#e8edf4] p-4 rounded-[12px] mb-6">
+                      {form.offers?.filter((o: string) => !offerOptions.some(opt => opt.name === o)).length === 0 ? (
+                        <p className="text-[11px] text-gray-400 italic text-center">No custom text offers added yet.</p>
+                      ) : (
+                        <ul className="space-y-2">
+                          {form.offers?.filter((o: string) => !offerOptions.some(opt => opt.name === o)).map((offerText: string, idx: number) => (
+                            <li key={idx} className="flex justify-between items-center bg-white p-2 border border-gray-100 rounded-[8px]">
+                              <span className="text-[12px] text-[#041d3c] font-semibold">{offerText}</span>
+                              <button type="button" onClick={() => {
+                                setForm({...form, offers: form.offers.filter((o: string) => o !== offerText)});
+                              }} className="text-rose-400 hover:text-rose-600"><Trash2 className="w-3.5 h-3.5" /></button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between mb-1.5 mt-2">
+                      <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">Custom Package Offers (Nights/Price)</label>
+                      <button type="button" onClick={() => setForm({...form, customOffers: [...(form.customOffers||[]), { nights: 1, adults: 2, children: 0, offerPrice: 0 }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Package</button>
+                    </div>
+                    <div className="space-y-4">
+                      {(!form.customOffers || form.customOffers.length === 0) ? (
+                        <div className="text-[11px] text-gray-400 italic bg-[#f8fafc] border border-dashed border-[#e2e8f0] rounded-[10px] p-3 text-center">No custom package offers yet. Click "+ Add Package" to add one.</div>
+                      ) : (
+                        form.customOffers.map((co: any, i: number) => {
+                          const actualPrice = (Number(form.price) || 0) * (Number(co.nights) || 0);
+                          return (
+                            <div key={i} className="flex flex-col gap-3 bg-[#f8fafc] border border-[#e8edf4] p-3 rounded-[10px]">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[11px] font-bold text-gray-600">Package #{i + 1}</span>
+                                <button type="button" onClick={() => { const n = [...form.customOffers]; n.splice(i,1); setForm({...form, customOffers: n}); }} className="w-6 h-6 rounded-[6px] bg-rose-50 text-rose-400 hover:bg-rose-100 flex items-center justify-center shrink-0">
+                                  <Trash2 className="w-3 h-3" />
+                                </button>
+                              </div>
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Nights</label>
+                                  <input type="number" min="1" value={co.nights} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], nights: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Adults</label>
+                                  <input type="number" min="1" value={co.adults ?? 2} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], adults: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Children</label>
+                                  <input type="number" min="0" value={co.children ?? 0} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], children: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Price ($)</label>
+                                  <input type="number" min="0" value={co.offerPrice} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between mt-1">
+                                <div className="text-[10px] text-gray-400 font-bold uppercase flex gap-2">
+                                  <span>Actual: <span className="line-through">${actualPrice}</span></span>
+                                </div>
+                              </div>
+                              <div className="pt-2 border-t border-[#e8edf4]">
+                                <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Specific Poster</label>
+                                <div className="scale-[0.85] origin-top-left w-[117%]">
+                                  <ImageUpload
+                                    value={co.posterUrl || ""}
+                                    onChange={(url, publicId) => { const n = [...form.customOffers]; n[i] = {...n[i], posterUrl: url, posterPublicId: publicId}; setForm({...form, customOffers: n}); }}
+                                    onRemove={() => { const n = [...form.customOffers]; n[i] = {...n[i], posterUrl: undefined, posterPublicId: undefined}; setForm({...form, customOffers: n}); }}
+                                    folder="simplifly/offers"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1067,9 +1151,9 @@ export default function AdminResorts() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className={labelCls}>Custom Package Offers</label>
-                  <button type="button" onClick={() => setDiscountForm({...discountForm, customOffers: [...discountForm.customOffers, { nights: 1, offerPrice: 0 }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Offer</button>
+                  <button type="button" onClick={() => setDiscountForm({...discountForm, customOffers: [...discountForm.customOffers, { nights: 1, adults: 2, children: 0, offerPrice: 0 }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Offer</button>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2">
                   {discountForm.customOffers.length === 0 ? (
                     <div className="text-[11px] text-gray-400 italic bg-[#f8fafc] border border-dashed border-[#e2e8f0] rounded-[10px] p-3 text-center">No custom package offers yet. Click "+ Add Offer" to add one.</div>
                   ) : (
@@ -1077,26 +1161,58 @@ export default function AdminResorts() {
                       const resortForModal = resorts.find(r => r.id === discountModalId);
                       const actualPrice = (Number(resortForModal?.price) || 0) * (Number(co.nights) || 0);
                       return (
-                        <div key={i} className="flex items-center gap-2 bg-[#f8fafc] border border-[#e8edf4] p-2.5 rounded-[10px]">
-                          <div className="flex-1">
-                            <label className="block text-[10px] font-bold text-gray-400 mb-1">Nights</label>
-                            <input type="number" min="1" value={co.nights}
-                              onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], nights: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
-                              className={inputCls} />
+                        <div key={i} className="flex flex-col gap-3 bg-[#f8fafc] border border-[#e8edf4] p-3 rounded-[10px]">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-bold text-gray-600">Offer #{i + 1}</span>
+                            <button type="button" onClick={() => { const n = [...discountForm.customOffers]; n.splice(i,1); setDiscountForm({...discountForm, customOffers: n}); }} className="w-6 h-6 rounded-[6px] bg-rose-50 text-rose-400 hover:bg-rose-100 flex items-center justify-center shrink-0">
+                              <Trash2 className="w-3 h-3" />
+                            </button>
                           </div>
-                          <div className="flex-1">
-                            <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Price ($)</label>
-                            <input type="number" min="0" value={co.offerPrice}
-                              onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
-                              className={inputCls} />
+                          
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Nights</label>
+                              <input type="number" min="1" value={co.nights}
+                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], nights: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
+                                className={inputCls} />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Adults</label>
+                              <input type="number" min="1" value={co.adults ?? 2}
+                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], adults: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
+                                className={inputCls} />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Children</label>
+                              <input type="number" min="0" value={co.children ?? 0}
+                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], children: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
+                                className={inputCls} />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Price ($)</label>
+                              <input type="number" min="0" value={co.offerPrice}
+                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
+                                className={inputCls} />
+                            </div>
                           </div>
-                          <div className="shrink-0 text-center">
-                            <span className="block text-[9px] text-gray-400 font-bold uppercase">Actual</span>
-                            <span className="block text-[12px] font-black text-rose-500">${actualPrice}</span>
+                          
+                          <div className="flex items-center justify-between mt-1">
+                            <div className="text-[10px] text-gray-400 font-bold uppercase flex gap-2">
+                              <span>Actual: <span className="line-through">${actualPrice}</span></span>
+                            </div>
                           </div>
-                          <button type="button" onClick={() => { const n = [...discountForm.customOffers]; n.splice(i,1); setDiscountForm({...discountForm, customOffers: n}); }} className="w-7 h-7 rounded-[7px] bg-rose-50 text-rose-400 hover:bg-rose-100 flex items-center justify-center shrink-0">
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          
+                          <div className="pt-2 border-t border-[#e8edf4]">
+                            <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Specific Poster</label>
+                            <div className="scale-[0.85] origin-top-left w-[117%]">
+                              <ImageUpload
+                                value={co.posterUrl || ""}
+                                onChange={(url, publicId) => { const n = [...discountForm.customOffers]; n[i] = {...n[i], posterUrl: url, posterPublicId: publicId}; setDiscountForm({...discountForm, customOffers: n}); }}
+                                onRemove={() => { const n = [...discountForm.customOffers]; n[i] = {...n[i], posterUrl: undefined, posterPublicId: undefined}; setDiscountForm({...discountForm, customOffers: n}); }}
+                                folder="simplifly/offers"
+                              />
+                            </div>
+                          </div>
                         </div>
                       );
                     })
