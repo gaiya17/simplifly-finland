@@ -551,10 +551,13 @@ export default function AdminTours() {
                         <textarea placeholder="Day Description..." value={day.description} onChange={e => { const ni = [...form.itinerary]; ni[i].description = e.target.value; setForm({...form, itinerary: ni}); }} className={`${inputCls} min-h-[80px] mb-4`} />
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <select value={day.stay} onChange={e => { const ni = [...form.itinerary]; ni[i].stay = e.target.value; setForm({...form, itinerary: ni}); }} className={inputCls}>
-                              <option value="">No Overnight Stay / None</option>
-                              {form.destinations.map((d: string) => <option key={d} value={d}>{d}</option>)}
-                            </select>
+                            <input 
+                              type="text" 
+                              placeholder="Overnight Stay (e.g., Jetwing Blue, Negombo)" 
+                              value={day.stay || ''} 
+                              onChange={e => { const ni = [...form.itinerary]; ni[i].stay = e.target.value; setForm({...form, itinerary: ni}); }} 
+                              className={inputCls} 
+                            />
                           </div>
                           <div>
                             <select value={day.mealPlan} onChange={e => { const ni = [...form.itinerary]; ni[i].mealPlan = e.target.value; setForm({...form, itinerary: ni}); }} className={inputCls}>
