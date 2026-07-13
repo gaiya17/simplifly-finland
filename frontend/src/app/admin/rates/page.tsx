@@ -1070,15 +1070,23 @@ export default function AdminRatesPage() {
                                   {(section.content.rows as string[][]).map((row, rIndex) => (
                                     <tr key={rIndex} className={rIndex % 2 === 0 ? 'bg-white' : 'bg-[#f8fafc]'}>
                                       {row.map((cell, cIndex) => (
-                                        <td key={cIndex} className="border border-[#e4eaf2] p-1">
-                                          <input 
+                                        <td key={cIndex} className="border border-[#e4eaf2] p-1 align-top">
+                                          <textarea 
                                             value={cell}
+                                            rows={1}
                                             onChange={(e) => {
                                               const newRows = [...section.content.rows];
                                               newRows[rIndex][cIndex] = e.target.value;
                                               updateCustomSection(section.id, 'content', { ...section.content, rows: newRows });
+                                              // Auto-resize
+                                              e.target.style.height = 'auto';
+                                              e.target.style.height = e.target.scrollHeight + 'px';
                                             }}
-                                            className="w-full bg-transparent border-none focus:ring-0 p-1 text-gray-700"
+                                            onFocus={(e) => {
+                                              e.target.style.height = 'auto';
+                                              e.target.style.height = e.target.scrollHeight + 'px';
+                                            }}
+                                            className="w-full bg-transparent border-none focus:ring-0 p-1 text-gray-700 resize-none overflow-hidden leading-snug"
                                             placeholder="..."
                                           />
                                         </td>
@@ -1272,7 +1280,7 @@ export default function AdminRatesPage() {
                                 {(section.content?.rows || []).map((row: string[], rIdx: number) => (
                                   <tr key={rIdx}>
                                     {row.map((cell: string, cIdx: number) => (
-                                      <td key={cIdx} className="p-2 border border-[#e2e8f0] text-gray-600">{cell}</td>
+                                      <td key={cIdx} className="p-2 border border-[#e2e8f0] text-gray-600 whitespace-pre-wrap align-top">{cell}</td>
                                     ))}
                                   </tr>
                                 ))}
