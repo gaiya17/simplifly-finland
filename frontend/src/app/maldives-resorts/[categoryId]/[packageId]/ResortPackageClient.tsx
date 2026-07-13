@@ -382,16 +382,29 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
 
       {/* ── OVERVIEW + STICKY BOOKING CARD ── */}
       <section className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 py-[80px] lg:py-[100px]">
-        {resort.offerPoster ? (
+        {resort.customOffers && resort.customOffers.length > 0 ? (
           <div className="flex flex-col gap-12 lg:gap-16">
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
               <div className="flex-1 min-w-0">
                 {overviewHeader}
               </div>
               <div className="w-full lg:w-[420px] shrink-0">
-                <div className="w-full rounded-[24px] overflow-hidden shadow-[0_16px_48px_rgba(4,29,60,0.10)] border border-[#041d3c]/5 relative group">
-                  <ImageWithFallback src={resort.offerPoster} alt="Resort Offer" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-black/0 via-white/5 to-white/10 pointer-events-none" />
+                <div className="w-full rounded-[24px] bg-white shadow-[0_16px_48px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 p-8 flex flex-col items-center text-center relative group">
+                  <span className="bg-[#ff245b] text-white text-[11px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full mb-5">
+                    Special Package
+                  </span>
+                  <h4 className="text-[#041d3c] text-[28px] lg:text-[32px] font-black mb-2">{resort.customOffers[0].nights} Nights Offer</h4>
+                  <p className="text-gray-500 font-bold text-[15px] mb-8">{resort.customOffers[0].adults ?? 2} Adults {resort.customOffers[0].children ? `· ${resort.customOffers[0].children} Children` : ''}</p>
+                  
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-gray-400 text-[18px] font-bold line-through">${(Number(resort.price) || 0) * (Number(resort.customOffers[0].nights) || 0)}</span>
+                    <span className="text-[#ff245b] text-[36px] font-black leading-none">${resort.customOffers[0].offerPrice}</span>
+                  </div>
+                  <p className="text-gray-500 text-[13px] font-medium mb-6">Total package price</p>
+
+                  <button onClick={() => { setActiveTab('deals'); document.getElementById('resort-tabs')?.scrollIntoView({ behavior: 'smooth' }); }} className="w-full py-4 bg-[#041d3c] text-white rounded-[14px] font-bold text-[14px] hover:bg-[#1a84ff] transition-colors shadow-[0_8px_24px_rgba(4,29,60,0.12)]">
+                    View Deals
+                  </button>
                 </div>
               </div>
             </div>
