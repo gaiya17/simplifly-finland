@@ -1078,8 +1078,9 @@ async function addRatesPage(
             body: rows,
             margin: { left: margin, right: margin },
             theme: 'grid',
-            headStyles: { fillColor: NAVY, textColor: WHITE, fontSize: 8, fontStyle: 'bold', halign: 'left', cellPadding: 2 },
-            bodyStyles: { textColor: [60, 70, 90], fontSize: 8, cellPadding: 2, halign: 'left' },
+            styles: { font: 'Poppins', fontSize: 8, cellPadding: 2 },
+            headStyles: { font: 'Poppins', fillColor: NAVY, textColor: WHITE, fontSize: 8, fontStyle: 'bold', halign: 'left', cellPadding: 2 },
+            bodyStyles: { font: 'Poppins', textColor: [60, 70, 90], fontSize: 8, cellPadding: 2, halign: 'left' },
             alternateRowStyles: { fillColor: [248, 250, 252] },
           });
           y = (doc as any).lastAutoTable.finalY + 8;
