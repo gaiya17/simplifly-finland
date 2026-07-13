@@ -65,7 +65,7 @@ export class ResortController {
   static async getAdminResorts(req: AuthenticatedRequest, res: Response) {
     try {
       const resorts = await prisma.resort.findMany({
-        include: { categories: true },
+        include: { categories: true, villas: true },
         orderBy: { createdAt: 'desc' }
       });
       res.status(200).json(resorts);

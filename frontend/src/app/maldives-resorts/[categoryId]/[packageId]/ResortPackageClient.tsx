@@ -405,8 +405,15 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                   </div>
                   <p className="text-gray-500 text-[13px] font-medium mb-6">Total package price</p>
 
-                  <button onClick={() => { setActiveTab('deals'); document.getElementById('resort-tabs')?.scrollIntoView({ behavior: 'smooth' }); }} className="w-full py-4 bg-[#041d3c] text-white rounded-[14px] font-bold text-[14px] hover:bg-[#1a84ff] transition-colors shadow-[0_8px_24px_rgba(4,29,60,0.12)]">
-                    View Deals
+                  <button onClick={() => { 
+                    const co = resort.customOffers[0];
+                    const adults = co.adults ?? 2;
+                    const children = co.children ?? 0;
+                    const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ''}${co.villas?.length > 0 ? ` · ${co.villas.join(' or ')}` : ''} · $${co.offerPrice}`;
+                    setValue('selectedOffer', valString);
+                    document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' });
+                  }} className="w-full py-4 bg-[#041d3c] text-white rounded-[14px] font-bold text-[14px] hover:bg-[#1a84ff] transition-colors shadow-[0_8px_24px_rgba(4,29,60,0.12)]">
+                    Book Now
                   </button>
                 </div>
               </div>
