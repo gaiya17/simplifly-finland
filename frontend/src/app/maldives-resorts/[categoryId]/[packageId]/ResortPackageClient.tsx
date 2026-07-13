@@ -95,6 +95,20 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
   const watchedCountry = watch('country');
   const watchedCheckIn = watch('checkIn');
   const watchedNights = watch('nights');
+  const watchedSelectedOffer = watch('selectedOffer');
+
+  // Auto-fill form when a package offer is selected
+  useEffect(() => {
+    if (!watchedSelectedOffer) return;
+    const match = resort.customOffers?.find((co: any) => {
+      return watchedSelectedOffer.includes(`${co.nights} Nights`) && watchedSelectedOffer.includes(`$${co.offerPrice}`);
+    });
+    if (match) {
+      setValue('nights', String(match.nights));
+      setValue('adults', String(match.adults ?? 2));
+      setValue('children', String(match.children ?? 0));
+    }
+  }, [watchedSelectedOffer, resort.customOffers, setValue]);
 
   // Auto-fill phone code when country changes
   useEffect(() => {
@@ -610,11 +624,16 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                       className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer"
                     >
                       <option value="">Select Package Offer (Optional)</option>
-                      {resort.customOffers.map((co: any, i: number) => (
-                        <option key={i} value={`${co.nights} Nights for $${co.offerPrice}`}>
-                          {co.nights} Nights for ${co.offerPrice}
-                        </option>
-                      ))}
+                      {resort.customOffers.map((co: any, i: number) => {
+                        const adults = co.adults ?? 2;
+                        const children = co.children ?? 0;
+                        const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ''} · $${co.offerPrice}`;
+                        return (
+                          <option key={i} value={valString}>
+                            {valString}
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
                 )}
@@ -865,18 +884,30 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
                     {resort.customOffers.map((co: any, i: number) => {
                       const actualPrice = (Number(resort.price) || 0) * (Number(co.nights) || 0);
+                      const adults = co.adults ?? 2;
+                      const children = co.children ?? 0;
+                      const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ''} at ${resort.title} for $${co.offerPrice}. Can you check availability?`;
                       return (
-                        <div key={i} className="bg-white border-2 border-rose-100 rounded-[24px] p-6 shadow-sm relative overflow-hidden group hover:border-rose-300 transition-colors">
-                          <div className="absolute -right-10 -top-10 w-32 h-32 bg-rose-50 rounded-full group-hover:scale-150 transition-transform duration-700 ease-out z-0" />
-                          <div className="relative z-10 flex flex-col items-center text-center">
+                        <div key={i} className="bg-white border-2 border-rose-100 rounded-[24px] overflow-hidden shadow-sm relative group hover:border-rose-300 transition-colors flex flex-col">
+                          {co.posterUrl && (
+                            <div className="w-full aspect-[2/1] relative overflow-hidden bg-gray-100">
+                              <img src={co.posterUrl} alt={`${co.nights} Nights Offer`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                            </div>
+                          )}
+                          <div className="p-6 relative z-10 flex flex-col items-center text-center flex-1">
                             <span className="bg-rose-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full mb-3 inline-block">Special Package</span>
                             <h4 className="text-[#041d3c] text-[24px] font-black mb-1">{co.nights} Nights Offer</h4>
+                            <p className="text-gray-500 text-[13px] font-bold mb-3">{adults} Adults {children > 0 && `· ${children} Children`}</p>
                             
-                            <div className="flex items-center gap-2 mt-4 mb-1">
+                            <div className="flex items-center justify-center gap-2 mt-auto pt-4 mb-1">
                               <span className="text-gray-400 text-[14px] font-bold line-through">${actualPrice}</span>
                               <span className="text-rose-500 text-[28px] font-black leading-none">${co.offerPrice}</span>
                             </div>
-                            <p className="text-gray-500 text-[12px] font-medium">Total package price</p>
+                            <p className="text-gray-500 text-[12px] font-medium mb-6">Total package price</p>
+                            
+                            <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="flex w-full items-center justify-center gap-2 px-6 py-3 bg-[#25D366] text-white rounded-[12px] font-bold text-[13px] uppercase tracking-wider hover:bg-[#128C7E] transition-colors">
+                              <WaIcon /> Book This Offer
+                            </a>
                           </div>
                         </div>
                       );
@@ -886,28 +917,25 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
 
                 {resort.offers && resort.offers.length > 0 && (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-10">
-                    {resort.offers.map((offer: string, i: number) => (
-                      <div key={i} className="bg-gradient-to-br from-[#1a84ff]/6 to-[#041d3c]/4 border border-[#1a84ff]/12 p-8 rounded-[20px]">
-                        <div className="inline-flex items-center gap-1.5 bg-[#e11d48] text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-[6px] mb-4">
-                          <Star className="w-3 h-3 fill-white" /> Featured Offer
+                    {resort.offers.map((offer: string, i: number) => {
+                      const waText = `Hi! I'm interested in the special offer: "${offer}" at ${resort.title}. Can you check availability?`;
+                      return (
+                        <div key={i} className="bg-gradient-to-br from-[#1a84ff]/6 to-[#041d3c]/4 border border-[#1a84ff]/12 p-8 rounded-[20px] flex flex-col h-full">
+                          <div className="inline-flex items-center self-start gap-1.5 bg-[#e11d48] text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-[6px] mb-4">
+                            <Star className="w-3 h-3 fill-white" /> Featured Offer
+                          </div>
+                          <h4 className="text-[#041d3c] text-[18px] font-black leading-snug mb-6 flex-1">{offer}</h4>
+                          <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="flex w-full sm:w-max items-center justify-center gap-2 px-6 py-3 bg-[#25D366] text-white rounded-[12px] font-bold text-[13px] uppercase tracking-wider hover:bg-[#128C7E] transition-colors">
+                            <WaIcon /> Book This Offer
+                          </a>
                         </div>
-                        <h4 className="text-[#041d3c] text-[18px] font-black leading-snug">{offer}</h4>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
                 
                 {(!resort.offers || resort.offers.length === 0) && (!resort.customOffers || resort.customOffers.length === 0) && (
                   <p className="text-gray-400 font-medium">No special offers available at this time.</p>
-                )}
-
-                {(resort.offers?.length > 0 || resort.customOffers?.length > 0) && (
-                  <div className="mt-8 pt-8 border-t border-[#041d3c]/5">
-                    <a href={`https://wa.me/358408192758?text=Hi! I'm interested in the deals and offers for ${encodeURIComponent(resort.title)} resort. Can you help me check availability?`} target="_blank" rel="noopener noreferrer" className="flex w-full md:w-auto items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[16px] font-extrabold text-[14px] uppercase tracking-wider transition-all duration-300 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 group relative overflow-hidden">
-                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
-                      <WaIcon /><span className="relative z-10">Inquire via WhatsApp</span>
-                    </a>
-                  </div>
                 )}
               </motion.div>
             )}
