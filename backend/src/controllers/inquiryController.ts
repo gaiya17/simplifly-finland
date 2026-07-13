@@ -29,6 +29,7 @@ const generateAdminEmailHtml = (data: any) => `
       <h2>Inquiry Details</h2>
       <table class="detail-table" width="100%">
         <tr><th>Package</th><td>${data.packageTitle}</td></tr>
+        ${data.selectedOffer ? `<tr><th>Selected Offer</th><td><span style="background-color: #eef6ff; color: #1a84ff; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${data.selectedOffer}</span></td></tr>` : ''}
         <tr><th>Customer Name</th><td>${data.firstName} ${data.surname}</td></tr>
         <tr><th>Email</th><td><a href="mailto:${data.email}" style="color: #1a84ff; text-decoration: none;">${data.email}</a></td></tr>
         <tr><th>Phone</th><td>${data.phone}</td></tr>
@@ -84,6 +85,7 @@ const generateCustomerEmailHtml = (data: any) => `
       
       <div class="package-card">
         <h3>${data.packageTitle}</h3>
+        ${data.selectedOffer ? `<p><strong>Selected Offer:</strong> <span style="background-color: #eef6ff; color: #1a84ff; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${data.selectedOffer}</span></p>` : ''}
         <p><strong>Travel Date:</strong> ${data.travelDate || data.checkIn || 'Flexible'}</p>
         <p><strong>Guests:</strong> ${data.adults} Adults, ${data.children} Children, ${data.infants} Infants</p>
         <p><strong>Duration:</strong> ${data.nights} Nights</p>

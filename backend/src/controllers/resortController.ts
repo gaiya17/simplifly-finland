@@ -146,7 +146,7 @@ export class ResortController {
         title, summary, location, transfer, duration, price, status,
         tripAdvisorRating, tripAdvisorReviews, bookingScore, bookingReviews,
         heroImage, heroImagePublicId, packageImage, packageImagePublicId,
-        categoryIds, facilities, offers,
+        categoryIds, facilities, offers, customOffers,
         gallery, villas, restaurants, factSheets
       } = req.body;
 
@@ -164,6 +164,7 @@ export class ResortController {
           },
           facilities: facilities || [],
           offers: offers || [],
+          customOffers: customOffers || [],
           gallery: {
             create: (gallery || []).map((g: any, index: number) => ({
               url: g.url || g.src,
@@ -229,7 +230,7 @@ export class ResortController {
         title, summary, location, transfer, duration, price, status,
         tripAdvisorRating, tripAdvisorReviews, bookingScore, bookingReviews,
         heroImage, heroImagePublicId, packageImage, packageImagePublicId,
-        categoryIds, facilities, offers,
+        categoryIds, facilities, offers, customOffers,
         gallery, villas, restaurants, factSheets
       } = req.body;
 
@@ -258,6 +259,7 @@ export class ResortController {
           },
           facilities: facilities || [],
           offers: offers || [],
+          customOffers: customOffers || [],
           gallery: {
             create: (gallery || []).map((g: any, index: number) => ({
               url: g.url || g.src,

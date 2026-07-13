@@ -140,6 +140,7 @@ model Resort {
   facilities           String[]
   factSheets           ResortFactSheet[]
   offers               String[]
+  customOffers         Json     @default("[]")
   
   rates                ResortRates?
   

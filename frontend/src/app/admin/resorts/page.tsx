@@ -51,7 +51,7 @@ export default function AdminResorts() {
     id: "", title: "", categoryIds: [], summary: "", location: "", transfer: "Seaplane Transfer", price: "", status: "active",
     tripAdvisorRating: "", tripAdvisorReviews: "", bookingScore: "", bookingReviews: "",
     heroImage: "", heroImagePublicId: "", packageImage: "", packageImagePublicId: "",
-    facilities: [], offers: [], gallery: [], villas: [], restaurants: [], factSheets: []
+    facilities: [], offers: [], customOffers: [], gallery: [], villas: [], restaurants: [], factSheets: []
   });
 
   const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") || "" : "";
@@ -136,7 +136,7 @@ export default function AdminResorts() {
         id: "", title: "", categoryId: categories[0]?.id || "", summary: "", location: "", transfer: "Seaplane Transfer", duration: "", price: "", status: "active",
         tripAdvisorRating: "", tripAdvisorReviews: "", bookingScore: "", bookingReviews: "",
         heroImage: "", heroImagePublicId: "", packageImage: "", packageImagePublicId: "",
-        facilities: [], offers: [], gallery: [], villas: [], restaurants: [], factSheets: []
+        facilities: [], offers: [], customOffers: [], gallery: [], villas: [], restaurants: [], factSheets: []
       });
     }
     setStep(1);
