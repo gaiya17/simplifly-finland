@@ -298,7 +298,14 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
             <div>
               <p className="text-gray-400 text-[10.5px] font-extrabold uppercase tracking-widest mb-0.5">Starting From</p>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-[#041d3c] font-extrabold text-[28px] leading-none">€{resort.price?.toString().replace(/€/g, '').trim()}</span>
+                {resort.discount > 0 ? (
+                  <>
+                    <span className="text-gray-400 font-bold text-[18px] line-through decoration-rose-500/50">€{resort.price?.toString().replace(/€/g, '').trim()}</span>
+                    <span className="text-[#041d3c] font-extrabold text-[28px] leading-none">€{Math.round(Number(resort.price?.toString().replace(/€/g, '').trim()) * (1 - resort.discount / 100))}</span>
+                  </>
+                ) : (
+                  <span className="text-[#041d3c] font-extrabold text-[28px] leading-none">€{resort.price?.toString().replace(/€/g, '').trim()}</span>
+                )}
                 <span className="text-gray-400 text-[14px] font-semibold">/ night</span>
               </div>
             </div>
@@ -328,7 +335,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
             onClick={() => document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' })}
             className="w-full mt-3 bg-[#041d3c] hover:bg-[#1a84ff] text-white rounded-[14px] py-3.5 font-extrabold text-[14px] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(26,132,255,0.25)] hover:-translate-y-0.5"
           >
-            Request a Quote
+            Book Now
           </button>
         </div>
       </div>
@@ -907,6 +914,11 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
               <motion.div key="deals" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -18 }} transition={{ duration: 0.35 }}>
                 <h3 className="text-[#041d3c] font-black text-[26px] mb-6">Deals & Offers</h3>
                 
+                {resort.discount > 0 && resort.offerPoster && (
+                  <div className="w-full mb-8 rounded-[24px] overflow-hidden shadow-[0_16px_48px_rgba(4,29,60,0.08)] border border-[#041d3c]/5">
+                    <ImageWithFallback src={resort.offerPoster} alt="Resort Offer" className="w-full h-auto object-cover" />
+                  </div>
+                )}
                 {resort.customOffers && resort.customOffers.length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
                     {resort.customOffers.map((co: any, i: number) => {
@@ -932,9 +944,20 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                             </div>
                             <p className="text-gray-500 text-[12px] font-medium mb-6">Total package price</p>
                             
-                            <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="flex w-full items-center justify-center gap-2 px-6 py-3 bg-[#25D366] text-white rounded-[12px] font-bold text-[13px] uppercase tracking-wider hover:bg-[#128C7E] transition-colors">
-                              <WaIcon /> Book This Offer
-                            </a>
+                            <div className="flex flex-col gap-2 w-full">
+                              <button
+                                onClick={() => {
+                                  setSelectedOffer(`${co.nights} Nights Offer`);
+                                  document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' });
+                                }}
+                                className="w-full bg-[#041d3c] text-white rounded-[12px] py-3 font-extrabold text-[14px] flex items-center justify-center transition-all duration-300 hover:bg-[#1a84ff] hover:-translate-y-0.5"
+                              >
+                                Book Now
+                              </button>
+                              <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="flex w-full items-center justify-center gap-2 px-6 py-3 bg-[#25D366] text-white rounded-[12px] font-bold text-[13px] uppercase tracking-wider hover:bg-[#128C7E] transition-colors hover:-translate-y-0.5">
+                                <WaIcon /> WhatsApp Us
+                              </a>
+                            </div>
                           </div>
                         </div>
                       );
@@ -952,16 +975,27 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                             <Star className="w-3 h-3 fill-white" /> Featured Offer
                           </div>
                           <h4 className="text-[#041d3c] text-[18px] font-black leading-snug mb-6 flex-1">{offer}</h4>
-                          <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="flex w-full sm:w-max items-center justify-center gap-2 px-6 py-3 bg-[#25D366] text-white rounded-[12px] font-bold text-[13px] uppercase tracking-wider hover:bg-[#128C7E] transition-colors">
-                            <WaIcon /> Book This Offer
-                          </a>
+                          <div className="flex flex-col sm:flex-row gap-2 w-full mt-auto">
+                            <button
+                              onClick={() => {
+                                setSelectedOffer(offer);
+                                document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' });
+                              }}
+                              className="flex-1 bg-[#041d3c] text-white rounded-[12px] py-3 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center transition-all duration-300 hover:bg-[#1a84ff] hover:-translate-y-0.5"
+                            >
+                              Book Now
+                            </button>
+                            <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="flex-1 items-center justify-center gap-2 px-6 py-3 bg-[#25D366] text-white rounded-[12px] font-bold text-[13px] uppercase tracking-wider hover:bg-[#128C7E] transition-colors flex hover:-translate-y-0.5">
+                              <WaIcon /> WhatsApp Us
+                            </a>
+                          </div>
                         </div>
                       );
                     })}
                   </div>
                 )}
                 
-                {(!resort.offers || resort.offers.length === 0) && (!resort.customOffers || resort.customOffers.length === 0) && (
+                {(!resort.offers || resort.offers.length === 0) && (!resort.customOffers || resort.customOffers.length === 0) && !(resort.discount > 0 && resort.offerPoster) && (
                   <p className="text-gray-400 font-medium">No special offers available at this time.</p>
                 )}
               </motion.div>

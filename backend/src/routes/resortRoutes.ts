@@ -14,9 +14,12 @@ router.get('/options/offers', ResortController.getOfferOptions);
 router.get('/options/villas', ResortController.getVillaOptions);
 router.get('/offers', ResortController.getOffers);
 router.get('/slug/:slug', ResortController.getResortBySlug);
+// Move /admin route up here with explicit middleware to avoid being swallowed by /:id
+router.get('/admin', authenticateJWT, requireRole('admin'), ResortController.getAdminResorts);
+
 router.get('/:id', ResortController.getResortById);
 
-// Protected admin routes
+// Protected admin routes (applies to all routes below)
 router.use(authenticateJWT);
 router.use(requireRole('admin'));
 
@@ -24,7 +27,6 @@ router.post('/options/transfers', ResortController.createTransferOption);
 router.post('/options/facilities', ResortController.createFacilityOption);
 router.post('/options/offers', ResortController.createOfferOption);
 
-router.get('/admin', ResortController.getAdminResorts); // List for admin dashboard
 router.post('/', ResortController.createResort);
 router.put('/:id', ResortController.updateResort);
 router.delete('/:id', ResortController.deleteResort);

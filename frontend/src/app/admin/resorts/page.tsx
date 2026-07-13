@@ -1244,7 +1244,7 @@ export default function AdminResorts() {
                                   );
                                 })}
                                 {(!resortForModal?.villas || resortForModal.villas.length === 0) && (
-                                  <span className="text-[11px] text-gray-400">No villas available.</span>
+                                  <span className="text-[11px] text-gray-400">No villas available. Please ensure this resort has villas added.</span>
                                 )}
                               </div>
                             </div>
