@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useTranslation } from '../../lib/i18n/LanguageContext';
 import { resortApi } from '../../lib/resortApi';
 import { tourApi } from '../../lib/tourApi';
 
 export function Header() {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
@@ -35,9 +37,13 @@ export function Header() {
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    
+    // Run once on mount and every time pathname changes
+    handleScroll();
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
@@ -137,6 +143,16 @@ export function Header() {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Special Offers */}
+            <div className="relative group h-full flex items-center">
+              <Link
+                href="/special-offers"
+                className="flex items-center gap-1 text-white/90 hover:text-white text-[13px] font-semibold px-3 py-2 rounded-[10px] hover:bg-white/8 transition-all duration-200 whitespace-nowrap"
+              >
+                Special Offers
+              </Link>
             </div>
 
             {/* Simple links */}
@@ -272,6 +288,14 @@ export function Header() {
               </div>
             </div>
           </div>
+
+          <Link
+            href="/special-offers"
+            onClick={() => setMobileOpen(false)}
+            className="px-4 py-3 rounded-[12px] text-white/90 text-[14px] font-semibold hover:bg-white/6 transition-all"
+          >
+            Special Offers
+          </Link>
 
           {[
             { label: t.nav.whoWeAre, to: '/who-we-are' },

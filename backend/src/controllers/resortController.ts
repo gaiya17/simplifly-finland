@@ -477,11 +477,9 @@ export class ResortController {
       const offers = resorts.filter((r: any) => {
         const hasDiscount = r.discount && Number(r.discount) > 0;
         const hasCustomOffers = Array.isArray(r.customOffers) && r.customOffers.length > 0;
-        const hasOffer = hasDiscount || hasCustomOffers;
-        
         const hasPoster = r.offerPoster || (hasCustomOffers && r.customOffers.some((co: any) => co.posterUrl));
         
-        return hasOffer && hasPoster;
+        return hasDiscount || hasPoster || hasCustomOffers;
       });
       
       res.status(200).json(offers);
