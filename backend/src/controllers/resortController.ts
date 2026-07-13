@@ -438,7 +438,7 @@ export class ResortController {
   static async updateDiscount(req: AuthenticatedRequest, res: Response) {
     try {
       const { id } = req.params;
-      const { discount, offerPoster, offerPosterPublicId } = req.body;
+      const { discount, offerPoster, offerPosterPublicId, customOffers } = req.body;
 
       const resort = await prisma.resort.findUnique({ where: { id } });
       if (!resort) return res.status(404).json({ error: 'Resort not found' });
@@ -453,6 +453,7 @@ export class ResortController {
           discount: discount ? Number(discount) : null,
           offerPoster: offerPoster || null,
           offerPosterPublicId: offerPosterPublicId || null,
+          ...(customOffers !== undefined ? { customOffers } : {}),
         }
       });
       res.status(200).json(updated);
