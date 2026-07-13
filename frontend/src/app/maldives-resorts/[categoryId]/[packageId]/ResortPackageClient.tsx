@@ -97,6 +97,10 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
   const watchedNights = watch('nights');
   const watchedSelectedOffer = watch('selectedOffer');
 
+  const isCustomOfferSelected = resort.customOffers?.some((co: any) => {
+    return watchedSelectedOffer?.includes(`${co.nights} Nights`) && watchedSelectedOffer?.includes(`$${co.offerPrice}`);
+  });
+
   // Auto-fill form when a package offer is selected
   useEffect(() => {
     if (!watchedSelectedOffer) return;
@@ -412,16 +416,28 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                   </div>
                   <p className="text-gray-500 text-[13px] font-medium mb-6">Total package price</p>
 
-                  <button onClick={() => { 
+                  {(() => {
                     const co = resort.customOffers[0];
                     const adults = co.adults ?? 2;
                     const children = co.children ?? 0;
-                    const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ''}${co.villas?.length > 0 ? ` · ${co.villas.join(' or ')}` : ''} · $${co.offerPrice}`;
-                    setValue('selectedOffer', valString);
-                    document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' });
-                  }} className="w-full py-4 bg-[#041d3c] text-white rounded-[14px] font-bold text-[14px] hover:bg-[#1a84ff] transition-colors shadow-[0_8px_24px_rgba(4,29,60,0.12)]">
-                    Book Now
-                  </button>
+                    const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ''}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(' or ')}` : ''} at ${resort.title} for $${co.offerPrice}. Can you check availability?`;
+                    return (
+                      <div className="flex flex-col gap-2 w-full">
+                        <button onClick={() => { 
+                          const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ''}${co.villas?.length > 0 ? ` · ${co.villas.join(' or ')}` : ''} · $${co.offerPrice}`;
+                          setValue('selectedOffer', valString);
+                          document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' });
+                        }} className="w-full py-3.5 bg-[#041d3c] text-white rounded-[12px] font-extrabold text-[14px] hover:bg-[#1a84ff] hover:-translate-y-0.5 transition-all duration-300 shadow-[0_8px_24px_rgba(4,29,60,0.12)]">
+                          Book Now
+                        </button>
+                        <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3.5 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden">
+                          <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
+                          <WaIcon />
+                          <span className="relative z-10">WhatsApp Us</span>
+                        </a>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
@@ -624,7 +640,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                   <div className="relative">
                     <select
                       {...register('nights')}
-                      className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${watchedSelectedOffer ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
+                      className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
                     >
                       {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,21,28].map(n => (
                         <option key={n} value={String(n)}>{n} {n === 1 ? 'Night' : 'Nights'}</option>
@@ -647,23 +663,28 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                 )}
 
                 {/* Optional Selected Offer Dropdown */}
-                {resort.customOffers && resort.customOffers.length > 0 && (
+                {((resort.customOffers && resort.customOffers.length > 0) || (resort.offers && resort.offers.length > 0)) && (
                   <div>
                     <select
                       {...register('selectedOffer')}
                       className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer"
                     >
                       <option value="">Select Package Offer (Optional)</option>
-                      {resort.customOffers.map((co: any, i: number) => {
+                      {resort.customOffers?.map((co: any, i: number) => {
                         const adults = co.adults ?? 2;
                         const children = co.children ?? 0;
                         const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ''}${co.villas?.length > 0 ? ` · ${co.villas.join(' or ')}` : ''} · $${co.offerPrice}`;
                         return (
-                          <option key={i} value={valString}>
+                          <option key={`co-${i}`} value={valString}>
                             {valString}
                           </option>
                         );
                       })}
+                      {resort.offers?.map((offer: string, i: number) => (
+                        <option key={`o-${i}`} value={offer}>
+                          {offer}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 )}
@@ -679,7 +700,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                     <div className="relative">
                       <select
                         {...register('adults')}
-                        className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${watchedSelectedOffer ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
+                        className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
                       >
                         {Array.from({ length: 50 }, (_, i) => i + 1).map(n => (
                           <option key={n} value={String(n)}>{n} Adult{n > 1 ? 's' : ''}</option>
@@ -693,7 +714,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                     <div className="relative">
                       <select
                         {...register('children')}
-                        className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${watchedSelectedOffer ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
+                        className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
                       >
                         {Array.from({ length: 51 }, (_, i) => i).map(n => (
                           <option key={n} value={String(n)}>{n} Child{n !== 1 ? 'ren' : ''}</option>
@@ -727,7 +748,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
 
                 {/* Room type */}
                 <div className="relative">
-                  <select defaultValue="" {...register('roomType')} className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${watchedSelectedOffer ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}>
+                  <select defaultValue="" {...register('roomType')} className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}>
                     <option value="" disabled className="text-gray-400">Room Type</option>
                     {resort.villas?.length > 0 ? (
                       resort.villas.map((villa: any, idx: number) => (
@@ -947,15 +968,20 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                             <div className="flex flex-col gap-2 w-full">
                               <button
                                 onClick={() => {
-                                  setSelectedOffer(`${co.nights} Nights Offer`);
+                                  const adults = co.adults ?? 2;
+                                  const children = co.children ?? 0;
+                                  const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ''}${co.villas?.length > 0 ? ` · ${co.villas.join(' or ')}` : ''} · $${co.offerPrice}`;
+                                  setValue('selectedOffer', valString);
                                   document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' });
                                 }}
                                 className="w-full bg-[#041d3c] text-white rounded-[12px] py-3 font-extrabold text-[14px] flex items-center justify-center transition-all duration-300 hover:bg-[#1a84ff] hover:-translate-y-0.5"
                               >
                                 Book Now
                               </button>
-                              <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="flex w-full items-center justify-center gap-2 px-6 py-3 bg-[#25D366] text-white rounded-[12px] font-bold text-[13px] uppercase tracking-wider hover:bg-[#128C7E] transition-colors hover:-translate-y-0.5">
-                                <WaIcon /> WhatsApp Us
+                              <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden">
+                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
+                                <WaIcon />
+                                <span className="relative z-10">WhatsApp Us</span>
                               </a>
                             </div>
                           </div>
@@ -978,15 +1004,17 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                           <div className="flex flex-col sm:flex-row gap-2 w-full mt-auto">
                             <button
                               onClick={() => {
-                                setSelectedOffer(offer);
+                                setValue('selectedOffer', offer);
                                 document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' });
                               }}
                               className="flex-1 bg-[#041d3c] text-white rounded-[12px] py-3 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center transition-all duration-300 hover:bg-[#1a84ff] hover:-translate-y-0.5"
                             >
                               Book Now
                             </button>
-                            <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="flex-1 items-center justify-center gap-2 px-6 py-3 bg-[#25D366] text-white rounded-[12px] font-bold text-[13px] uppercase tracking-wider hover:bg-[#128C7E] transition-colors flex hover:-translate-y-0.5">
-                              <WaIcon /> WhatsApp Us
+                            <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="flex-1 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden">
+                              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
+                              <WaIcon />
+                              <span className="relative z-10">WhatsApp Us</span>
                             </a>
                           </div>
                         </div>
