@@ -18,7 +18,7 @@ const getApiUrl = () => {
   if (typeof window === 'undefined') {
     return process.env.INTERNAL_API_URL || 'http://backend:5000/api';
   }
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  return process.env.NEXT_PUBLIC_API_URL || '/api';
 };
 const API_URL = getApiUrl();
 const BASE_URL = `${API_URL}/chatbot`;
