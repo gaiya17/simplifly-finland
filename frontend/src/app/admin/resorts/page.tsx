@@ -1219,19 +1219,6 @@ export default function AdminResorts() {
                   )}
                 </div>
               </div>
-
-              {/* Offer Poster */}
-              <div>
-                <label className={labelCls}>Offer Poster (Optional CTA)</label>
-                <p className="text-[10px] text-gray-400 mb-2 leading-relaxed">Upload a 2:1 ratio flyer for this offer to be displayed in the homepage CTA carousel.</p>
-                <ImageUpload
-                  value={discountForm.offerPoster}
-                  onChange={(url, publicId) => setDiscountForm({...discountForm, offerPoster: url, offerPosterPublicId: publicId})}
-                  onRemove={() => setDiscountForm({...discountForm, offerPoster: "", offerPosterPublicId: ""})}
-                  folder="simplifly/offers"
-                />
-              </div>
-              
               <div className="flex gap-3 pt-1">
                 <button type="button" onClick={() => setDiscountModalId(null)} className="flex-1 py-3 bg-[#f4f7fb] text-gray-600 text-[12.5px] font-bold rounded-[12px] hover:bg-gray-200 transition-colors">Cancel</button>
                 <button type="submit" className="flex-1 py-3 bg-[#1a84ff] text-white text-[12.5px] font-bold rounded-[12px] hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/25">Apply Changes</button>
