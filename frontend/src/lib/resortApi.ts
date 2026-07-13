@@ -96,14 +96,14 @@ export const resortApi = {
     return res.json();
   },
 
-  updateDiscount: async (token: string, id: string, discount: number | null, offerPoster?: string | null, offerPosterPublicId?: string | null) => {
+  updateDiscount: async (token: string, id: string, discount: number | null, offerPoster?: string | null, offerPosterPublicId?: string | null, customOffers?: any[]) => {
     const res = await fetch(`${API_URL}/resorts/${id}/discount`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ discount, offerPoster, offerPosterPublicId })
+      body: JSON.stringify({ discount, offerPoster, offerPosterPublicId, customOffers })
     });
     if (!res.ok) throw new Error("Failed to update discount");
     return res.json();

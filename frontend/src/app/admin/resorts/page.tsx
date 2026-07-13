@@ -42,7 +42,7 @@ export default function AdminResorts() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [discountModalId, setDiscountModalId] = useState<string | null>(null);
-  const [discountForm, setDiscountForm] = useState({ discount: '', offerPoster: '', offerPosterPublicId: '' });
+  const [discountForm, setDiscountForm] = useState<{ discount: string; offerPoster: string; offerPosterPublicId: string; customOffers: { nights: number; offerPrice: number }[] }>({ discount: '', offerPoster: '', offerPosterPublicId: '', customOffers: [] });
 
   // Form State
   const [step, setStep] = useState(1);
@@ -203,7 +203,8 @@ export default function AdminResorts() {
     setDiscountForm({
       discount: resort.discount || '',
       offerPoster: resort.offerPoster || '',
-      offerPosterPublicId: resort.offerPosterPublicId || ''
+      offerPosterPublicId: resort.offerPosterPublicId || '',
+      customOffers: Array.isArray(resort.customOffers) ? resort.customOffers : []
     });
     setDiscountModalId(resort.id);
   };
@@ -217,13 +218,14 @@ export default function AdminResorts() {
         discountModalId, 
         discountForm.discount ? Number(discountForm.discount) : null,
         discountForm.offerPoster,
-        discountForm.offerPosterPublicId
+        discountForm.offerPosterPublicId,
+        discountForm.customOffers
       );
-      toast.success("Discount updated");
+      toast.success("Offers updated");
       setDiscountModalId(null);
       fetchData();
     } catch (err) {
-      toast.error("Failed to update discount");
+      toast.error("Failed to update offers");
     }
   };
 
@@ -1036,18 +1038,20 @@ export default function AdminResorts() {
 
       {/* ── Discount Modal ── */}
       {discountModalId && (
-        <div className="fixed inset-0 bg-[#041d3c]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-[20px] shadow-2xl w-full max-w-md animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+        <div className="fixed inset-0 bg-[#041d3c]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-[20px] shadow-2xl w-full max-w-md animate-in fade-in zoom-in-95 duration-200 overflow-hidden my-auto">
             <div className="px-6 py-5 border-b border-[#f0f4f9] flex justify-between items-center bg-[#f8fafc]">
               <div>
                 <h3 className="text-[16px] font-extrabold text-[#041d3c]">Manage Offer & Discount</h3>
-                <p className="text-[11px] text-gray-500 font-medium">Add a percentage discount and an offer poster.</p>
+                <p className="text-[11px] text-gray-500 font-medium">Add a percentage discount, custom package offers, and an offer poster.</p>
               </div>
               <button onClick={() => setDiscountModalId(null)} className="p-1.5 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-[8px] transition-colors"><X className="w-4 h-4" /></button>
             </div>
-            <form onSubmit={applyDiscount} className="p-6">
-              <div className="mb-5">
-                <label className={labelCls}>Discount Percentage (%)</label>
+            <form onSubmit={applyDiscount} className="p-6 space-y-5">
+
+              {/* Discount Percentage */}
+              <div>
+                <label className={labelCls}>Discount Percentage (%) <span className="text-gray-400 font-normal normal-case">(optional)</span></label>
                 <div className="relative">
                   <input
                     type="number" min="0" max="100" placeholder="e.g. 15"
@@ -1058,8 +1062,50 @@ export default function AdminResorts() {
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-[13px]">%</div>
                 </div>
               </div>
-              
-              <div className="mb-6">
+
+              {/* Custom Package Offers */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className={labelCls}>Custom Package Offers</label>
+                  <button type="button" onClick={() => setDiscountForm({...discountForm, customOffers: [...discountForm.customOffers, { nights: 1, offerPrice: 0 }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Offer</button>
+                </div>
+                <div className="space-y-2">
+                  {discountForm.customOffers.length === 0 ? (
+                    <div className="text-[11px] text-gray-400 italic bg-[#f8fafc] border border-dashed border-[#e2e8f0] rounded-[10px] p-3 text-center">No custom package offers yet. Click "+ Add Offer" to add one.</div>
+                  ) : (
+                    discountForm.customOffers.map((co, i) => {
+                      const resortForModal = resorts.find(r => r.id === discountModalId);
+                      const actualPrice = (Number(resortForModal?.price) || 0) * (Number(co.nights) || 0);
+                      return (
+                        <div key={i} className="flex items-center gap-2 bg-[#f8fafc] border border-[#e8edf4] p-2.5 rounded-[10px]">
+                          <div className="flex-1">
+                            <label className="block text-[10px] font-bold text-gray-400 mb-1">Nights</label>
+                            <input type="number" min="1" value={co.nights}
+                              onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], nights: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
+                              className={inputCls} />
+                          </div>
+                          <div className="flex-1">
+                            <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Price ($)</label>
+                            <input type="number" min="0" value={co.offerPrice}
+                              onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
+                              className={inputCls} />
+                          </div>
+                          <div className="shrink-0 text-center">
+                            <span className="block text-[9px] text-gray-400 font-bold uppercase">Actual</span>
+                            <span className="block text-[12px] font-black text-rose-500">${actualPrice}</span>
+                          </div>
+                          <button type="button" onClick={() => { const n = [...discountForm.customOffers]; n.splice(i,1); setDiscountForm({...discountForm, customOffers: n}); }} className="w-7 h-7 rounded-[7px] bg-rose-50 text-rose-400 hover:bg-rose-100 flex items-center justify-center shrink-0">
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              {/* Offer Poster */}
+              <div>
                 <label className={labelCls}>Offer Poster (Optional CTA)</label>
                 <p className="text-[10px] text-gray-400 mb-2 leading-relaxed">Upload a 2:1 ratio flyer for this offer to be displayed in the homepage CTA carousel.</p>
                 <ImageUpload
@@ -1070,7 +1116,7 @@ export default function AdminResorts() {
                 />
               </div>
               
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-3 pt-1">
                 <button type="button" onClick={() => setDiscountModalId(null)} className="flex-1 py-3 bg-[#f4f7fb] text-gray-600 text-[12.5px] font-bold rounded-[12px] hover:bg-gray-200 transition-colors">Cancel</button>
                 <button type="submit" className="flex-1 py-3 bg-[#1a84ff] text-white text-[12.5px] font-bold rounded-[12px] hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/25">Apply Changes</button>
               </div>
