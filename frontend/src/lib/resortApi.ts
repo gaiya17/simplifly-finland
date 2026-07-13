@@ -41,7 +41,7 @@ export const resortApi = {
 
   // Admin Protected
   getAdminResorts: async (token: string) => {
-    const res = await fetch(`${API_URL}/resorts`, {
+    const res = await fetch(`${API_URL}/resorts/admin`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (!res.ok) throw new Error("Failed to fetch admin resorts");
