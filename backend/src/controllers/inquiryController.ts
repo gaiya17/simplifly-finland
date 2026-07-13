@@ -126,12 +126,14 @@ export const submitInquiry = async (req: Request, res: Response): Promise<void> 
 
     // Configure nodemailer transport using standard SMTP
     // Hostinger SMTP settings are typically: host: smtp.hostinger.com, port: 465
+    const smtpUser = process.env.SMTP_USER || '';
+    const isGmail = smtpUser.toLowerCase().includes('@gmail.com');
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.hostinger.com',
+      host: process.env.SMTP_HOST || (isGmail ? 'smtp.gmail.com' : 'smtp.hostinger.com'),
       port: Number(process.env.SMTP_PORT) || 465,
       secure: true, // true for 465, false for other ports
       auth: {
-        user: process.env.SMTP_USER,
+        user: smtpUser,
         pass: process.env.SMTP_PASS,
       },
     });
