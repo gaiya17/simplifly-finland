@@ -407,8 +407,23 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                   <span className="bg-[#ff245b] text-white text-[11px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full mb-5">
                     Special Package
                   </span>
-                  <h4 className="text-[#041d3c] text-[28px] lg:text-[32px] font-black mb-2">{resort.customOffers[0].nights} Nights Offer</h4>
-                  <p className="text-gray-500 font-bold text-[15px] mb-8">{resort.customOffers[0].adults ?? 2} Adults {resort.customOffers[0].children ? `· ${resort.customOffers[0].children} Children` : ''}{resort.customOffers[0].villas?.length > 0 ? ` · ${resort.customOffers[0].villas.join(' or ')}` : ''}</p>
+                  <div className="flex flex-col gap-3 w-full mb-6 bg-[#f8fafc] border border-[#e4eaf2] p-4 rounded-[16px]">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-gray-500">
+                        <Moon className="w-4 h-4 text-[#1a84ff]" />
+                        <span className="text-[13px] font-bold">Duration</span>
+                      </div>
+                      <span className="text-[#041d3c] font-black text-[14px]">{resort.customOffers[0].nights} Nights</span>
+                    </div>
+                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-gray-500">
+                        <Users className="w-4 h-4 text-[#1a84ff]" />
+                        <span className="text-[13px] font-bold">Guests</span>
+                      </div>
+                      <span className="text-[#041d3c] font-black text-[14px]">{resort.customOffers[0].adults ?? 2} Adults{resort.customOffers[0].children ? `, ${resort.customOffers[0].children} Children` : ''}</span>
+                    </div>
+                  </div>
                   
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-gray-400 text-[18px] font-bold line-through">${(Number(resort.price) || 0) * (Number(resort.customOffers[0].nights) || 0)}</span>
@@ -955,11 +970,28 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                             </div>
                           )}
                           <div className="p-6 relative z-10 flex flex-col items-center text-center flex-1">
-                            <span className="bg-rose-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full mb-3 inline-block">Special Package</span>
-                            <h4 className="text-[#041d3c] text-[24px] font-black mb-1">{co.nights} Nights Offer</h4>
-                            <p className="text-gray-500 text-[13px] font-bold mb-3">{adults} Adults {children > 0 && `· ${children} Children`}{co.villas?.length > 0 && ` · ${co.villas.join(' or ')}`}</p>
+                            <span className="bg-rose-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full mb-4 inline-block">Special Package</span>
+                            <h4 className="text-[#041d3c] text-[22px] font-black mb-5">{co.nights} Nights Offer</h4>
                             
-                            <div className="flex items-center justify-center gap-2 mt-auto pt-4 mb-1">
+                            <div className="flex flex-col gap-3 w-full mb-6 bg-[#f8fafc] border border-[#e4eaf2] p-4 rounded-[16px]">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                  <Moon className="w-4 h-4 text-[#1a84ff]" />
+                                  <span className="text-[13px] font-bold">Duration</span>
+                                </div>
+                                <span className="text-[#041d3c] font-black text-[14px]">{co.nights} Nights</span>
+                              </div>
+                              <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                  <Users className="w-4 h-4 text-[#1a84ff]" />
+                                  <span className="text-[13px] font-bold">Guests</span>
+                                </div>
+                                <span className="text-[#041d3c] font-black text-[14px]">{adults} Adults{children > 0 ? `, ${children} Children` : ''}</span>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-center gap-2 mt-auto pt-2 mb-1">
                               <span className="text-gray-400 text-[14px] font-bold line-through">${actualPrice}</span>
                               <span className="text-rose-500 text-[28px] font-black leading-none">${co.offerPrice}</span>
                             </div>

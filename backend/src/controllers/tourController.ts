@@ -347,14 +347,18 @@ export class TourController {
   // --- OFFERS / PROMOTIONS ---
   static async getOffers(req: Request, res: Response) {
     try {
-      const offers = await prisma.tourPackage.findMany({
-        where: { 
-          status: 'active',
-          offerPoster: { not: null }
-        },
+      const allTours = await prisma.tourPackage.findMany({
+        where: { status: 'active' },
         include: { category: true },
         orderBy: { updatedAt: 'desc' }
       });
+      
+      const offers = allTours.filter((t: any) => {
+        const hasDiscount = t.discount && Number(t.discount) > 0;
+        const hasPoster = t.offerPoster && t.offerPoster.trim() !== '';
+        return hasDiscount || hasPoster;
+      });
+      
       res.status(200).json(offers);
     } catch (error) {
       console.error('Fetch offers error:', error);

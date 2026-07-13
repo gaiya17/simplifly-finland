@@ -612,9 +612,22 @@ export function TourPackageClient({ data }: { data: any }) {
                             <p className="text-gray-400 text-[12px] font-semibold mt-0.5 truncate">{item.route}</p>
                           </div>
                           <div className="flex items-center gap-3 shrink-0">
-                            <span className="hidden sm:block bg-[#f1f5f9] text-[#041d3c] text-[11px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full">
-                              {item.stay}
-                            </span>
+                            <div className="hidden sm:flex items-center gap-2">
+                              {item.stay && (
+                                <span className="bg-[#f1f5f9] text-[#041d3c] text-[11px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full">
+                                  {item.stay}
+                                </span>
+                              )}
+                              {item.mealPlan && (
+                                <span className="bg-amber-100 text-amber-800 text-[11px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full">
+                                  {item.mealPlan === 'BB' ? 'Bed & Breakfast' : 
+                                   item.mealPlan === 'HB' ? 'Half Board' : 
+                                   item.mealPlan === 'FB' ? 'Full Board' : 
+                                   item.mealPlan === 'AI' ? 'All Inclusive' : 
+                                   item.mealPlan}
+                                </span>
+                              )}
+                            </div>
                             <ChevronDown
                               className={`w-5 h-5 text-[#041d3c]/40 transition-transform duration-300 ${openDay === idx ? 'rotate-180' : ''}`}
                             />
