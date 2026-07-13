@@ -16,12 +16,12 @@ export async function generateMetadata(
     const image = res.heroImage || res.packageImage;
 
     return {
-      title: `${res.name} | Maldives Resorts | Simplifly Finland`,
-      description: res.summary || res.name,
+      title: `${res.title} | Maldives Resorts | Simplifly Finland`,
+      description: res.summary || res.title,
       openGraph: {
-        title: res.name,
-        description: res.summary || res.name,
-        images: image ? [{ url: image, alt: res.name }, ...previousImages] : previousImages,
+        title: res.title,
+        description: res.summary || res.title,
+        images: image ? [{ url: image, alt: res.title }, ...previousImages] : previousImages,
         type: 'website',
       },
     };
