@@ -42,7 +42,7 @@ export default function AdminResorts() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [discountModalId, setDiscountModalId] = useState<string | null>(null);
-  const [discountForm, setDiscountForm] = useState<{ discount: string; offerPoster: string; offerPosterPublicId: string; customOffers: { nights: number; offerPrice: number; adults: number; children: number; posterUrl?: string; posterPublicId?: string; villas?: string[] }[] }>({ discount: '', offerPoster: '', offerPosterPublicId: '', customOffers: [] });
+  const [discountForm, setDiscountForm] = useState<{ discount: string; offerPoster: string; offerPosterPublicId: string; customOffers: { nights: number; offerPrice: number; adults: number; children: number; posterUrl?: string; posterPublicId?: string; villas?: string[]; transfer?: string; mealPlan?: string; }[] }>({ discount: '', offerPoster: '', offerPosterPublicId: '', customOffers: [] });
 
   // Form State
   const [step, setStep] = useState(1);
@@ -493,7 +493,7 @@ export default function AdminResorts() {
 
                     <div className="flex items-center justify-between mb-1.5 mt-2">
                       <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">Custom Package Offers (Nights/Price)</label>
-                      <button type="button" onClick={() => setForm({...form, customOffers: [...(form.customOffers||[]), { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [] }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Package</button>
+                      <button type="button" onClick={() => setForm({...form, customOffers: [...(form.customOffers||[]), { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [], transfer: form.transfer || '', mealPlan: '' }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Package</button>
                     </div>
                     <div className="space-y-4">
                       {(!form.customOffers || form.customOffers.length === 0) ? (
@@ -525,6 +525,23 @@ export default function AdminResorts() {
                                 <div>
                                   <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Price ($)</label>
                                   <input type="number" min="0" value={co.offerPrice} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Meal Plan</label>
+                                  <select value={co.mealPlan || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], mealPlan: e.target.value}; setForm({...form, customOffers: n}); }} className={inputCls}>
+                                    <option value="">None / Default</option>
+                                    <option value="BB">Bed and Breakfast</option>
+                                    <option value="HB">Half Board</option>
+                                    <option value="FB">Full Board</option>
+                                    <option value="AI">All Inclusive</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Transfer Method</label>
+                                  <select value={co.transfer || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], transfer: e.target.value}; setForm({...form, customOffers: n}); }} className={inputCls}>
+                                    <option value="">None / Default</option>
+                                    {transferOptions.map(t => <option key={t.id} value={t.name}>{t.name}</option>)}
+                                  </select>
                                 </div>
                                 
                                 <div className="col-span-2 sm:col-span-4 mt-2">
@@ -1178,7 +1195,7 @@ export default function AdminResorts() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className={labelCls}>Custom Package Offers</label>
-                  <button type="button" onClick={() => setDiscountForm({...discountForm, customOffers: [...discountForm.customOffers, { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [] }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Offer</button>
+                  <button type="button" onClick={() => setDiscountForm({...discountForm, customOffers: [...discountForm.customOffers, { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [], transfer: resorts.find(r => r.id === discountModalId)?.transfer || '', mealPlan: '' }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Offer</button>
                 </div>
                 <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2">
                   {discountForm.customOffers.length === 0 ? (
@@ -1220,6 +1237,23 @@ export default function AdminResorts() {
                               <input type="number" min="0" value={co.offerPrice}
                                 onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
                                 className={inputCls} />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Meal Plan</label>
+                              <select value={co.mealPlan || ''} onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], mealPlan: e.target.value}; setDiscountForm({...discountForm, customOffers: n}); }} className={inputCls}>
+                                <option value="">None / Default</option>
+                                <option value="BB">Bed and Breakfast</option>
+                                <option value="HB">Half Board</option>
+                                <option value="FB">Full Board</option>
+                                <option value="AI">All Inclusive</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Transfer Method</label>
+                              <select value={co.transfer || ''} onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], transfer: e.target.value}; setDiscountForm({...discountForm, customOffers: n}); }} className={inputCls}>
+                                <option value="">None / Default</option>
+                                {transferOptions.map(t => <option key={t.id} value={t.name}>{t.name}</option>)}
+                              </select>
                             </div>
 
                             <div className="col-span-2 sm:col-span-4 mt-2">
