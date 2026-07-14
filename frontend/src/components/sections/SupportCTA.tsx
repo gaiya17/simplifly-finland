@@ -95,7 +95,7 @@ export function SupportCTA() {
   return (
     <div className="w-full relative z-30 flex justify-center mt-[-55px] md:mt-[-70px] lg:mt-[-85px]">
       <div className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24">
-        <div className="w-full bg-gradient-to-r from-[#f0f6ff] to-[#e6f1ff] rounded-[20px] shadow-[0_20px_50px_rgba(26,132,255,0.08)] border border-[#1a84ff]/15 relative min-h-[140px] md:min-h-[180px] lg:min-h-[220px] px-6 sm:px-12 lg:px-24 py-7 sm:py-5 md:py-5 lg:py-6 flex items-center justify-between overflow-hidden">
+        <div className="w-full bg-gradient-to-r from-[#f0f6ff] to-[#e6f1ff] rounded-[20px] shadow-[0_20px_50px_rgba(26,132,255,0.08)] border border-[#1a84ff]/15 relative min-h-[140px] md:min-h-[180px] lg:min-h-[220px] px-6 sm:px-10 lg:px-16 py-7 sm:py-5 md:py-5 lg:py-6 flex items-center justify-between overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 xl:gap-8 items-center w-full h-full relative z-10 py-1">
             <div className={`col-span-1 ${slides.length > 0 || isLoading ? 'md:col-span-5 lg:col-span-5 xl:col-span-5' : 'md:col-span-12 lg:col-span-12 xl:col-span-12'} flex flex-col justify-center items-center md:items-start text-center md:text-left`}>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1a84ff]/10 text-[#1a84ff] font-extrabold text-[9px] lg:text-[10px] tracking-wider uppercase mb-2 shadow-sm border border-[#1a84ff]/10 shrink-0">
@@ -130,13 +130,13 @@ export function SupportCTA() {
               onMouseLeave={() => setIsHovered(false)}
             >
               {isLoading ? (
-                <div className="relative w-fit h-[160px] sm:h-[110px] md:h-[120px] lg:h-[140px] xl:h-[180px] flex items-center justify-center gap-3 lg:gap-4 shrink-0 px-2 mt-5 md:mt-0">
-                  <div className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0"></div>
-                  <div className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0 hidden sm:block"></div>
+                <div className="relative w-fit h-[150px] md:h-[160px] lg:h-[130px] xl:h-[150px] 2xl:h-[170px] flex items-center justify-center gap-3 lg:gap-4 shrink-0 px-2 mt-5 md:mt-0">
+                  <div className="w-[300px] md:w-[320px] lg:w-[230px] xl:w-[280px] 2xl:w-[320px] h-[140px] md:h-[150px] lg:h-[120px] xl:h-[140px] 2xl:h-[160px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0"></div>
+                  <div className="w-[300px] md:w-[320px] lg:w-[230px] xl:w-[280px] 2xl:w-[320px] h-[140px] md:h-[150px] lg:h-[120px] xl:h-[140px] 2xl:h-[160px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0 hidden lg:block"></div>
                 </div>
               ) : slides.length > 0 ? (
-                <div className="flex flex-col items-center w-full sm:w-fit mt-6 md:mt-0">
-                  <div className="relative w-full sm:w-fit h-[160px] sm:h-[110px] md:h-[120px] lg:h-[140px] xl:h-[180px] flex items-center justify-center group overflow-hidden px-1">
+                <div className="flex flex-col items-center w-full md:w-fit mt-6 md:mt-0">
+                  <div className="relative w-full md:w-fit h-[150px] md:h-[160px] lg:h-[130px] xl:h-[150px] 2xl:h-[170px] flex items-center justify-center group overflow-hidden px-1">
                     <AnimatePresence mode="wait" initial={false}>
                       <motion.div
                         key={currentIndex}
@@ -147,7 +147,7 @@ export function SupportCTA() {
                         className="flex gap-3 lg:gap-4 items-center shrink-0"
                       >
                         {/* First Poster Card */}
-                        <Link href={slides[currentIndex].url} className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
+                        <Link href={slides[currentIndex].url} className="w-[300px] md:w-[320px] lg:w-[230px] xl:w-[280px] 2xl:w-[320px] h-[140px] md:h-[150px] lg:h-[120px] xl:h-[140px] 2xl:h-[160px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
                           <img 
                             src={slides[currentIndex].displayPoster} 
                             alt={slides[currentIndex].title} 
@@ -158,7 +158,7 @@ export function SupportCTA() {
 
                         {/* Second Poster Card (only on larger screens if more than 1 slide) */}
                         {slides.length > 1 && (
-                          <Link href={slides[(currentIndex + 1) % slides.length].url} className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform hidden sm:block">
+                          <Link href={slides[(currentIndex + 1) % slides.length].url} className="w-[300px] md:w-[320px] lg:w-[230px] xl:w-[280px] 2xl:w-[320px] h-[140px] md:h-[150px] lg:h-[120px] xl:h-[140px] 2xl:h-[160px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform hidden lg:block">
                             <img 
                               src={slides[(currentIndex + 1) % slides.length].displayPoster} 
                               alt={slides[(currentIndex + 1) % slides.length].title} 
