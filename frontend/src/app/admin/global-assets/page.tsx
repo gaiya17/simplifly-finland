@@ -24,7 +24,6 @@ const ASSET_DEFINITIONS = [
   { key: "maldives_resorts_all_hero", title: "All Maldives Resorts Hero", desc: "All resorts listing page hero" },
   { key: "blog_hero", title: "Blog Hero", desc: "Blog main page hero" },
   { key: "gallery_hero", title: "Gallery Hero", desc: "Gallery main page hero" },
-  { key: "homepage_cta_offer_banner", title: "Homepage CTA Offer Banner", desc: "Special offer banner displayed in the Support CTA section on the homepage" },
 ];
 
 export default function GlobalAssetsManager() {
