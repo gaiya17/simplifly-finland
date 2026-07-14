@@ -463,7 +463,7 @@ export class ResortController {
     }
   }
 
-  // Get all active offers (resorts with offerPoster or customOffers with posterUrl)
+  // Get all active offers (resorts with customOffers)
   static async getOffers(req: Request, res: Response) {
     try {
       const resorts = await prisma.resort.findMany({
@@ -475,11 +475,7 @@ export class ResortController {
       });
       
       const offers = resorts.filter((r: any) => {
-        const hasDiscount = r.discount && Number(r.discount) > 0;
-        const hasCustomOffers = Array.isArray(r.customOffers) && r.customOffers.length > 0;
-        const hasPoster = r.offerPoster || (hasCustomOffers && r.customOffers.some((co: any) => co.posterUrl));
-        
-        return hasDiscount || hasPoster || hasCustomOffers;
+        return Array.isArray(r.customOffers) && r.customOffers.length > 0;
       });
       
       res.status(200).json(offers);
