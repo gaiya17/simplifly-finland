@@ -1,17 +1,103 @@
 "use client";
-import { useSiteAssets } from '../providers/SiteAssetsProvider';
+import { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { tourApi } from '../../lib/tourApi';
+import { resortApi } from '../../lib/resortApi';
 import Link from 'next/link';
 
 export function SupportCTA() {
-  const { getAssetUrl, isLoading } = useSiteAssets();
-  const ctaBannerUrl = getAssetUrl('homepage_cta_offer_banner');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [slides, setSlides] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      tourApi.getOffers().catch(() => []),
+      resortApi.getOffers().catch(() => [])
+    ]).then(([tours, resorts]) => {
+      const extractedSlides: any[] = [];
+
+      if (Array.isArray(tours)) {
+        tours.forEach(tour => {
+          if (tour.offerPoster) {
+            extractedSlides.push({
+              id: `tour-${tour.id}`,
+              type: 'tour',
+              slug: tour.slug,
+              categorySlug: tour.category?.slug || 'all',
+              title: tour.title,
+              displayPoster: tour.offerPoster,
+              url: `/sri-lanka-tours/${tour.category?.slug || 'all'}/${tour.slug}`
+            });
+          }
+        });
+      }
+
+      if (Array.isArray(resorts)) {
+        resorts.forEach(resort => {
+          if (Array.isArray(resort.customOffers) && resort.customOffers.length > 0) {
+            resort.customOffers.forEach((co: any, idx: number) => {
+              if (co.posterUrl) {
+                extractedSlides.push({
+                  id: `resort-${resort.id}-${idx}`,
+                  type: 'resort',
+                  slug: resort.slug,
+                  categorySlug: resort.categories?.[0]?.slug || 'all',
+                  title: resort.title,
+                  displayPoster: co.posterUrl,
+                  url: `/maldives-resorts/${resort.categories?.[0]?.slug || 'all'}/${resort.slug}?offerIdx=${idx}`
+                });
+              }
+            });
+          } else if (resort.offerPoster) {
+            // Fallback for legacy resorts without customOffers but with a global poster
+            extractedSlides.push({
+              id: `resort-${resort.id}`,
+              type: 'resort',
+              slug: resort.slug,
+              categorySlug: resort.categories?.[0]?.slug || 'all',
+              title: resort.title,
+              displayPoster: resort.offerPoster,
+              url: `/maldives-resorts/${resort.categories?.[0]?.slug || 'all'}/${resort.slug}`
+            });
+          }
+        });
+      }
+      
+      setSlides(extractedSlides);
+      setIsLoading(false);
+    });
+  }, []);
+
+  // Auto rotate carousel every 4.5 seconds
+  useEffect(() => {
+    if (isHovered || slides.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % slides.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [isHovered, slides.length]);
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev + 1) % slides.length);
+  };
+
+  const handlePrev = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
+  };
 
   return (
     <div className="w-full relative z-30 flex justify-center mt-[-55px] md:mt-[-70px] lg:mt-[-85px]">
       <div className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24">
         <div className="w-full bg-gradient-to-r from-[#f0f6ff] to-[#e6f1ff] rounded-[20px] shadow-[0_20px_50px_rgba(26,132,255,0.08)] border border-[#1a84ff]/15 relative min-h-[140px] md:min-h-[180px] lg:min-h-[220px] px-6 sm:px-12 lg:px-24 py-7 sm:py-5 md:py-5 lg:py-6 flex items-center justify-between overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 xl:gap-8 items-center w-full h-full relative z-10 py-1">
-            <div className={`col-span-1 ${ctaBannerUrl || isLoading ? 'md:col-span-5 lg:col-span-5 xl:col-span-5' : 'md:col-span-12 lg:col-span-12 xl:col-span-12'} flex flex-col justify-center items-center md:items-start text-center md:text-left`}>
+            <div className={`col-span-1 ${slides.length > 0 || isLoading ? 'md:col-span-5 lg:col-span-5 xl:col-span-5' : 'md:col-span-12 lg:col-span-12 xl:col-span-12'} flex flex-col justify-center items-center md:items-start text-center md:text-left`}>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1a84ff]/10 text-[#1a84ff] font-extrabold text-[9px] lg:text-[10px] tracking-wider uppercase mb-2 shadow-sm border border-[#1a84ff]/10 shrink-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#1a84ff] animate-ping shrink-0" />
                 <span>24/7 Premium Concierge</span>
@@ -36,22 +122,95 @@ export function SupportCTA() {
                 <span className="text-[12.5px] lg:text-[13.5px] font-bold tracking-wide relative z-10 whitespace-nowrap">+358 40 819 2758</span>
               </a>
             </div>
-            {isLoading ? (
-               <div className="col-span-1 md:col-span-7 lg:col-span-7 xl:col-span-7 flex flex-col justify-center items-center md:items-end w-full relative mt-6 md:mt-0">
-                  <div className="w-[300px] sm:w-[350px] md:w-[380px] lg:w-[480px] xl:w-[560px] h-[150px] sm:h-[130px] md:h-[140px] lg:h-[170px] xl:h-[190px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0"></div>
-               </div>
-            ) : ctaBannerUrl ? (
-              <div className="col-span-1 md:col-span-7 lg:col-span-7 xl:col-span-7 flex flex-col justify-center items-center md:items-end w-full relative mt-6 md:mt-0">
-                <Link href="/special-offers" className="w-[300px] sm:w-[350px] md:w-[380px] lg:w-[480px] xl:w-[560px] h-[150px] sm:h-[130px] md:h-[140px] lg:h-[170px] xl:h-[190px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
-                  <img 
-                    src={ctaBannerUrl} 
-                    alt="Special Offers" 
-                    className="w-full h-full object-cover select-none" 
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/4 to-white/8 pointer-events-none" />
-                </Link>
-              </div>
-            ) : null}
+
+            {/* Right Side: Expanded Double Poster Slider */}
+            <div 
+              className="col-span-1 md:col-span-7 lg:col-span-7 xl:col-span-7 flex flex-col justify-center items-center md:items-end w-full relative"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              {isLoading ? (
+                <div className="relative w-fit h-[160px] sm:h-[110px] md:h-[120px] lg:h-[140px] xl:h-[180px] flex items-center justify-center gap-3 lg:gap-4 shrink-0 px-2 mt-5 md:mt-0">
+                  <div className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0"></div>
+                  <div className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] bg-[#041d3c]/5 animate-pulse shrink-0 hidden sm:block"></div>
+                </div>
+              ) : slides.length > 0 ? (
+                <div className="flex flex-col items-center w-full sm:w-fit mt-6 md:mt-0">
+                  <div className="relative w-full sm:w-fit h-[160px] sm:h-[110px] md:h-[120px] lg:h-[140px] xl:h-[180px] flex items-center justify-center group overflow-hidden px-1">
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.div
+                        key={currentIndex}
+                        initial={{ opacity: 0, x: 30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -30 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 26 }}
+                        className="flex gap-3 lg:gap-4 items-center shrink-0"
+                      >
+                        {/* First Poster Card */}
+                        <Link href={slides[currentIndex].url} className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform">
+                          <img 
+                            src={slides[currentIndex].displayPoster} 
+                            alt={slides[currentIndex].title} 
+                            className="w-full h-full object-cover select-none" 
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/4 to-white/8 pointer-events-none" />
+                        </Link>
+
+                        {/* Second Poster Card (only on larger screens if more than 1 slide) */}
+                        {slides.length > 1 && (
+                          <Link href={slides[(currentIndex + 1) % slides.length].url} className="w-[300px] sm:w-[200px] md:w-[220px] lg:w-[260px] xl:w-[340px] h-[150px] sm:h-[100px] md:h-[110px] lg:h-[130px] xl:h-[170px] rounded-[10px] overflow-hidden shadow-[0_4px_12px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 shrink-0 bg-white relative block hover:scale-[1.02] transition-transform hidden sm:block">
+                            <img 
+                              src={slides[(currentIndex + 1) % slides.length].displayPoster} 
+                              alt={slides[(currentIndex + 1) % slides.length].title} 
+                              className="w-full h-full object-cover select-none" 
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/4 to-white/8 pointer-events-none" />
+                          </Link>
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {/* Glassmorphic Carousel Navigation Controls */}
+                    {slides.length > 1 && (
+                      <div className="absolute top-1/2 -translate-y-1/2 left-2 right-2 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 pointer-events-none">
+                        <button 
+                          onClick={handlePrev} 
+                          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 backdrop-blur-md shadow-[0_4px_12px_rgba(4,29,60,0.1)] border border-[#041d3c]/5 text-[#041d3c] flex items-center justify-center hover:bg-white hover:text-[#1a84ff] hover:scale-105 active:scale-95 transition-all duration-200 pointer-events-auto cursor-pointer"
+                          aria-label="Previous Offer"
+                        >
+                          <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={handleNext} 
+                          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 backdrop-blur-md shadow-[0_4px_12px_rgba(4,29,60,0.1)] border border-[#041d3c]/5 text-[#041d3c] flex items-center justify-center hover:bg-white hover:text-[#1a84ff] hover:scale-105 active:scale-95 transition-all duration-200 pointer-events-auto cursor-pointer"
+                          aria-label="Next Offer"
+                        >
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Slim Dot Pagination Indicators */}
+                  {slides.length > 1 && (
+                    <div className="flex gap-2 mt-2.5 z-20 justify-center w-full">
+                      {slides.map((slide, idx) => {
+                        const isActive = idx === currentIndex;
+                        return (
+                          <button
+                            key={slide.id}
+                            onClick={() => setCurrentIndex(idx)}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${isActive ? 'w-5 bg-[#1a84ff] shadow-[0_1.5px_4px_rgba(26,132,255,0.25)]' : 'w-1.5 bg-[#041d3c]/15 hover:bg-[#041d3c]/30'}`}
+                            aria-label={`Go to slide ${idx + 1}`}
+                          />
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ) : null}
+            </div>
+
           </div>
         </div>
       </div>
