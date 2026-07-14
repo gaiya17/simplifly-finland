@@ -25,8 +25,25 @@ export default function SpecialOffers() {
           resortApi.getOffers().catch(() => [])
         ]);
         
+        const rawResorts = Array.isArray(resortsData) ? resortsData : [];
+        const flattenedResorts: any[] = [];
+        rawResorts.forEach(r => {
+          if (r.customOffers && r.customOffers.length > 0) {
+            r.customOffers.forEach((co: any, idx: number) => {
+              flattenedResorts.push({
+                ...r,
+                uniqueKey: `${r.id}-offer-${idx}`,
+                offerIdx: idx,
+                customOffers: [co]
+              });
+            });
+          } else {
+            flattenedResorts.push({ ...r, uniqueKey: r.id });
+          }
+        });
+        
         setTours(Array.isArray(toursData) ? toursData : []);
-        setResorts(Array.isArray(resortsData) ? resortsData : []);
+        setResorts(flattenedResorts);
       } catch (error) {
         console.error("Failed to fetch special offers:", error);
       } finally {
@@ -124,9 +141,9 @@ export default function SpecialOffers() {
 
     return (
       <Link
-        href={`/special-offers/${pkg.slug}`}
-        key={pkg.id}
-        className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 transition-all duration-500 ease-out h-full group cursor-pointer block"
+        href={pkg.offerIdx !== undefined ? `/special-offers/${pkg.slug}?offerIdx=${pkg.offerIdx}` : `/special-offers/${pkg.slug}`}
+        key={pkg.uniqueKey || pkg.id}
+        className="font-poppins bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 transition-all duration-500 ease-out h-full group cursor-pointer block"
       >
         <div className="relative h-[240px] w-full shrink-0 overflow-hidden bg-[#f4f7fb]">
           <ImageWithFallback
@@ -160,21 +177,41 @@ export default function SpecialOffers() {
           </h3>
 
           {pkg.customOffers && pkg.customOffers.length > 0 ? (
-            <div className="mb-5 mt-2 flex items-center justify-between bg-[#f8fafc] border border-[#e8edf4] rounded-[14px] p-3 shadow-sm shadow-[#041d3c]/5">
-              <div className="flex flex-col items-center flex-1">
-                <span className="text-[#1a84ff] text-[9.5px] font-black uppercase tracking-widest mb-1">Duration</span>
-                <span className="text-[#041d3c] text-[14px] font-bold">{pkg.customOffers[0].nights} Nights</span>
+            <div className="mb-5 mt-2 flex flex-col gap-2">
+              <div className="flex items-center justify-between bg-[#f8fafc] border border-[#e8edf4] rounded-[14px] p-3 shadow-sm shadow-[#041d3c]/5">
+                <div className="flex flex-col items-center flex-1">
+                  <span className="text-[#1a84ff] text-[9.5px] font-black uppercase tracking-widest mb-1">Duration</span>
+                  <span className="text-[#041d3c] text-[14px] font-bold">{pkg.customOffers[0].nights} Nights</span>
+                </div>
+                <div className="w-[1px] h-8 bg-[#e8edf4]" />
+                <div className="flex flex-col items-center flex-1">
+                  <span className="text-[#1a84ff] text-[9.5px] font-black uppercase tracking-widest mb-1">Guests</span>
+                  <span className="text-[#041d3c] text-[14px] font-bold">{pkg.customOffers[0].adults || 2} Adults</span>
+                </div>
+                <div className="w-[1px] h-8 bg-[#e8edf4]" />
+                <div className="flex flex-col items-center flex-1">
+                  <span className="text-[#1a84ff] text-[9.5px] font-black uppercase tracking-widest mb-1">Package</span>
+                  <span className="text-rose-500 text-[15px] font-black">${pkg.customOffers[0].offerPrice}</span>
+                </div>
               </div>
-              <div className="w-[1px] h-8 bg-[#e8edf4]" />
-              <div className="flex flex-col items-center flex-1">
-                <span className="text-[#1a84ff] text-[9.5px] font-black uppercase tracking-widest mb-1">Guests</span>
-                <span className="text-[#041d3c] text-[14px] font-bold">{pkg.customOffers[0].adults || 2} Adults</span>
-              </div>
-              <div className="w-[1px] h-8 bg-[#e8edf4]" />
-              <div className="flex flex-col items-center flex-1">
-                <span className="text-[#1a84ff] text-[9.5px] font-black uppercase tracking-widest mb-1">Package</span>
-                <span className="text-rose-500 text-[15px] font-black">${pkg.customOffers[0].offerPrice}</span>
-              </div>
+              {(pkg.customOffers[0].mealPlan || pkg.customOffers[0].transfer) && (
+                <div className="flex flex-wrap gap-2">
+                  {pkg.customOffers[0].mealPlan && (
+                    <span className="bg-amber-100 text-amber-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                      {pkg.customOffers[0].mealPlan === 'BB' ? 'Bed and Breakfast' : 
+                       pkg.customOffers[0].mealPlan === 'HB' ? 'Half Board' : 
+                       pkg.customOffers[0].mealPlan === 'FB' ? 'Full Board' : 
+                       pkg.customOffers[0].mealPlan === 'AI' ? 'All Inclusive' : 
+                       pkg.customOffers[0].mealPlan}
+                    </span>
+                  )}
+                  {pkg.customOffers[0].transfer && (
+                    <span className="bg-[#e0f2fe] text-[#0369a1] text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                      {pkg.customOffers[0].transfer}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <div className="mb-5 mt-1">
@@ -186,25 +223,27 @@ export default function SpecialOffers() {
 
           <div className="h-[1px] bg-[#041d3c]/5 w-full mb-5" />
 
-          <div className="mt-auto flex items-center justify-between gap-4">
-            <div className="flex flex-col text-left">
-              <p className="text-gray-400 text-[9.5px] font-extrabold uppercase tracking-widest mb-0.5">
-                Starting From
-              </p>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-black font-black text-[22px] leading-none">
-                  €{discountedPrice ? discountedPrice.toLocaleString() : pkg.price.toLocaleString()}
-                </span>
-                {pkg.discount > 0 && (
-                  <span className="text-gray-400 line-through text-[12px] font-bold">
-                    €{pkg.price.toLocaleString()}
+          <div className={`mt-auto flex items-center gap-4 ${pkg.customOffers && pkg.customOffers.length > 0 ? 'justify-center w-full' : 'justify-between'}`}>
+            {!(pkg.customOffers && pkg.customOffers.length > 0) && (
+              <div className="flex flex-col text-left">
+                <p className="text-gray-400 text-[9.5px] font-extrabold uppercase tracking-widest mb-0.5">
+                  Starting From
+                </p>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-black font-black text-[22px] leading-none">
+                    €{discountedPrice ? discountedPrice.toLocaleString() : pkg.price.toLocaleString()}
                   </span>
-                )}
+                  {pkg.discount > 0 && (
+                    <span className="text-gray-400 line-through text-[12px] font-bold">
+                      €{pkg.price.toLocaleString()}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="bg-[#041d3c] group-hover:bg-[#1a84ff] text-white px-5 py-3 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 flex items-center gap-1.5 shrink-0 shadow-md group-hover:shadow-[0_8px_20px_rgba(26,132,255,0.25)]">
-              <span>View</span>
+            <div className={`bg-[#041d3c] group-hover:bg-[#1a84ff] text-white px-5 py-3 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-1.5 shrink-0 shadow-md group-hover:shadow-[0_8px_20px_rgba(26,132,255,0.25)] ${pkg.customOffers && pkg.customOffers.length > 0 ? 'w-full' : ''}`}>
+              <span>{pkg.customOffers && pkg.customOffers.length > 0 ? 'View Offer Details' : 'View'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -278,9 +317,26 @@ export default function SpecialOffers() {
           </div>
 
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-20 w-full">
-              <Loader2 className="w-10 h-10 text-[#1a84ff] animate-spin mb-4" />
-              <p className="text-[#041d3c] font-semibold text-[14px]">Loading special offers...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch w-full">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-sm border border-gray-100 h-full animate-pulse">
+                  <div className="h-[240px] w-full bg-gray-200" />
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="h-3 w-1/3 bg-gray-200 rounded mb-4" />
+                    <div className="h-5 w-3/4 bg-gray-200 rounded mb-4" />
+                    <div className="h-4 w-full bg-gray-200 rounded mb-2" />
+                    <div className="h-4 w-5/6 bg-gray-200 rounded mb-6" />
+                    
+                    <div className="mt-auto flex items-center justify-between gap-4">
+                      <div className="flex flex-col gap-1 w-1/2">
+                        <div className="h-2 w-1/2 bg-gray-200 rounded" />
+                        <div className="h-5 w-3/4 bg-gray-200 rounded" />
+                      </div>
+                      <div className="h-10 w-24 bg-gray-200 rounded-[12px]" />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <AnimatePresence mode="wait">

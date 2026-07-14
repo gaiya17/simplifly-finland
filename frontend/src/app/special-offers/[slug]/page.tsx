@@ -38,8 +38,17 @@ export async function generateMetadata(
   }
 }
 
-export default async function SpecialOfferPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function SpecialOfferPage({ 
+  params,
+  searchParams
+}: { 
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
+  const offerIdxStr = resolvedSearchParams.offerIdx;
+  const offerIndex = offerIdxStr ? parseInt(offerIdxStr as string, 10) : 0;
 
   let resortRes = null;
   let tourRes = null;
@@ -75,7 +84,7 @@ export default async function SpecialOfferPage({ params }: { params: Promise<{ s
       images: resortRes.gallery ? resortRes.gallery.map((g: any) => g.url) : [],
     };
 
-    return <ResortPackageClient resort={mappedResortData} categoryId={categorySlug} />;
+    return <ResortPackageClient resort={mappedResortData} categoryId={categorySlug} offerIndex={offerIndex} />;
   }
 
   // Handle Tour Rendering

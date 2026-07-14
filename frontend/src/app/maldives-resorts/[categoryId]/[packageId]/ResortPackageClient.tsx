@@ -6,7 +6,7 @@ import {
   MapPin, Clock, Star, CheckCircle2, ChevronDown, Calendar,
   Loader2, Users, BedDouble, Maximize, Compass, ArrowLeft,
   Wifi, Dumbbell, Waves, UtensilsCrossed, Sparkles,
-  ChevronLeft, ChevronRight, X, ZoomIn, Images, Moon,
+  ChevronLeft, ChevronRight, X, ZoomIn, Images, Moon, Plane,
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -15,6 +15,7 @@ import { ReviewsSection } from '../../../../components/sections/ReviewsSection';
 import { CountrySelect } from '@/components/ui/CountrySelect';
 import { COUNTRIES } from '@/lib/countries';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const TABS = [
   { id: 'villas',       label: 'Villas' },
@@ -75,7 +76,9 @@ const VillaImageSlider = ({ images, fallbackImage, alt }: { images: any[], fallb
   );
 };
 
-export function ResortPackageClient({ resort, categoryId }: { resort: any; categoryId: string }) {
+export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { resort: any; categoryId: string; offerIndex?: number }) {
+  const pathname = usePathname();
+  const isSpecialOffer = pathname.includes('/special-offers');
   const hasOffers = (resort.offers && resort.offers.length > 0) || (resort.customOffers && resort.customOffers.length > 0);
   const [activeTab, setActiveTab] = useState(hasOffers ? 'deals' : TABS[0].id);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -360,11 +363,11 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
         <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 pb-12 lg:pb-16 flex flex-col items-start">
           {/* Breadcrumb */}
           <Link
-            href={`/maldives-resorts/${categoryId}`}
+            href={isSpecialOffer ? '/special-offers' : `/maldives-resorts/${categoryId}`}
             className="flex items-center gap-1.5 text-white/45 hover:text-white text-[11.5px] font-semibold uppercase tracking-wider mb-6 transition-colors duration-200"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            Back to Category
+            {isSpecialOffer ? 'Back to Special Offers' : 'Back to Category'}
           </Link>
 
           {/* Badge */}
@@ -413,7 +416,7 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                         <Moon className="w-4 h-4 text-[#1a84ff]" />
                         <span className="text-[13px] font-bold">Duration</span>
                       </div>
-                      <span className="text-[#041d3c] font-black text-[14px]">{resort.customOffers[0].nights} Nights</span>
+                      <span className="text-[#041d3c] font-black text-[14px]">{resort.customOffers[offerIndex].nights} Nights</span>
                     </div>
                     <div className="h-[1px] w-full bg-[#e4eaf2]" />
                     <div className="flex items-center justify-between">
@@ -421,18 +424,48 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                         <Users className="w-4 h-4 text-[#1a84ff]" />
                         <span className="text-[13px] font-bold">Guests</span>
                       </div>
-                      <span className="text-[#041d3c] font-black text-[14px]">{resort.customOffers[0].adults ?? 2} Adults{resort.customOffers[0].children ? `, ${resort.customOffers[0].children} Children` : ''}</span>
+                      <span className="text-[#041d3c] font-black text-[14px]">{resort.customOffers[offerIndex].adults ?? 2} Adults{resort.customOffers[offerIndex].children ? `, ${resort.customOffers[offerIndex].children} Children` : ''}</span>
                     </div>
+                    {resort.customOffers[offerIndex].mealPlan && (
+                      <>
+                        <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-gray-500">
+                            <UtensilsCrossed className="w-4 h-4 text-[#1a84ff]" />
+                            <span className="text-[13px] font-bold">Meal Plan</span>
+                          </div>
+                          <span className="text-[#041d3c] font-black text-[14px]">
+                            {resort.customOffers[offerIndex].mealPlan === 'BB' ? 'Bed and Breakfast' : 
+                             resort.customOffers[offerIndex].mealPlan === 'HB' ? 'Half Board' : 
+                             resort.customOffers[offerIndex].mealPlan === 'FB' ? 'Full Board' : 
+                             resort.customOffers[offerIndex].mealPlan === 'AI' ? 'All Inclusive' : 
+                             resort.customOffers[offerIndex].mealPlan}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                    {resort.customOffers[offerIndex].transfer && (
+                      <>
+                        <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-gray-500">
+                            <Plane className="w-4 h-4 text-[#1a84ff]" />
+                            <span className="text-[13px] font-bold">Transfer</span>
+                          </div>
+                          <span className="text-[#041d3c] font-black text-[14px]">{resort.customOffers[offerIndex].transfer}</span>
+                        </div>
+                      </>
+                    )}
                   </div>
                   
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-gray-400 text-[18px] font-bold line-through">${(Number(resort.price) || 0) * (Number(resort.customOffers[0].nights) || 0)}</span>
-                    <span className="text-[#ff245b] text-[36px] font-black leading-none">${resort.customOffers[0].offerPrice}</span>
+                    <span className="text-gray-400 text-[18px] font-bold line-through">${(Number(resort.price) || 0) * (Number(resort.customOffers[offerIndex].nights) || 0)}</span>
+                    <span className="text-[#ff245b] text-[36px] font-black leading-none">${resort.customOffers[offerIndex].offerPrice}</span>
                   </div>
                   <p className="text-gray-500 text-[13px] font-medium mb-6">Total package price</p>
 
                   {(() => {
-                    const co = resort.customOffers[0];
+                    const co = resort.customOffers[offerIndex];
                     const adults = co.adults ?? 2;
                     const children = co.children ?? 0;
                     const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ''}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(' or ')}` : ''} at ${resort.title} for $${co.offerPrice}. Can you check availability?`;
@@ -989,6 +1022,36 @@ export function ResortPackageClient({ resort, categoryId }: { resort: any; categ
                                 </div>
                                 <span className="text-[#041d3c] font-black text-[14px]">{adults} Adults{children > 0 ? `, ${children} Children` : ''}</span>
                               </div>
+                              {co.mealPlan && (
+                                <>
+                                  <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2 text-gray-500">
+                                      <UtensilsCrossed className="w-4 h-4 text-[#1a84ff]" />
+                                      <span className="text-[13px] font-bold">Meal Plan</span>
+                                    </div>
+                                    <span className="text-[#041d3c] font-black text-[14px]">
+                                      {co.mealPlan === 'BB' ? 'Bed and Breakfast' : 
+                                       co.mealPlan === 'HB' ? 'Half Board' : 
+                                       co.mealPlan === 'FB' ? 'Full Board' : 
+                                       co.mealPlan === 'AI' ? 'All Inclusive' : 
+                                       co.mealPlan}
+                                    </span>
+                                  </div>
+                                </>
+                              )}
+                              {co.transfer && (
+                                <>
+                                  <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2 text-gray-500">
+                                      <Plane className="w-4 h-4 text-[#1a84ff]" />
+                                      <span className="text-[13px] font-bold">Transfer</span>
+                                    </div>
+                                    <span className="text-[#041d3c] font-black text-[14px]">{co.transfer}</span>
+                                  </div>
+                                </>
+                              )}
                             </div>
                             
                             <div className="flex items-center justify-center gap-2 mt-auto pt-2 mb-1">

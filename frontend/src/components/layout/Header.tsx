@@ -149,7 +149,7 @@ export function Header() {
             <div className="relative group h-full flex items-center">
               <Link
                 href="/special-offers"
-                className="flex items-center gap-1 text-white/90 hover:text-white text-[13px] font-semibold px-3 py-2 rounded-[10px] hover:bg-white/8 transition-all duration-200 whitespace-nowrap"
+                className="flex items-center gap-1 text-amber-400 hover:text-amber-300 text-[13px] font-bold px-3 py-2 rounded-[10px] hover:bg-white/8 transition-all duration-200 whitespace-nowrap"
               >
                 Special Offers
               </Link>
@@ -292,7 +292,7 @@ export function Header() {
           <Link
             href="/special-offers"
             onClick={() => setMobileOpen(false)}
-            className="px-4 py-3 rounded-[12px] text-white/90 text-[14px] font-semibold hover:bg-white/6 transition-all"
+            className="px-4 py-3 rounded-[12px] text-amber-400 text-[14px] font-bold hover:bg-white/6 transition-all"
           >
             Special Offers
           </Link>
