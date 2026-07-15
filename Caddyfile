@@ -1,3 +1,8 @@
+simpliflyfinland.fi, www.simpliflyfinland.fi {
+    # ── 301 Permanent Redirect to preserve SEO ──────────────────────────
+    redir https://simpliflyfinland.com{uri} 301
+}
+
 simpliflyfinland.com, www.simpliflyfinland.com {
     # ── Automatic HTTPS via Let's Encrypt ───────────────────────────────
     # Caddy handles cert issuance and renewal automatically. No certbot needed.
