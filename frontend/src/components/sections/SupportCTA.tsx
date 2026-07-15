@@ -47,7 +47,7 @@ export function SupportCTA() {
                   categorySlug: resort.categories?.[0]?.slug || 'all',
                   title: resort.title,
                   displayPoster: co.posterUrl,
-                  url: `/maldives-resorts/${resort.categories?.[0]?.slug || 'all'}/${resort.slug}?offerIdx=${idx}`
+                  url: `/maldives-resorts/${resort.categories?.[0]?.slug || 'all'}/${resort.slug}${idx > 0 ? `?offerIdx=${idx}` : ''}`
                 });
               }
             });
