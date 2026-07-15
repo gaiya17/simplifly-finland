@@ -101,20 +101,21 @@ export default async function SpecialOfferPage({
       duration: `${tourRes.nights} Nights / ${tourRes.days} Days`,
       price: tourRes.price,
       discount: tourRes.discount,
-      category: tourRes.category?.name || 'Tour Package',
-      destinations: tourRes.destinations,
+      currency: '€',
       summary: tourRes.summary,
-      inclusions: tourRes.inclusions?.map((inc: any) => inc.text) || [],
+      locations: tourRes.destinations,
+      gallery: tourRes.gallery?.length ? tourRes.gallery.map((g: any) => g.url) : ['https://images.unsplash.com/photo-1594805938839-c581da5d8129'],
       itinerary: tourRes.itinerary?.map((day: any) => ({
-        day: day.dayNumber,
-        dayEnd: day.dayNumberEnd,
-        title: day.title,
+        day: String(day.dayNumber).padStart(2, '0'),
+        dayEnd: day.dayNumberEnd ? String(day.dayNumberEnd).padStart(2, '0') : null,
         route: day.route,
+        activity: day.title,
         details: day.description,
         stay: day.stay,
-        mealPlan: day.mealPlan
+        mealPlan: day.mealPlan,
       })) || [],
-      gallery: tourRes.gallery?.map((g: any) => g.url) || [],
+      included: tourRes.inclusions?.filter((inc: any) => inc.isIncluded).map((inc: any) => inc.text) || [],
+      notIncluded: tourRes.inclusions?.filter((inc: any) => !inc.isIncluded).map((inc: any) => inc.text) || [],
     };
 
     return <TourPackageClient data={mappedTourData} />;

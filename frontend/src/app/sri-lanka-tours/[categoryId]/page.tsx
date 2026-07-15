@@ -109,7 +109,7 @@ export default async function SriLankaTourCategory({ params }: { params: Promise
                   <Link
                     href={`/sri-lanka-tours/${categoryId}/${pkg.slug}`}
                     key={pkg.id}
-                    className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 transition-all duration-500 ease-out h-full group cursor-pointer block"
+                    className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 active:scale-[0.98] active:opacity-90 transition-all duration-500 ease-out h-full group cursor-pointer block"
                   >
                     <div className="relative h-[240px] w-full shrink-0 overflow-hidden bg-[#f4f7fb]">
                       <ImageWithFallback

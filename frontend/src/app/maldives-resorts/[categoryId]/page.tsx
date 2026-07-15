@@ -279,13 +279,13 @@ export default async function MaldivesResortsCategory({ params }: { params: Prom
                     <div className="flex flex-col gap-1.5 shrink-0 w-[125px]">
                       <Link 
                         href={`/maldives-resorts/${categoryId || 'luxury'}/${pkg.slug}#inquire-form`}
-                        className="w-full bg-white hover:bg-[#f4f7fb] text-[#041d3c] border border-[#041d3c]/20 hover:border-[#041d3c]/40 py-2 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 text-center block"
+                        className="w-full bg-white hover:bg-[#f4f7fb] text-[#041d3c] border border-[#041d3c]/20 hover:border-[#041d3c]/40 py-2 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 text-center block active:scale-[0.98] active:opacity-90"
                       >
                         Get a Quote
                       </Link>
                       <Link
                         href={`/maldives-resorts/${categoryId || 'luxury'}/${pkg.slug}`}
-                        className="w-full bg-[#041d3c] hover:bg-[#1a84ff] text-white py-2 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 shadow-sm hover:shadow-[0_8px_20px_rgba(26,132,255,0.25)] hover:-translate-y-0.5 text-center block"
+                        className="w-full bg-[#041d3c] hover:bg-[#1a84ff] text-white py-2 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 shadow-sm hover:shadow-[0_8px_20px_rgba(26,132,255,0.25)] hover:-translate-y-0.5 active:scale-[0.98] active:opacity-90 active:translate-y-0 text-center block"
                       >
                         Explore More
                       </Link>
