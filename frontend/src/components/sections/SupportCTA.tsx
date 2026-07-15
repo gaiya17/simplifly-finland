@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { tourApi } from '../../lib/tourApi';
 import { resortApi } from '../../lib/resortApi';
+import { generateOfferSlug } from '../../lib/utils/offerSlug';
 import Link from 'next/link';
 
 export function SupportCTA() {
@@ -29,7 +30,7 @@ export function SupportCTA() {
               categorySlug: tour.category?.slug || 'all',
               title: tour.title,
               displayPoster: tour.offerPoster,
-              url: `/sri-lanka-tours/${tour.category?.slug || 'all'}/${tour.slug}`
+              url: `/special-offers/${tour.slug}/special-offer`
             });
           }
         });
@@ -47,7 +48,7 @@ export function SupportCTA() {
                   categorySlug: resort.categories?.[0]?.slug || 'all',
                   title: resort.title,
                   displayPoster: co.posterUrl,
-                  url: `/maldives-resorts/${resort.categories?.[0]?.slug || 'all'}/${resort.slug}${idx > 0 ? `?offerIdx=${idx}` : ''}`
+                  url: `/special-offers/${resort.slug}/${generateOfferSlug(co)}`
                 });
               }
             });
@@ -60,7 +61,7 @@ export function SupportCTA() {
               categorySlug: resort.categories?.[0]?.slug || 'all',
               title: resort.title,
               displayPoster: resort.offerPoster,
-              url: `/maldives-resorts/${resort.categories?.[0]?.slug || 'all'}/${resort.slug}`
+              url: `/special-offers/${resort.slug}/special-offer`
             });
           }
         });

@@ -5,6 +5,7 @@ import { ImageWithFallback } from '../../components/shared/ImageWithFallback';
 import { Clock, ArrowRight, Loader2, ArrowLeft } from 'lucide-react';
 import { tourApi } from '../../lib/tourApi';
 import { resortApi } from '../../lib/resortApi';
+import { generateOfferSlug } from '../../lib/utils/offerSlug';
 import { useSiteAssets } from '../../components/providers/SiteAssetsProvider';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -141,7 +142,7 @@ export default function SpecialOffers() {
 
     return (
       <Link
-        href={pkg.offerIdx > 0 ? `/special-offers/${pkg.slug}?offerIdx=${pkg.offerIdx}` : `/special-offers/${pkg.slug}`}
+        href={`/special-offers/${pkg.slug}/${generateOfferSlug(pkg.customOffers?.[0])}`}
         key={pkg.uniqueKey || pkg.id}
         className="font-poppins bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 transition-all duration-500 ease-out h-full group cursor-pointer block"
       >
