@@ -13,7 +13,7 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 # Copy dependency manifests and install
 COPY package.json package-lock.json ./
-RUN npm ci --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 # Copy source and build
 COPY . .
