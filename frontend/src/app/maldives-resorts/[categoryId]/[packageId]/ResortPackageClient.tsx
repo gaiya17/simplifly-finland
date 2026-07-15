@@ -699,14 +699,16 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                 {/* Check-In + Number of Nights */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="relative">
+                    {!watchedCheckIn && (
+                      <div className={`absolute inset-0 w-full bg-[#f8fafc] border ${errors.checkIn ? 'border-red-400' : 'border-[#e4eaf2]'} rounded-[12px] px-4 py-3 text-gray-400 font-medium text-[13px] pointer-events-none flex items-center`}>
+                        Check-In *
+                      </div>
+                    )}
                     <input
-                      type="text"
-                      placeholder="Check-In *"
+                      type="date"
                       {...register('checkIn', { required: 'Check-in date is required' })}
                       min={new Date().toISOString().split('T')[0]}
-                      onFocus={(e) => { e.target.type = 'date'; try { (e.target as any).showPicker(); } catch(err){} }}
-                      onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
-                      className={`w-full bg-[#f8fafc] border ${errors.checkIn ? 'border-red-400' : 'border-[#e4eaf2]'} rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer`}
+                      className={`w-full bg-[#f8fafc] border ${errors.checkIn ? 'border-red-400' : 'border-[#e4eaf2]'} rounded-[12px] px-4 py-3 font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer relative z-10 ${watchedCheckIn ? 'text-[#041d3c]' : 'opacity-0'}`}
                     />
                     <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                     {errors.checkIn && <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">{errors.checkIn.message as string}</span>}

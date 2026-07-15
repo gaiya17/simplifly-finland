@@ -15,6 +15,7 @@ import { Poppins } from "next/font/google";
 import { Toaster } from "sonner";
 import { ClientLayout } from "../components/layout/ClientLayout";
 import "./globals.css";
+import NextTopLoader from 'nextjs-toploader';
 
 import { SiteAssetsProvider } from '../components/providers/SiteAssetsProvider';
 
@@ -225,6 +226,7 @@ export default function RootLayout({
         className={`${poppins.variable} font-sans min-h-full flex flex-col antialiased overflow-x-hidden w-full max-w-[100vw]`}
       >
         <SiteAssetsProvider>
+          <NextTopLoader color="#1a84ff" showSpinner={false} />
           {/*
            * Toaster — global toast notification system (sonner library).
            * Rendered here so toasts are available across all pages, including
