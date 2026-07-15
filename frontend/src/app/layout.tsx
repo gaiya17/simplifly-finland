@@ -13,6 +13,7 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import { Toaster } from "sonner";
+import Script from "next/script";
 import { ClientLayout } from "../components/layout/ClientLayout";
 import "./globals.css";
 import NextTopLoader from 'nextjs-toploader';
@@ -200,6 +201,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="overflow-x-hidden w-full max-w-[100vw]">
       <head>
+        {/* CookieYes Consent Management */}
+        <Script
+          id="cookieyes"
+          src="https://cdn-cookieyes.com/client_data/d3fe3f2de23f2de0bea89b5d775a7d45/script.js"
+          strategy="beforeInteractive"
+        />
         {/* WebSite Schema */}
         <script
           type="application/ld+json"
