@@ -42,7 +42,7 @@ export default function AdminResorts() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [discountModalId, setDiscountModalId] = useState<string | null>(null);
-  const [discountForm, setDiscountForm] = useState<{ discount: string; offerPoster: string; offerPosterPublicId: string; customOffers: { nights: number; offerPrice: number; adults: number; children: number; posterUrl?: string; posterPublicId?: string; villas?: string[]; transfer?: string; mealPlan?: string; }[] }>({ discount: '', offerPoster: '', offerPosterPublicId: '', customOffers: [] });
+  const [discountForm, setDiscountForm] = useState<{ discount: string; offerPoster: string; offerPosterPublicId: string; customOffers: { nights: number; offerPrice: number; adults: number; children: number; posterUrl?: string; posterPublicId?: string; villas?: string[]; transfer?: string; mealPlan?: string; validFrom?: string; validTo?: string; bookBefore?: string; }[] }>({ discount: '', offerPoster: '', offerPosterPublicId: '', customOffers: [] });
 
   // Form State
   const [step, setStep] = useState(1);
@@ -493,7 +493,7 @@ export default function AdminResorts() {
 
                     <div className="flex items-center justify-between mb-1.5 mt-2">
                       <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">Custom Package Offers (Nights/Price)</label>
-                      <button type="button" onClick={() => setForm({...form, customOffers: [...(form.customOffers||[]), { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [], transfer: form.transfer || '', mealPlan: '' }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Package</button>
+                      <button type="button" onClick={() => setForm({...form, customOffers: [...(form.customOffers||[]), { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [], transfer: form.transfer || '', mealPlan: '', validFrom: '', validTo: '', bookBefore: '' }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Package</button>
                     </div>
                     <div className="space-y-4">
                       {(!form.customOffers || form.customOffers.length === 0) ? (
@@ -524,7 +524,7 @@ export default function AdminResorts() {
                                 </div>
                                 <div>
                                   <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Price ($)</label>
-                                  <input type="number" min="0" value={co.offerPrice} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                  <input type="number" min="1" required value={co.offerPrice || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
                                 </div>
                                 <div>
                                   <label className="block text-[10px] font-bold text-gray-400 mb-1">Meal Plan</label>
@@ -542,6 +542,19 @@ export default function AdminResorts() {
                                     <option value="">None / Default</option>
                                     {transferOptions.map(t => <option key={t.id} value={t.name}>{t.name}</option>)}
                                   </select>
+                                </div>
+                                
+                                <div>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Travel From</label>
+                                  <input type="date" value={co.validFrom || ''} max={co.validTo || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], validFrom: e.target.value}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Travel To</label>
+                                  <input type="date" value={co.validTo || ''} min={co.validFrom || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], validTo: e.target.value}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Book Before</label>
+                                  <input type="date" value={co.bookBefore || ''} max={co.validTo || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], bookBefore: e.target.value}; setForm({...form, customOffers: n}); }} className={inputCls} />
                                 </div>
                                 
                                 <div className="col-span-2 sm:col-span-4 mt-2">
@@ -1195,7 +1208,7 @@ export default function AdminResorts() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className={labelCls}>Custom Package Offers</label>
-                  <button type="button" onClick={() => setDiscountForm({...discountForm, customOffers: [...discountForm.customOffers, { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [], transfer: resorts.find(r => r.id === discountModalId)?.transfer || '', mealPlan: '' }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Offer</button>
+                  <button type="button" onClick={() => setDiscountForm({...discountForm, customOffers: [...discountForm.customOffers, { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [], transfer: resorts.find(r => r.id === discountModalId)?.transfer || '', mealPlan: '', validFrom: '', validTo: '', bookBefore: '' }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Offer</button>
                 </div>
                 <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2">
                   {discountForm.customOffers.length === 0 ? (
@@ -1234,7 +1247,7 @@ export default function AdminResorts() {
                             </div>
                             <div>
                               <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Price ($)</label>
-                              <input type="number" min="0" value={co.offerPrice}
+                              <input type="number" min="1" required value={co.offerPrice || ''}
                                 onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
                                 className={inputCls} />
                             </div>
@@ -1254,6 +1267,25 @@ export default function AdminResorts() {
                                 <option value="">None / Default</option>
                                 {transferOptions.map(t => <option key={t.id} value={t.name}>{t.name}</option>)}
                               </select>
+                            </div>
+
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Travel From</label>
+                              <input type="date" value={co.validFrom || ''} max={co.validTo || ''}
+                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], validFrom: e.target.value}; setDiscountForm({...discountForm, customOffers: n}); }}
+                                className={inputCls} />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Travel To</label>
+                              <input type="date" value={co.validTo || ''} min={co.validFrom || ''}
+                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], validTo: e.target.value}; setDiscountForm({...discountForm, customOffers: n}); }}
+                                className={inputCls} />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Book Before</label>
+                              <input type="date" value={co.bookBefore || ''} max={co.validTo || ''}
+                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], bookBefore: e.target.value}; setDiscountForm({...discountForm, customOffers: n}); }}
+                                className={inputCls} />
                             </div>
 
                             <div className="col-span-2 sm:col-span-4 mt-2">

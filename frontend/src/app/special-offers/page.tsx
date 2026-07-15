@@ -195,7 +195,7 @@ export default function SpecialOffers() {
                   <span className="text-rose-500 text-[15px] font-black">${pkg.customOffers[0].offerPrice}</span>
                 </div>
               </div>
-              {(pkg.customOffers[0].mealPlan || pkg.customOffers[0].transfer) && (
+              {(pkg.customOffers[0].mealPlan || pkg.customOffers[0].transfer || pkg.customOffers[0].validFrom || pkg.customOffers[0].bookBefore) && (
                 <div className="flex flex-wrap gap-2">
                   {pkg.customOffers[0].mealPlan && (
                     <span className="bg-amber-100 text-amber-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full">
@@ -209,6 +209,16 @@ export default function SpecialOffers() {
                   {pkg.customOffers[0].transfer && (
                     <span className="bg-[#e0f2fe] text-[#0369a1] text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full">
                       {pkg.customOffers[0].transfer}
+                    </span>
+                  )}
+                  {pkg.customOffers[0].validFrom && pkg.customOffers[0].validTo && (
+                    <span className="bg-emerald-100 text-emerald-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1">
+                      TRAVEL PERIOD: {new Date(pkg.customOffers[0].validFrom + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).toUpperCase()} - {new Date(pkg.customOffers[0].validTo + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).toUpperCase()}
+                    </span>
+                  )}
+                  {pkg.customOffers[0].bookBefore && (
+                    <span className="bg-rose-100 text-rose-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1">
+                      BOOK BY: {new Date(pkg.customOffers[0].bookBefore + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).toUpperCase()}
                     </span>
                   )}
                 </div>

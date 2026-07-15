@@ -456,6 +456,34 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                         </div>
                       </>
                     )}
+                    {resort.customOffers[offerIndex].validFrom && resort.customOffers[offerIndex].validTo && (
+                      <>
+                        <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-gray-500">
+                            <Calendar className="w-4 h-4 text-[#1a84ff]" />
+                            <span className="text-[13px] font-bold">Travel Period</span>
+                          </div>
+                          <span className="text-[#041d3c] font-black text-[13px]">
+                            {new Date(resort.customOffers[offerIndex].validFrom + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })} - {new Date(resort.customOffers[offerIndex].validTo + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                    {resort.customOffers[offerIndex].bookBefore && (
+                      <>
+                        <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-gray-500">
+                            <Clock className="w-4 h-4 text-rose-500" />
+                            <span className="text-[13px] font-bold text-rose-500">Book Before</span>
+                          </div>
+                          <span className="text-rose-500 font-black text-[13px]">
+                            {new Date(resort.customOffers[offerIndex].bookBefore + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
+                          </span>
+                        </div>
+                      </>
+                    )}
                   </div>
                   
                   <div className="flex items-center gap-3 mb-2">
@@ -1049,6 +1077,34 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                                       <span className="text-[13px] font-bold">Transfer</span>
                                     </div>
                                     <span className="text-[#041d3c] font-black text-[14px]">{co.transfer}</span>
+                                  </div>
+                                </>
+                              )}
+                              {co.validFrom && co.validTo && (
+                                <>
+                                  <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2 text-gray-500">
+                                      <Calendar className="w-4 h-4 text-[#1a84ff]" />
+                                      <span className="text-[13px] font-bold">Travel Period</span>
+                                    </div>
+                                    <span className="text-[#041d3c] font-black text-[13px]">
+                                      {new Date(co.validFrom + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })} - {new Date(co.validTo + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
+                                    </span>
+                                  </div>
+                                </>
+                              )}
+                              {co.bookBefore && (
+                                <>
+                                  <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2 text-gray-500">
+                                      <Clock className="w-4 h-4 text-rose-500" />
+                                      <span className="text-[13px] font-bold text-rose-500">Book Before</span>
+                                    </div>
+                                    <span className="text-rose-500 font-black text-[13px]">
+                                      {new Date(co.bookBefore + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
+                                    </span>
                                   </div>
                                 </>
                               )}
