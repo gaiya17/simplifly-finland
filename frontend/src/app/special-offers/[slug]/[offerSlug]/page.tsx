@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { tourApi } from '../../../lib/tourApi';
-import { resortApi } from '../../../lib/resortApi';
-import { TourPackageClient } from '../../sri-lanka-tours/[categoryId]/[packageId]/TourPackageClient';
-import { ResortPackageClient } from '../../maldives-resorts/[categoryId]/[packageId]/ResortPackageClient';
+import { tourApi } from '../../../../lib/tourApi';
+import { resortApi } from '../../../../lib/resortApi';
+import { TourPackageClient } from '../../../sri-lanka-tours/[categoryId]/[packageId]/TourPackageClient';
+import { ResortPackageClient } from '../../../maldives-resorts/[categoryId]/[packageId]/ResortPackageClient';
 import type { Metadata, ResolvingMetadata } from 'next';
 
 export async function generateMetadata(
