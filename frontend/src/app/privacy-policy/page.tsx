@@ -1,5 +1,6 @@
 import { ShieldCheck, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import CookieYesPolicy from '@/components/shared/CookieYesPolicy';
 
 export const metadata = {
   title: 'Privacy & Cookie Policy | Simplifly Finland',
@@ -194,47 +195,7 @@ export default function PrivacyPolicyPage() {
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1a84ff]/8 text-[#1a84ff] font-extrabold text-[10px] lg:text-[11px] tracking-wider uppercase mb-5 border border-[#1a84ff]/10">
                 <span>✦ COOKIE POLICY</span>
               </div>
-              <h2 className="text-3xl mb-8">What are cookies?</h2>
-              <p>
-                This Cookie Policy explains what cookies are and how we use them, the types of cookies we use i.e, the information we collect using cookies and how that information is used, and how to manage the cookie settings.
-              </p>
-              <p>
-                Cookies are small text files that are used to store small pieces of information. They are stored on your device when the website is loaded on your browser. These cookies help us make the website function properly, make it more secure, provide better user experience, and understand how the website performs and to analyze what works and where it needs improvement.
-              </p>
-
-              <h3 className="text-2xl mt-12 mb-6">How do we use cookies?</h3>
-              <p>
-                As most of the online services, our website uses first-party and third-party cookies for several purposes. First-party cookies are mostly necessary for the website to function the right way, and they do not collect any of your personally identifiable data.
-              </p>
-              <p>
-                The third-party cookies used on our website are mainly for understanding how the website performs, how you interact with our website, keeping our services secure, providing advertisements that are relevant to you, and all in all providing you with a better and improved user experience and help speed up your future interactions with our website.
-              </p>
-
-              <h3 className="text-2xl mt-12 mb-6">Manage cookie preferences</h3>
-              <p>
-                In addition to managing settings via our cookie banner, different browsers provide different methods to block and delete cookies used by websites. You can change the settings of your browser to block/delete the cookies. Listed below are the links to the support documents on how to manage and delete cookies from the major web browsers:
-              </p>
-              <ul className="grid grid-cols-1 gap-3 mb-6 list-none pl-0 mt-4">
-                <li className="flex items-center gap-3 bg-white p-4 rounded-[12px] shadow-sm border border-gray-100">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                  <strong>Chrome:</strong> <a href="https://support.google.com/accounts/answer/32050" target="_blank" rel="noopener noreferrer" className="ml-auto text-[14px]">Support Document</a>
-                </li>
-                <li className="flex items-center gap-3 bg-white p-4 rounded-[12px] shadow-sm border border-gray-100">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                  <strong>Safari:</strong> <a href="https://support.apple.com/en-in/guide/safari/sfri11471/mac" target="_blank" rel="noopener noreferrer" className="ml-auto text-[14px]">Support Document</a>
-                </li>
-                <li className="flex items-center gap-3 bg-white p-4 rounded-[12px] shadow-sm border border-gray-100">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                  <strong>Firefox:</strong> <a href="https://support.mozilla.org/en-US/kb/clear-cookies-and-site-data-firefox" target="_blank" rel="noopener noreferrer" className="ml-auto text-[14px]">Support Document</a>
-                </li>
-                <li className="flex items-center gap-3 bg-white p-4 rounded-[12px] shadow-sm border border-gray-100">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                  <strong>Internet Explorer / Edge:</strong> <a href="https://support.microsoft.com/en-us/topic/how-to-delete-cookie-files-in-internet-explorer-bca9446f-d873-78de-77ba-d42645fa52fc" target="_blank" rel="noopener noreferrer" className="ml-auto text-[14px]">Support Document</a>
-                </li>
-              </ul>
-              <p className="mt-4">
-                If you are using any other web browser, please visit your browser's official support documents.
-              </p>
+              <CookieYesPolicy />
             </div>
 
           </div>
