@@ -40,23 +40,22 @@ export default function TawkToTracker() {
   }, []);
 
   // ─── SPA Route Change Tracking ──────────────────────────────────────────────
-  // Tawk.to automatically tracks URL changes, but in Next.js it often grabs the 
-  // old document.title before Next.js finishes rendering the new metadata.
-  // This hook manually pushes a custom event to your dashboard timeline so you 
-  // can clearly see the exact paths they visit.
+  // Since most pages share the same base <title> metadata, the Tawk timeline
+  // looks identical on every click. Furthermore, custom addEvents require manual
+  // dashboard configuration to be visible.
+  // The absolute best solution is to inject the exact route path directly into 
+  // the visitor's "About" profile sidebar using setAttributes.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const w = window as any;
     
-    if (w.Tawk_API && typeof w.Tawk_API.addEvent === 'function') {
-      // Add a slight delay to allow Next.js to update document.title
-      setTimeout(() => {
-        w.Tawk_API.addEvent('Navigated to Page', {
-          'Path': pathname,
-          'Full URL': window.location.href,
-          'Title': document.title
-        });
-      }, 500);
+    if (w.Tawk_API && typeof w.Tawk_API.setAttributes === 'function') {
+      w.Tawk_API.setAttributes({
+        'Current Path': pathname,
+        'Full URL': window.location.href
+      }, function(error: any) {
+        if (error) console.error("Tawk.to attribute error:", error);
+      });
     }
   }, [pathname, searchParams]);
 
