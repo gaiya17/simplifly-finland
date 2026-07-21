@@ -1,8 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 export default function TawkToTracker() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   useEffect(() => {
     // Only run on client side
     if (typeof window === 'undefined') return;
@@ -35,6 +38,27 @@ export default function TawkToTracker() {
       document.head.appendChild(s1);
     }
   }, []);
+
+  // ─── SPA Route Change Tracking ──────────────────────────────────────────────
+  // Tawk.to automatically tracks URL changes, but in Next.js it often grabs the 
+  // old document.title before Next.js finishes rendering the new metadata.
+  // This hook manually pushes a custom event to your dashboard timeline so you 
+  // can clearly see the exact paths they visit.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const w = window as any;
+    
+    if (w.Tawk_API && typeof w.Tawk_API.addEvent === 'function') {
+      // Add a slight delay to allow Next.js to update document.title
+      setTimeout(() => {
+        w.Tawk_API.addEvent('Navigated to Page', {
+          'Path': pathname,
+          'Full URL': window.location.href,
+          'Title': document.title
+        });
+      }, 500);
+    }
+  }, [pathname, searchParams]);
 
   // Return null because this is a background tracker, nothing visible to render
   return null;
