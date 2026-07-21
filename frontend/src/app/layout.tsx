@@ -20,6 +20,7 @@ import NextTopLoader from 'nextjs-toploader';
 
 import { SiteAssetsProvider } from '../components/providers/SiteAssetsProvider';
 import TawkToTracker from '../components/shared/TawkToTracker';
+import { Suspense } from 'react';
 
 // ─── Font Loading ──────────────────────────────────────────────────────────────
 // next/font automatically downloads and self-hosts Poppins at build time.
@@ -250,7 +251,9 @@ export default function RootLayout({
           <ClientLayout>{children}</ClientLayout>
           
           {/* Tawk.to background tracking (invisible) */}
-          <TawkToTracker />
+          <Suspense fallback={null}>
+            <TawkToTracker />
+          </Suspense>
         </SiteAssetsProvider>
       </body>
     </html>
