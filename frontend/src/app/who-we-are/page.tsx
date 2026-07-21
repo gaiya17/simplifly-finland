@@ -2,6 +2,12 @@ import { Quote, Award, Globe, Users, Clock, CheckCircle } from 'lucide-react';
 import { ImageWithFallback } from '../../components/shared/ImageWithFallback';
 import { BrandLogos } from '../../components/sections/BrandLogos';
 import { siteAssetsApi } from '../../lib/siteAssetsApi';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Who We Are',
+  description: 'Meet the passionate team behind Simplifly Finland Oy — your premium travel partner for luxury tours to Sri Lanka and the Maldives.',
+};
 
 const stats = [
   { value: '16+', label: 'Years of Experience', icon: Clock },
