@@ -19,6 +19,7 @@ import "./globals.css";
 import NextTopLoader from 'nextjs-toploader';
 
 import { SiteAssetsProvider } from '../components/providers/SiteAssetsProvider';
+import TawkToTracker from '../components/shared/TawkToTracker';
 
 // ─── Font Loading ──────────────────────────────────────────────────────────────
 // next/font automatically downloads and self-hosts Poppins at build time.
@@ -247,6 +248,9 @@ export default function RootLayout({
            * shell (Header + Footer vs. bare main).
            */}
           <ClientLayout>{children}</ClientLayout>
+          
+          {/* Tawk.to background tracking (invisible) */}
+          <TawkToTracker />
         </SiteAssetsProvider>
       </body>
     </html>
