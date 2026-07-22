@@ -55,8 +55,8 @@ export default async function SpecialOfferPage({
     ]);
     resortRes = rRes;
     tourRes = tRes;
-  } catch (error) {
-    console.error("Error fetching special offer details:", error);
+  } catch {
+    // Render "Not Found" UI below if both are null
   }
 
   if (!resortRes && !tourRes) {

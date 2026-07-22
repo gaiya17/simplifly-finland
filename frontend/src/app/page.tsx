@@ -25,8 +25,8 @@ export default async function Home() {
         blogs: Array.isArray(data.blogs) ? data.blogs : [],
       };
     }
-  } catch (error) {
-    console.error("Failed to load homepage data:", error);
+  } catch {
+    // Render with empty data — sections handle empty state gracefully
   }
 
   return (

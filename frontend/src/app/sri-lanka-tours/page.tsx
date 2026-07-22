@@ -35,7 +35,7 @@ export default function SriLankaTours() {
         setIsLoading(false);
       })
       .catch(err => {
-        console.error(err);
+        
         setIsLoading(false);
       });
   }, []);
@@ -266,3 +266,4 @@ export default function SriLankaTours() {
     </div>
   );
 }
+

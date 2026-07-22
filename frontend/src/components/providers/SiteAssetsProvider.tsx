@@ -28,8 +28,8 @@ export function SiteAssetsProvider({ children }: { children: React.ReactNode }) 
       try {
         const data = await siteAssetsApi.getAssets();
         setAssets(data);
-      } catch (error) {
-        console.error('Failed to load global site assets:', error);
+      } catch {
+        // Silently fall back to empty assets — API handles graceful degradation
       } finally {
         setIsLoading(false);
       }

@@ -76,8 +76,8 @@ export default async function SpecialOfferFallbackPage({
     } else if (resortRes) {
       redirect(`/special-offers/${slug}/special-offer`);
     }
-  } catch (error) {
-    console.error("Error redirecting special offer:", error);
+  } catch {
+    // Redirect target not found — fall through to default redirect below
   }
 
   // If not found, redirect to main special offers page

@@ -41,7 +41,7 @@ export default function AllSriLankaTours() {
         }
         setIsLoading(false);
       } catch (error) {
-        console.error(error);
+        
         setIsLoading(false);
       }
     };
@@ -364,3 +364,4 @@ export default function AllSriLankaTours() {
     </div>
   );
 }
+

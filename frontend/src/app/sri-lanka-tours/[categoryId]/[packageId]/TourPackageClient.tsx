@@ -132,8 +132,7 @@ export function TourPackageClient({ data }: { data: any }) {
       reset();
       setPhoneCode('');
       setPhoneNumber('');
-    } catch (error) {
-      console.error(error);
+    } catch {
       toast.error('Failed to send inquiry. Please try again.');
     } finally {
       setIsSubmitting(false);

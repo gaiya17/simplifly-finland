@@ -28,8 +28,8 @@ export function Header() {
         ]);
         setMaldivesCategories(Array.isArray(maldives) ? maldives : []);
         setSriLankaCategories(Array.isArray(sriLanka) ? sriLanka : []);
-      } catch (error) {
-        console.error("Failed to load categories for header:", error);
+      } catch {
+        // Categories unavailable — header renders without dropdowns
       }
     };
     fetchCategories();

@@ -93,8 +93,8 @@ export default async function MaldivesResortsCategory({ params }: { params: Prom
   try {
     dbCategory = await resortApi.getCategory(categoryId).catch(() => null);
     liveResorts = await resortApi.getPublicResorts(categoryId);
-  } catch (err) {
-    console.error("Failed to fetch live resorts:", err);
+  } catch {
+    // Render with static fallback data if live API unavailable
   }
 
   const hardcoded = (categoryId && categoryData[categoryId]) ? categoryData[categoryId] : fallback;
