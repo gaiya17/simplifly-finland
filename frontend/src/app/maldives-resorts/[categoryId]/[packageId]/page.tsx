@@ -41,8 +41,7 @@ export default async function ResortPackagePage({ params }: { params: Promise<{ 
     return (
       <ResortPackageClient resort={resortData} categoryId={categoryId} />
     );
-  } catch (error) {
-    console.error("Failed to fetch resort details:", error);
+  } catch {
     return notFound();
   }
 }

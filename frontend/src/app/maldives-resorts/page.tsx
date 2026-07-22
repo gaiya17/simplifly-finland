@@ -31,7 +31,7 @@ export default function MaldivesResorts() {
         setIsLoading(false);
       })
       .catch(err => {
-        console.error(err);
+        
         setIsLoading(false);
       });
   }, []);
@@ -240,3 +240,4 @@ export default function MaldivesResorts() {
     </div>
   );
 }
+

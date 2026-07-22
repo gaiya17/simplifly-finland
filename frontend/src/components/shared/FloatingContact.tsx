@@ -290,8 +290,8 @@ export const FloatingContact = () => {
         if (Object.keys(dynamicFlow).length > 0) {
           setFlow(dynamicFlow as Record<string, FlowNode>);
         }
-      } catch (err) {
-        console.error("Failed to load dynamic chatbot flow, using fallback.", err);
+      } catch {
+        // Dynamic flow unavailable — chatbot uses built-in fallback flow
       }
     };
     loadFlow();

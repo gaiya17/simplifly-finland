@@ -22,9 +22,7 @@ export const siteAssetsApi = {
       });
       if (!response.ok) throw new Error('Failed to fetch assets');
       return response.json();
-    } catch (error) {
-      // Use console.warn instead of console.error so Next.js doesn't trigger the Error Overlay crash screen
-      console.warn('Backend API unreachable, skipping global site assets:', (error as Error).message);
+    } catch {
       return {};
     }
   },

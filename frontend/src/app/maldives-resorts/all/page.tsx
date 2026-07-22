@@ -50,7 +50,7 @@ export default function AllMaldivesResorts() {
         }
         setIsLoading(false);
       } catch (error) {
-        console.error(error);
+        
         setIsLoading(false);
       }
     };
@@ -474,3 +474,4 @@ export default function AllMaldivesResorts() {
     </div>
   );
 }
+

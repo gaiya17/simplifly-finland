@@ -50,8 +50,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     }
 
     return <ArticlePageClient initialPost={post} initialRelated={related} />;
-  } catch (error) {
-    console.error("Failed to fetch blog post:", error);
+  } catch {
     return notFound();
   }
 }

@@ -27,7 +27,7 @@ export default function GalleryPage() {
         const assets = await galleryApi.getAssets();
         setGalleryImages(assets);
       } catch (error) {
-        console.error("Failed to load gallery images", error);
+        
       } finally {
         setIsLoading(false);
       }
@@ -207,3 +207,4 @@ export default function GalleryPage() {
     </div>
   );
 }
+

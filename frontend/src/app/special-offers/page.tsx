@@ -45,8 +45,7 @@ export default function SpecialOffers() {
         
         setTours(Array.isArray(toursData) ? toursData : []);
         setResorts(flattenedResorts);
-      } catch (error) {
-        console.error("Failed to fetch special offers:", error);
+      } catch {
       } finally {
         setIsLoading(false);
       }
