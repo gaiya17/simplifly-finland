@@ -1,41 +1,75 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  MapPin, Clock, Star, CheckCircle2, ChevronDown, Calendar,
-  Loader2, Users, BedDouble, Maximize, Compass, ArrowLeft,
-  Wifi, Dumbbell, Waves, UtensilsCrossed, Sparkles,
-  ChevronLeft, ChevronRight, X, ZoomIn, Images, Moon, Plane,
-} from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { ImageWithFallback } from '../../../../components/shared/ImageWithFallback';
-import { ReviewsSection } from '../../../../components/sections/ReviewsSection';
-import { CountrySelect } from '@/components/ui/CountrySelect';
-import { COUNTRIES } from '@/lib/countries';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+  MapPin,
+  Clock,
+  Star,
+  CheckCircle2,
+  ChevronDown,
+  Calendar,
+  Loader2,
+  Users,
+  BedDouble,
+  Maximize,
+  Compass,
+  ArrowLeft,
+  Wifi,
+  Dumbbell,
+  Waves,
+  UtensilsCrossed,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  ZoomIn,
+  Images,
+  Moon,
+  Plane,
+  XCircle,
+} from "lucide-react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { ImageWithFallback } from "../../../../components/shared/ImageWithFallback";
+import { ReviewsSection } from "../../../../components/sections/ReviewsSection";
+import { CountrySelect } from "@/components/ui/CountrySelect";
+import { COUNTRIES } from "@/lib/countries";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const TABS = [
-  { id: 'villas',       label: 'Villas' },
-  { id: 'restaurants',  label: 'Restaurants' },
-  { id: 'facilities',   label: 'Facilities' },
-  { id: 'fact-sheet',   label: 'FACT Sheet' },
-  { id: 'deals',        label: 'Deals & Offers' },
+  { id: "villas", label: "Villas" },
+  { id: "restaurants", label: "Restaurants" },
+  { id: "facilities", label: "Facilities" },
+  { id: "fact-sheet", label: "FACT Sheet" },
+  { id: "deals", label: "Deals & Offers" },
 ];
-
 
 // ── WhatsApp button helper ────────────────────────────────────────────────────
 const WaIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className="w-5 h-5"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.662-2.06-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
   </svg>
 );
 
-const VillaImageSlider = ({ images, fallbackImage, alt }: { images: any[], fallbackImage: string, alt: string }) => {
+const VillaImageSlider = ({
+  images,
+  fallbackImage,
+  alt,
+}: {
+  images: any[];
+  fallbackImage: string;
+  alt: string;
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const displayImages = images && images.length > 0 ? images : [{ url: fallbackImage }];
+  const displayImages =
+    images && images.length > 0 ? images : [{ url: fallbackImage }];
 
   useEffect(() => {
     if (displayImages.length <= 1) return;
@@ -50,7 +84,11 @@ const VillaImageSlider = ({ images, fallbackImage, alt }: { images: any[], fallb
       <AnimatePresence mode="popLayout">
         <motion.img
           key={currentIndex}
-          src={displayImages[currentIndex]?.url || displayImages[currentIndex]?.src || fallbackImage}
+          src={
+            displayImages[currentIndex]?.url ||
+            displayImages[currentIndex]?.src ||
+            fallbackImage
+          }
           alt={alt}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -64,9 +102,14 @@ const VillaImageSlider = ({ images, fallbackImage, alt }: { images: any[], fallb
           {displayImages.map((_, i) => (
             <button
               key={i}
-              onClick={(e) => { e.stopPropagation(); setCurrentIndex(i); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentIndex(i);
+              }}
               className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                i === currentIndex ? 'bg-white w-3' : 'bg-white/50 hover:bg-white/75'
+                i === currentIndex
+                  ? "bg-white w-3"
+                  : "bg-white/50 hover:bg-white/75"
               }`}
             />
           ))}
@@ -76,46 +119,78 @@ const VillaImageSlider = ({ images, fallbackImage, alt }: { images: any[], fallb
   );
 };
 
-export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { resort: any; categoryId: string; offerIndex?: number }) {
+export function ResortPackageClient({
+  resort,
+  categoryId,
+  offerIndex = 0,
+}: {
+  resort: any;
+  categoryId: string;
+  offerIndex?: number;
+}) {
   const pathname = usePathname();
-  const isSpecialOffer = pathname.includes('/special-offers');
-  const hasOffers = (resort.offers && resort.offers.length > 0) || (resort.customOffers && resort.customOffers.length > 0);
-  const [activeTab, setActiveTab] = useState(hasOffers ? 'deals' : TABS[0].id);
+  const isSpecialOffer = pathname.includes("/special-offers");
+  const hasOffers =
+    (resort.offers && resort.offers.length > 0) ||
+    (resort.customOffers && resort.customOffers.length > 0);
+  const [activeTab, setActiveTab] = useState(hasOffers ? "deals" : TABS[0].id);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [phoneCode, setPhoneCode] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
+  const [phoneCode, setPhoneCode] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
-      firstName: '', surname: '', email: '',
-      country: '', phone: '',
-      checkIn: '', nights: '1',
-      adults: '2', children: '0', infants: '0',
-      resort: resort.title, roomType: '', details: '', selectedOffer: ''
-    }
+      firstName: "",
+      surname: "",
+      email: "",
+      country: "",
+      phone: "",
+      checkIn: "",
+      nights: "1",
+      adults: "2",
+      children: "0",
+      infants: "0",
+      resort: resort.title,
+      roomType: "",
+      details: "",
+      selectedOffer: "",
+    },
   });
 
-  const watchedCountry = watch('country');
-  const watchedCheckIn = watch('checkIn');
-  const watchedNights = watch('nights');
-  const watchedSelectedOffer = watch('selectedOffer');
+  const watchedCountry = watch("country");
+  const watchedCheckIn = watch("checkIn");
+  const watchedNights = watch("nights");
+  const watchedSelectedOffer = watch("selectedOffer");
 
   const isCustomOfferSelected = resort.customOffers?.some((co: any) => {
-    return watchedSelectedOffer?.includes(`${co.nights} Nights`) && watchedSelectedOffer?.includes(`$${co.offerPrice}`);
+    return (
+      watchedSelectedOffer?.includes(`${co.nights} Nights`) &&
+      watchedSelectedOffer?.includes(`$${co.offerPrice}`)
+    );
   });
 
   // Auto-fill form when a package offer is selected
   useEffect(() => {
     if (!watchedSelectedOffer) return;
     const match = resort.customOffers?.find((co: any) => {
-      return watchedSelectedOffer.includes(`${co.nights} Nights`) && watchedSelectedOffer.includes(`$${co.offerPrice}`);
+      return (
+        watchedSelectedOffer.includes(`${co.nights} Nights`) &&
+        watchedSelectedOffer.includes(`$${co.offerPrice}`)
+      );
     });
     if (match) {
-      setValue('nights', String(match.nights));
-      setValue('adults', String(match.adults ?? 2));
-      setValue('children', String(match.children ?? 0));
+      setValue("nights", String(match.nights));
+      setValue("adults", String(match.adults ?? 2));
+      setValue("children", String(match.children ?? 0));
       if (match.villas && match.villas.length > 0) {
-        setValue('roomType', match.villas.join(' or '));
+        setValue("roomType", match.villas.join(" or "));
       }
     }
   }, [watchedSelectedOffer, resort.customOffers, setValue]);
@@ -123,12 +198,12 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
   // Auto-fill phone code when country changes
   useEffect(() => {
     if (!watchedCountry) return;
-    const found = COUNTRIES.find(c => c.code === watchedCountry);
+    const found = COUNTRIES.find((c) => c.code === watchedCountry);
     if (found) {
       setPhoneCode(found.dial);
-      setPhoneNumber(prev => {
+      setPhoneNumber((prev) => {
         // strip old code prefix if present and re-prefix with new code
-        const stripped = prev.replace(/^\+\d+\s*/, '');
+        const stripped = prev.replace(/^\+\d+\s*/, "");
         return stripped;
       });
     }
@@ -136,35 +211,45 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
 
   // Compute check-out date for display
   const checkOutDate = (() => {
-    if (!watchedCheckIn || !watchedNights) return '';
+    if (!watchedCheckIn || !watchedNights) return "";
     const d = new Date(watchedCheckIn);
-    d.setDate(d.getDate() + parseInt(watchedNights || '1', 10));
-    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    d.setDate(d.getDate() + parseInt(watchedNights || "1", 10));
+    return d.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
   })();
 
   const openLightbox = (idx: number) => setLightboxIndex(idx);
   const closeLightbox = () => setLightboxIndex(null);
   const prevImage = useCallback(() => {
-    setLightboxIndex(i => i === null ? null : (i - 1 + resort.gallery.length) % resort.gallery.length);
+    setLightboxIndex((i) =>
+      i === null
+        ? null
+        : (i - 1 + resort.gallery.length) % resort.gallery.length,
+    );
   }, [resort.gallery.length]);
   const nextImage = useCallback(() => {
-    setLightboxIndex(i => i === null ? null : (i + 1) % resort.gallery.length);
+    setLightboxIndex((i) =>
+      i === null ? null : (i + 1) % resort.gallery.length,
+    );
   }, [resort.gallery.length]);
 
   useEffect(() => {
     if (lightboxIndex === null) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') prevImage();
-      if (e.key === 'ArrowRight') nextImage();
-      if (e.key === 'Escape') closeLightbox();
+      if (e.key === "ArrowLeft") prevImage();
+      if (e.key === "ArrowRight") nextImage();
+      if (e.key === "Escape") closeLightbox();
     };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
   }, [lightboxIndex, prevImage, nextImage]);
 
   const onSubmit = async (formData: any) => {
-    if (!phoneNumber || phoneNumber.replace(/\\D/g, '').length < 7) {
-      toast.error('Please enter a valid phone number');
+    if (!phoneNumber || phoneNumber.replace(/\\D/g, "").length < 7) {
+      toast.error("Please enter a valid phone number");
       return;
     }
 
@@ -173,7 +258,7 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (selected < today) {
-        toast.error('Check-in date cannot be in the past');
+        toast.error("Check-in date cannot be in the past");
         return;
       }
     }
@@ -186,23 +271,26 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
         packageTitle: resort.title,
       };
 
-      const res = await fetch('/api/inquiries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+      const res = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error('Failed to submit');
+      if (!res.ok) throw new Error("Failed to submit");
 
-      toast.success('Inquiry sent successfully! Please check your email for confirmation.', {
-        duration: 6000,
-        icon: '✉️'
-      });
+      toast.success(
+        "Inquiry sent successfully! Please check your email for confirmation.",
+        {
+          duration: 6000,
+          icon: "✉️",
+        },
+      );
       reset();
-      setPhoneCode('');
-      setPhoneNumber('');
+      setPhoneCode("");
+      setPhoneNumber("");
     } catch {
-      toast.error('Failed to send inquiry. Please try again.');
+      toast.error("Failed to send inquiry. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -228,18 +316,29 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
       {/* Info chips */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
         {[
-          { icon: MapPin, label: 'Location', value: resort.location },
-          { icon: Compass, label: 'Transfer', value: resort.transfer },
-          { icon: Clock, label: 'Duration', value: resort.duration || 'Customizable' },
+          { icon: MapPin, label: "Location", value: resort.location },
+          { icon: Compass, label: "Transfer", value: resort.transfer },
+          {
+            icon: Clock,
+            label: "Duration",
+            value: resort.duration || "Customizable",
+          },
         ].map(({ icon: Icon, label, value }) => (
-          <div key={label} className="bg-white rounded-[20px] p-5 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(4,29,60,0.08)] border border-[#041d3c]/5 hover:border-[#1a84ff]/20 transition-all flex flex-col gap-2">
+          <div
+            key={label}
+            className="bg-white rounded-[20px] p-5 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(4,29,60,0.08)] border border-[#041d3c]/5 hover:border-[#1a84ff]/20 transition-all flex flex-col gap-2"
+          >
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-[10px] bg-[#1a84ff]/8 flex items-center justify-center shrink-0">
                 <Icon className="w-4 h-4 text-[#1a84ff]" />
               </div>
-              <p className="text-gray-400 text-[11px] font-extrabold uppercase tracking-widest m-0">{label}</p>
+              <p className="text-gray-400 text-[11px] font-extrabold uppercase tracking-widest m-0">
+                {label}
+              </p>
             </div>
-            <p className="text-[#041d3c] text-[14px] font-bold leading-snug">{value}</p>
+            <p className="text-[#041d3c] text-[14px] font-bold leading-snug">
+              {value}
+            </p>
           </div>
         ))}
       </div>
@@ -249,7 +348,11 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
         {/* TripAdvisor */}
         <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(0,175,135,0.08)] border border-[#041d3c]/5 hover:border-[#00af87]/20 transition-all">
           <div className="flex items-center gap-2.5 mb-4 h-[24px]">
-            <ImageWithFallback src="/images/tripadvisor-logo.png" alt="TripAdvisor" className="h-[28px] w-auto object-contain object-left" />
+            <ImageWithFallback
+              src="/images/tripadvisor-logo.png"
+              alt="TripAdvisor"
+              className="h-[28px] w-auto object-contain object-left"
+            />
           </div>
           <div className="flex gap-[3px] mb-2 mt-1">
             {[...Array(5)].map((_, i) => {
@@ -260,27 +363,54 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
               return (
                 <div
                   key={i}
-                  className={`w-[16px] h-[16px] rounded-full border-[1.5px] border-[#00af87] ${isFull ? 'bg-[#00af87]' : 'bg-transparent'}`}
-                  style={isHalf ? { background: 'linear-gradient(to right, #00af87 50%, transparent 50%)' } : {}}
+                  className={`w-[16px] h-[16px] rounded-full border-[1.5px] border-[#00af87] ${isFull ? "bg-[#00af87]" : "bg-transparent"}`}
+                  style={
+                    isHalf
+                      ? {
+                          background:
+                            "linear-gradient(to right, #00af87 50%, transparent 50%)",
+                        }
+                      : {}
+                  }
                 />
               );
             })}
           </div>
-          <p className="text-[#041d3c] font-black text-[22px] leading-none mb-1">{resort.tripAdvisorRating || '5.0'} <span className="text-gray-400 font-medium text-[13px]">/ 5.0</span></p>
-          <p className="text-gray-400 text-[11.5px] font-semibold">Based on {resort.tripAdvisorReviews || 0} traveler reviews</p>
+          <p className="text-[#041d3c] font-black text-[22px] leading-none mb-1">
+            {resort.tripAdvisorRating || "5.0"}{" "}
+            <span className="text-gray-400 font-medium text-[13px]">/ 5.0</span>
+          </p>
+          <p className="text-gray-400 text-[11.5px] font-semibold">
+            Based on {resort.tripAdvisorReviews || 0} traveler reviews
+          </p>
         </div>
 
         {/* Booking.com */}
         <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_16px_rgba(4,29,60,0.05)] hover:shadow-[0_12px_32px_rgba(0,53,128,0.08)] border border-[#041d3c]/5 hover:border-[#003580]/20 transition-all">
           <div className="flex items-center gap-2.5 mb-4 h-[24px]">
-            <ImageWithFallback src="/images/booking-logo.png" alt="Booking.com" className="h-[20px] w-auto object-contain object-left" />
+            <ImageWithFallback
+              src="/images/booking-logo.png"
+              alt="Booking.com"
+              className="h-[20px] w-auto object-contain object-left"
+            />
           </div>
           <div className="flex items-center gap-2 mb-2">
-            <span className="bg-[#003580] text-white font-black text-[15px] px-2.5 py-1 rounded-[8px]">{resort.bookingScore}</span>
-            <span className="text-[#003580] font-extrabold text-[13px]">Superb</span>
+            <span className="bg-[#003580] text-white font-black text-[15px] px-2.5 py-1 rounded-[8px]">
+              {resort.bookingScore}
+            </span>
+            <span className="text-[#003580] font-extrabold text-[13px]">
+              Superb
+            </span>
           </div>
-          <p className="text-[#041d3c] font-black text-[22px] leading-none mb-1">{resort.bookingReviews} <span className="text-gray-400 font-medium text-[13px]">Reviews</span></p>
-          <p className="text-gray-400 text-[11.5px] font-semibold">Top-rated Partner Resort</p>
+          <p className="text-[#041d3c] font-black text-[22px] leading-none mb-1">
+            {resort.bookingReviews}{" "}
+            <span className="text-gray-400 font-medium text-[13px]">
+              Reviews
+            </span>
+          </p>
+          <p className="text-gray-400 text-[11.5px] font-semibold">
+            Top-rated Partner Resort
+          </p>
         </div>
       </div>
     </>
@@ -291,34 +421,66 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
       {/* Price + CTA card */}
       <div className="bg-white rounded-[24px] shadow-[0_16px_48px_rgba(4,29,60,0.10)] overflow-hidden">
         <div className="relative h-[200px] overflow-hidden">
-          <img src={resort.packageImage || resort.heroImage} alt="Resort" className="w-full h-full object-cover" />
+          <img
+            src={resort.packageImage || resort.heroImage}
+            alt="Resort"
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/60 to-transparent" />
           <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-3.5 py-2 rounded-[12px] flex items-center gap-2 shadow-sm">
-            <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />)}</div>
-            <span className="text-[#041d3c] font-black text-[10px] uppercase tracking-wider">5-Star Resort</span>
+            <div className="flex gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className="w-3 h-3 fill-amber-400 text-amber-400"
+                />
+              ))}
+            </div>
+            <span className="text-[#041d3c] font-black text-[10px] uppercase tracking-wider">
+              5-Star Resort
+            </span>
           </div>
         </div>
 
         <div className="p-6">
           <div className="flex items-end justify-between mb-5">
             <div>
-              <p className="text-gray-400 text-[10.5px] font-extrabold uppercase tracking-widest mb-0.5">Starting From</p>
+              <p className="text-gray-400 text-[10.5px] font-extrabold uppercase tracking-widest mb-0.5">
+                Starting From
+              </p>
               <div className="flex items-baseline gap-1.5">
                 {resort.discount > 0 ? (
                   <>
-                    <span className="text-gray-400 font-bold text-[18px] line-through decoration-rose-500/50">€{resort.price?.toString().replace(/€/g, '').trim()}</span>
-                    <span className="text-[#041d3c] font-extrabold text-[28px] leading-none">€{Math.round(Number(resort.price?.toString().replace(/€/g, '').trim()) * (1 - resort.discount / 100))}</span>
+                    <span className="text-gray-400 font-bold text-[18px] line-through decoration-rose-500/50">
+                      €{resort.price?.toString().replace(/€/g, "").trim()}
+                    </span>
+                    <span className="text-[#041d3c] font-extrabold text-[28px] leading-none">
+                      €
+                      {Math.round(
+                        Number(
+                          resort.price?.toString().replace(/€/g, "").trim(),
+                        ) *
+                          (1 - resort.discount / 100),
+                      )}
+                    </span>
                   </>
                 ) : (
-                  <span className="text-[#041d3c] font-extrabold text-[28px] leading-none">€{resort.price?.toString().replace(/€/g, '').trim()}</span>
+                  <span className="text-[#041d3c] font-extrabold text-[28px] leading-none">
+                    €{resort.price?.toString().replace(/€/g, "").trim()}
+                  </span>
                 )}
-                <span className="text-gray-400 text-[14px] font-semibold">/ night</span>
+                <span className="text-gray-400 text-[14px] font-semibold">
+                  / night
+                </span>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-gray-400 text-[10.5px] font-extrabold uppercase tracking-widest mb-0.5">Transfer</p>
+              <p className="text-gray-400 text-[10.5px] font-extrabold uppercase tracking-widest mb-0.5">
+                Transfer
+              </p>
               <div className="flex items-center gap-1 text-[#041d3c] font-bold text-[13px]">
-                <Clock className="w-4 h-4" />{resort.transfer}
+                <Clock className="w-4 h-4" />
+                {resort.transfer}
               </div>
             </div>
           </div>
@@ -338,7 +500,11 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
           </a>
 
           <button
-            onClick={() => document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() =>
+              document
+                .getElementById("inquire-form")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
             className="w-full mt-3 bg-[#041d3c] hover:bg-[#1a84ff] text-white rounded-[14px] py-3.5 font-extrabold text-[14px] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(26,132,255,0.25)] hover:-translate-y-0.5"
           >
             Book Now
@@ -350,11 +516,14 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
 
   return (
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
-
       {/* ── HERO ── */}
       <section className="relative w-full h-[70vh] min-h-[540px] flex items-end overflow-hidden">
         <div className="absolute inset-0">
-          <img src={resort.heroImage} alt={resort.title} className="w-full h-full object-cover object-center" />
+          <img
+            src={resort.heroImage}
+            alt={resort.title}
+            className="w-full h-full object-cover object-center"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/95 via-[#041d3c]/50 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#041d3c]/30 to-transparent" />
         </div>
@@ -362,11 +531,15 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
         <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 pb-12 lg:pb-16 flex flex-col items-start">
           {/* Breadcrumb */}
           <Link
-            href={isSpecialOffer ? '/special-offers' : `/maldives-resorts/${categoryId}`}
+            href={
+              isSpecialOffer
+                ? "/special-offers"
+                : `/maldives-resorts/${categoryId}`
+            }
             className="flex items-center gap-1.5 text-white/45 hover:text-white text-[11.5px] font-semibold uppercase tracking-wider mb-6 transition-colors duration-200"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            {isSpecialOffer ? 'Back to Special Offers' : 'Back to Category'}
+            {isSpecialOffer ? "Back to Special Offers" : "Back to Category"}
           </Link>
 
           {/* Badge */}
@@ -385,12 +558,16 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
             {/* Location chip */}
             <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-[10px] px-3.5 py-2">
               <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span className="text-white/80 font-semibold text-[12px]">{resort.location}</span>
+              <span className="text-white/80 font-semibold text-[12px]">
+                {resort.location}
+              </span>
             </div>
             {/* Transfer */}
             <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-[10px] px-3.5 py-2">
               <Compass className="w-3.5 h-3.5 text-[#1a84ff]" />
-              <span className="text-white/80 font-semibold text-[12px]">{resort.transfer}</span>
+              <span className="text-white/80 font-semibold text-[12px]">
+                {resort.transfer}
+              </span>
             </div>
           </div>
         </div>
@@ -401,9 +578,7 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
         {resort.customOffers && resort.customOffers.length > 0 ? (
           <div className="flex flex-col gap-12 lg:gap-16">
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
-              <div className="flex-1 min-w-0">
-                {overviewHeader}
-              </div>
+              <div className="flex-1 min-w-0">{overviewHeader}</div>
               <div className="w-full lg:w-[420px] shrink-0">
                 <div className="w-full rounded-[24px] bg-white shadow-[0_16px_48px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 p-8 flex flex-col items-center text-center relative group">
                   <span className="bg-[#ff245b] text-white text-[11px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full mb-5">
@@ -415,7 +590,9 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                         <Moon className="w-4 h-4 text-[#1a84ff]" />
                         <span className="text-[13px] font-bold">Duration</span>
                       </div>
-                      <span className="text-[#041d3c] font-black text-[14px]">{resort.customOffers[offerIndex].nights} Nights</span>
+                      <span className="text-[#041d3c] font-black text-[14px]">
+                        {resort.customOffers[offerIndex].nights} Nights
+                      </span>
                     </div>
                     <div className="h-[1px] w-full bg-[#e4eaf2]" />
                     <div className="flex items-center justify-between">
@@ -423,22 +600,71 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                         <Users className="w-4 h-4 text-[#1a84ff]" />
                         <span className="text-[13px] font-bold">Guests</span>
                       </div>
-                      <span className="text-[#041d3c] font-black text-[14px]">{resort.customOffers[offerIndex].adults ?? 2} Adults{resort.customOffers[offerIndex].children ? `, ${resort.customOffers[offerIndex].children} Children` : ''}</span>
+                      <span className="text-[#041d3c] font-black text-[14px]">
+                        {resort.customOffers[offerIndex].adults ?? 2} Adults
+                        {resort.customOffers[offerIndex].children
+                          ? `, ${resort.customOffers[offerIndex].children} Children`
+                          : ""}
+                      </span>
                     </div>
+                    {resort.customOffers[offerIndex].villas &&
+                      resort.customOffers[offerIndex].villas.length > 0 && (
+                        <>
+                          <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                          <div className="flex items-center justify-between text-left gap-4">
+                            <div className="flex items-center gap-2 text-gray-500 shrink-0">
+                              <BedDouble className="w-4 h-4 text-[#1a84ff]" />
+                              <span className="text-[13px] font-bold">
+                                Room/Villa
+                              </span>
+                            </div>
+                            <span className="text-[#041d3c] font-black text-[13px] leading-tight text-right line-clamp-2">
+                              {resort.customOffers[offerIndex].villas.join(
+                                ", ",
+                              )}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    {resort.customOffers[offerIndex].flightIncluded && (
+                      <>
+                        <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-gray-500">
+                            <Plane className="w-4 h-4 text-[#1a84ff]" />
+                            <span className="text-[13px] font-bold">
+                              Flight
+                            </span>
+                          </div>
+                          <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[13px] font-black flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5" /> Included
+                          </span>
+                        </div>
+                      </>
+                    )}
                     {resort.customOffers[offerIndex].mealPlan && (
                       <>
                         <div className="h-[1px] w-full bg-[#e4eaf2]" />
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-gray-500">
                             <UtensilsCrossed className="w-4 h-4 text-[#1a84ff]" />
-                            <span className="text-[13px] font-bold">Meal Plan</span>
+                            <span className="text-[13px] font-bold">
+                              Meal Plan
+                            </span>
                           </div>
                           <span className="text-[#041d3c] font-black text-[14px]">
-                            {resort.customOffers[offerIndex].mealPlan === 'BB' ? 'Bed and Breakfast' : 
-                             resort.customOffers[offerIndex].mealPlan === 'HB' ? 'Half Board' : 
-                             resort.customOffers[offerIndex].mealPlan === 'FB' ? 'Full Board' : 
-                             resort.customOffers[offerIndex].mealPlan === 'AI' ? 'All Inclusive' : 
-                             resort.customOffers[offerIndex].mealPlan}
+                            {resort.customOffers[offerIndex].mealPlan === "BB"
+                              ? "Bed and Breakfast"
+                              : resort.customOffers[offerIndex].mealPlan ===
+                                  "HB"
+                                ? "Half Board"
+                                : resort.customOffers[offerIndex].mealPlan ===
+                                    "FB"
+                                  ? "Full Board"
+                                  : resort.customOffers[offerIndex].mealPlan ===
+                                      "AI"
+                                    ? "All Inclusive"
+                                    : resort.customOffers[offerIndex].mealPlan}
                           </span>
                         </div>
                       </>
@@ -449,63 +675,115 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-gray-500">
                             <Plane className="w-4 h-4 text-[#1a84ff]" />
-                            <span className="text-[13px] font-bold">Transfer</span>
+                            <span className="text-[13px] font-bold">
+                              Transfer
+                            </span>
                           </div>
-                          <span className="text-[#041d3c] font-black text-[14px]">{resort.customOffers[offerIndex].transfer}</span>
-                        </div>
-                      </>
-                    )}
-                    {resort.customOffers[offerIndex].validFrom && resort.customOffers[offerIndex].validTo && (
-                      <>
-                        <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-gray-500">
-                            <Calendar className="w-4 h-4 text-[#1a84ff]" />
-                            <span className="text-[13px] font-bold">Travel Period</span>
-                          </div>
-                          <span className="text-[#041d3c] font-black text-[13px]">
-                            {new Date(resort.customOffers[offerIndex].validFrom + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })} - {new Date(resort.customOffers[offerIndex].validTo + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
+                          <span className="text-[#041d3c] font-black text-[14px]">
+                            {resort.customOffers[offerIndex].transfer}
                           </span>
                         </div>
                       </>
                     )}
+                    {resort.customOffers[offerIndex].validFrom &&
+                      resort.customOffers[offerIndex].validTo && (
+                        <>
+                          <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-gray-500">
+                              <Calendar className="w-4 h-4 text-[#1a84ff]" />
+                              <span className="text-[13px] font-bold">
+                                Travel Period
+                              </span>
+                            </div>
+                            <span className="text-[#041d3c] font-black text-[13px]">
+                              {new Date(
+                                resort.customOffers[offerIndex].validFrom +
+                                  "T00:00:00Z",
+                              ).toLocaleDateString("en-GB", {
+                                day: "numeric",
+                                month: "short",
+                                timeZone: "UTC",
+                              })}{" "}
+                              -{" "}
+                              {new Date(
+                                resort.customOffers[offerIndex].validTo +
+                                  "T00:00:00Z",
+                              ).toLocaleDateString("en-GB", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                                timeZone: "UTC",
+                              })}
+                            </span>
+                          </div>
+                        </>
+                      )}
                     {resort.customOffers[offerIndex].bookBefore && (
                       <>
                         <div className="h-[1px] w-full bg-[#e4eaf2]" />
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-gray-500">
                             <Clock className="w-4 h-4 text-rose-500" />
-                            <span className="text-[13px] font-bold text-rose-500">Book Before</span>
+                            <span className="text-[13px] font-bold text-rose-500">
+                              Book Before
+                            </span>
                           </div>
                           <span className="text-rose-500 font-black text-[13px]">
-                            {new Date(resort.customOffers[offerIndex].bookBefore + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
+                            {new Date(
+                              resort.customOffers[offerIndex].bookBefore +
+                                "T00:00:00Z",
+                            ).toLocaleDateString("en-GB", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                              timeZone: "UTC",
+                            })}
                           </span>
                         </div>
                       </>
                     )}
                   </div>
-                  
+
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-gray-400 text-[18px] font-bold line-through">${(Number(resort.price) || 0) * (Number(resort.customOffers[offerIndex].nights) || 0)}</span>
-                    <span className="text-[#ff245b] text-[36px] font-black leading-none">${resort.customOffers[offerIndex].offerPrice}</span>
+                    <span className="text-gray-400 text-[18px] font-bold line-through">
+                      $
+                      {(Number(resort.price) || 0) *
+                        (Number(resort.customOffers[offerIndex].nights) || 0)}
+                    </span>
+                    <span className="text-[#ff245b] text-[36px] font-black leading-none">
+                      ${resort.customOffers[offerIndex].offerPrice}
+                    </span>
                   </div>
-                  <p className="text-gray-500 text-[13px] font-medium mb-6">Total package price</p>
+                  <p className="text-gray-500 text-[13px] font-medium mb-6">
+                    Total package price
+                  </p>
 
                   {(() => {
                     const co = resort.customOffers[offerIndex];
                     const adults = co.adults ?? 2;
                     const children = co.children ?? 0;
-                    const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ''}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(' or ')}` : ''} at ${resort.title} for $${co.offerPrice}. Can you check availability?`;
+                    const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ""}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(" or ")}` : ""} at ${resort.title} for $${co.offerPrice}. Can you check availability?`;
                     return (
                       <div className="flex flex-col gap-2 w-full">
-                        <button onClick={() => { 
-                          const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ''}${co.villas?.length > 0 ? ` · ${co.villas.join(' or ')}` : ''} · $${co.offerPrice}`;
-                          setValue('selectedOffer', valString);
-                          document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' });
-                        }} className="w-full py-3.5 bg-[#041d3c] text-white rounded-[12px] font-extrabold text-[14px] hover:bg-[#1a84ff] hover:-translate-y-0.5 transition-all duration-300 shadow-[0_8px_24px_rgba(4,29,60,0.12)]">
+                        <button
+                          onClick={() => {
+                            const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · $${co.offerPrice}`;
+                            setValue("selectedOffer", valString);
+                            document
+                              .getElementById("inquire-form")
+                              ?.scrollIntoView({ behavior: "smooth" });
+                          }}
+                          className="w-full py-3.5 bg-[#041d3c] text-white rounded-[12px] font-extrabold text-[14px] hover:bg-[#1a84ff] hover:-translate-y-0.5 transition-all duration-300 shadow-[0_8px_24px_rgba(4,29,60,0.12)]"
+                        >
                           Book Now
                         </button>
-                        <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3.5 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden">
+                        <a
+                          href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3.5 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
+                        >
                           <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
                           <WaIcon />
                           <span className="relative z-10">WhatsApp Us</span>
@@ -517,9 +795,7 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
               </div>
             </div>
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
-              <div className="flex-1 min-w-0">
-                {featuresAndReviews}
-              </div>
+              <div className="flex-1 min-w-0">{featuresAndReviews}</div>
               {packageBox}
             </div>
           </div>
@@ -537,7 +813,6 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
       {/* ── GALLERY + INQUIRY FORM ── */}
       <section className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 pb-[100px]">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-stretch">
-
           {/* ── GALLERY ── */}
           <div className="flex-1 flex flex-col min-w-0">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1a84ff]/8 text-[#1a84ff] font-extrabold text-[10px] lg:text-[11px] tracking-wider uppercase mb-4 border border-[#1a84ff]/10 w-fit">
@@ -547,7 +822,9 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
             <h2 className="text-[#041d3c] font-black text-2xl sm:text-2xl sm:text-3xl lg:text-[42px] leading-tight  mb-2">
               Visual Experience
             </h2>
-            <p className="text-gray-400 text-[13px] font-medium mb-6">{resort.gallery.length} photos · Click any image to preview</p>
+            <p className="text-gray-400 text-[13px] font-medium mb-6">
+              {resort.gallery.length} photos · Click any image to preview
+            </p>
 
             {/* Hero image */}
             <div
@@ -565,7 +842,7 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                 </div>
               </div>
               <div className="absolute bottom-3 left-3 bg-[#041d3c]/60 backdrop-blur-sm text-white text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-[6px]">
-                {resort.gallery[0]?.caption || 'Resort View'}
+                {resort.gallery[0]?.caption || "Resort View"}
               </div>
             </div>
 
@@ -583,13 +860,17 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                   >
                     <ImageWithFallback
                       src={img.url}
-                      alt={img.caption || 'Resort View'}
+                      alt={img.caption || "Resort View"}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     {isLast ? (
                       <div className="absolute inset-0 bg-[#041d3c]/70 backdrop-blur-sm flex flex-col items-center justify-center">
-                        <span className="text-white font-black text-[24px] lg:text-[28px] leading-none">+{remaining}</span>
-                        <span className="text-white/70 text-[11px] lg:text-[12px] font-semibold uppercase tracking-wider mt-1">more</span>
+                        <span className="text-white font-black text-[24px] lg:text-[28px] leading-none">
+                          +{remaining}
+                        </span>
+                        <span className="text-white/70 text-[11px] lg:text-[12px] font-semibold uppercase tracking-wider mt-1">
+                          more
+                        </span>
                       </div>
                     ) : (
                       <div className="absolute inset-0 bg-[#041d3c]/0 group-hover:bg-[#041d3c]/30 transition-all duration-300 flex items-center justify-center">
@@ -603,66 +884,100 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
           </div>
 
           {/* Inquiry form */}
-          <div id="inquire-form" className="w-full lg:w-[480px] shrink-0 scroll-mt-32">
+          <div
+            id="inquire-form"
+            className="w-full lg:w-[480px] shrink-0 scroll-mt-32"
+          >
             <div className="bg-white rounded-[24px] shadow-[0_16px_48px_rgba(4,29,60,0.08)] p-8 border border-[#041d3c]/5">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1a84ff]/8 text-[#1a84ff] font-extrabold text-[10px] lg:text-[11px] tracking-wider uppercase mb-4 border border-[#1a84ff]/10 w-fit">
                 <span>✦ QUICK INQUIRY</span>
               </div>
-              <h3 className="text-[#041d3c] font-black text-[26px] leading-tight mb-1">Inquire Now</h3>
-              <p className="text-gray-400 text-[13px] font-medium mb-6">Fill in the form and we'll get back to you within 24 hours.</p>
+              <h3 className="text-[#041d3c] font-black text-[26px] leading-tight mb-1">
+                Inquire Now
+              </h3>
+              <p className="text-gray-400 text-[13px] font-medium mb-6">
+                Fill in the form and we'll get back to you within 24 hours.
+              </p>
 
               <form className="space-y-3.5" onSubmit={handleSubmit(onSubmit)}>
                 {/* Row 1 — Names */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <input 
-                      type="text" 
-                      placeholder="First Name *" 
-                      {...register('firstName', { 
-                        required: 'First name is required', 
-                        minLength: { value: 2, message: 'Minimum 2 characters' },
-                        pattern: { value: /^[A-Za-z\\s]+$/, message: 'Letters only' }
-                      })} 
-                      className={`w-full bg-[#f8fafc] border ${errors.firstName ? 'border-red-400' : 'border-[#e4eaf2]'} rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400`} 
+                    <input
+                      type="text"
+                      placeholder="First Name *"
+                      {...register("firstName", {
+                        required: "First name is required",
+                        minLength: {
+                          value: 2,
+                          message: "Minimum 2 characters",
+                        },
+                        pattern: {
+                          value: /^[A-Za-z\\s]+$/,
+                          message: "Letters only",
+                        },
+                      })}
+                      className={`w-full bg-[#f8fafc] border ${errors.firstName ? "border-red-400" : "border-[#e4eaf2]"} rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400`}
                     />
-                    {errors.firstName && <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">{errors.firstName.message as string}</span>}
+                    {errors.firstName && (
+                      <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">
+                        {errors.firstName.message as string}
+                      </span>
+                    )}
                   </div>
                   <div>
-                    <input 
-                      type="text" 
-                      placeholder="Surname *" 
-                      {...register('surname', { 
-                        required: 'Surname is required',
-                        minLength: { value: 2, message: 'Minimum 2 characters' },
-                        pattern: { value: /^[A-Za-z\\s]+$/, message: 'Letters only' }
-                      })} 
-                      className={`w-full bg-[#f8fafc] border ${errors.surname ? 'border-red-400' : 'border-[#e4eaf2]'} rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400`} 
+                    <input
+                      type="text"
+                      placeholder="Surname *"
+                      {...register("surname", {
+                        required: "Surname is required",
+                        minLength: {
+                          value: 2,
+                          message: "Minimum 2 characters",
+                        },
+                        pattern: {
+                          value: /^[A-Za-z\\s]+$/,
+                          message: "Letters only",
+                        },
+                      })}
+                      className={`w-full bg-[#f8fafc] border ${errors.surname ? "border-red-400" : "border-[#e4eaf2]"} rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400`}
                     />
-                    {errors.surname && <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">{errors.surname.message as string}</span>}
+                    {errors.surname && (
+                      <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">
+                        {errors.surname.message as string}
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 {/* Email */}
                 <div>
-                  <input 
-                    type="email" 
-                    placeholder="Email Address *" 
-                    {...register('email', { 
-                      required: 'Email is required', 
-                      pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: 'Invalid email format' }
-                    })} 
-                    className={`w-full bg-[#f8fafc] border ${errors.email ? 'border-red-400' : 'border-[#e4eaf2]'} rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400`} 
+                  <input
+                    type="email"
+                    placeholder="Email Address *"
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Invalid email format",
+                      },
+                    })}
+                    className={`w-full bg-[#f8fafc] border ${errors.email ? "border-red-400" : "border-[#e4eaf2]"} rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400`}
                   />
-                  {errors.email && <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">{errors.email.message as string}</span>}
+                  {errors.email && (
+                    <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">
+                      {errors.email.message as string}
+                    </span>
+                  )}
                 </div>
 
                 {/* Country + Phone with auto-code */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="relative z-20">
-                    <CountrySelect 
+                    <CountrySelect
                       value={watchedCountry}
                       onChange={(val) => {
-                        setValue('country', val, { shouldValidate: true });
+                        setValue("country", val, { shouldValidate: true });
                       }}
                       error={errors.country?.message as string}
                     />
@@ -682,16 +997,27 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                       )}
                       <input
                         type="tel"
-                        placeholder={phoneCode ? '' : 'Phone (+code)'}
+                        placeholder={phoneCode ? "" : "Phone (+code)"}
                         value={phoneNumber}
-                        onChange={e => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
+                        onChange={(e) =>
+                          setPhoneNumber(e.target.value.replace(/\D/g, ""))
+                        }
                         className="w-full bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400"
-                        style={{ paddingLeft: phoneCode ? `${phoneCode.length * 8 + 18}px` : '16px', paddingRight: '12px' }}
+                        style={{
+                          paddingLeft: phoneCode
+                            ? `${phoneCode.length * 8 + 18}px`
+                            : "16px",
+                          paddingRight: "12px",
+                        }}
                       />
                     </div>
-                    {(!phoneNumber || phoneNumber.replace(/\D/g, '').length < 7) && phoneNumber.length > 0 && (
-                      <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">Valid phone required</span>
-                    )}
+                    {(!phoneNumber ||
+                      phoneNumber.replace(/\D/g, "").length < 7) &&
+                      phoneNumber.length > 0 && (
+                        <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">
+                          Valid phone required
+                        </span>
+                      )}
                   </div>
                 </div>
 
@@ -699,58 +1025,75 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                 <div className="grid grid-cols-2 gap-3">
                   <div className="relative">
                     {!watchedCheckIn && (
-                      <div className={`absolute inset-0 w-full bg-[#f8fafc] border ${errors.checkIn ? 'border-red-400' : 'border-[#e4eaf2]'} rounded-[12px] px-4 py-3 text-gray-400 font-medium text-[13px] pointer-events-none flex items-center`}>
+                      <div
+                        className={`absolute inset-0 w-full bg-[#f8fafc] border ${errors.checkIn ? "border-red-400" : "border-[#e4eaf2]"} rounded-[12px] px-4 py-3 text-gray-400 font-medium text-[13px] pointer-events-none flex items-center`}
+                      >
                         Check-In *
                       </div>
                     )}
                     <input
                       type="date"
-                      {...register('checkIn', { required: 'Check-in date is required' })}
-                      min={new Date().toISOString().split('T')[0]}
-                      className={`w-full bg-[#f8fafc] border ${errors.checkIn ? 'border-red-400' : 'border-[#e4eaf2]'} rounded-[12px] px-4 py-3 font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer relative z-10 ${watchedCheckIn ? 'text-[#041d3c]' : 'opacity-0'}`}
+                      {...register("checkIn", {
+                        required: "Check-in date is required",
+                      })}
+                      min={new Date().toISOString().split("T")[0]}
+                      className={`w-full bg-[#f8fafc] border ${errors.checkIn ? "border-red-400" : "border-[#e4eaf2]"} rounded-[12px] px-4 py-3 font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer relative z-10 ${watchedCheckIn ? "text-[#041d3c]" : "opacity-0"}`}
                     />
                     <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                    {errors.checkIn && <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">{errors.checkIn.message as string}</span>}
+                    {errors.checkIn && (
+                      <span className="text-red-500 text-[10px] font-bold mt-1 block px-1">
+                        {errors.checkIn.message as string}
+                      </span>
+                    )}
                   </div>
 
                   {/* Number of Nights */}
                   <div className="relative">
                     <select
-                      {...register('nights')}
-                      className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
+                      {...register("nights")}
+                      className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? "pointer-events-none bg-gray-100 opacity-80" : ""}`}
                     >
-                      {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,21,28].map(n => (
-                        <option key={n} value={String(n)}>{n} {n === 1 ? 'Night' : 'Nights'}</option>
+                      {[
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 21, 28,
+                      ].map((n) => (
+                        <option key={n} value={String(n)}>
+                          {n} {n === 1 ? "Night" : "Nights"}
+                        </option>
                       ))}
                     </select>
                     <Moon className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                   </div>
                 </div>
-            {/* Check-out display pill */}
+                {/* Check-out display pill */}
                 {checkOutDate && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
+                    animate={{ opacity: 1, height: "auto" }}
                     className="flex items-center gap-2 bg-[#eef6ff] border border-[#1a84ff]/20 rounded-[10px] px-4 py-2.5"
                   >
                     <Calendar className="w-3.5 h-3.5 text-[#1a84ff] shrink-0" />
-                    <span className="text-[#1a84ff] font-semibold text-[12px]">Check-out:</span>
-                    <span className="text-[#041d3c] font-black text-[13px] ml-auto">{checkOutDate}</span>
+                    <span className="text-[#1a84ff] font-semibold text-[12px]">
+                      Check-out:
+                    </span>
+                    <span className="text-[#041d3c] font-black text-[13px] ml-auto">
+                      {checkOutDate}
+                    </span>
                   </motion.div>
                 )}
 
                 {/* Optional Selected Offer Dropdown */}
-                {((resort.customOffers && resort.customOffers.length > 0) || (resort.offers && resort.offers.length > 0)) && (
+                {((resort.customOffers && resort.customOffers.length > 0) ||
+                  (resort.offers && resort.offers.length > 0)) && (
                   <div>
                     <select
-                      {...register('selectedOffer')}
+                      {...register("selectedOffer")}
                       className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer"
                     >
                       <option value="">Select Package Offer (Optional)</option>
                       {resort.customOffers?.map((co: any, i: number) => {
                         const adults = co.adults ?? 2;
                         const children = co.children ?? 0;
-                        const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ''}${co.villas?.length > 0 ? ` · ${co.villas.join(' or ')}` : ''} · $${co.offerPrice}`;
+                        const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · $${co.offerPrice}`;
                         return (
                           <option key={`co-${i}`} value={valString}>
                             {valString}
@@ -776,78 +1119,125 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                     {/* Adults */}
                     <div className="relative">
                       <select
-                        {...register('adults')}
-                        className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
+                        {...register("adults")}
+                        className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? "pointer-events-none bg-gray-100 opacity-80" : ""}`}
                       >
-                        {Array.from({ length: 50 }, (_, i) => i + 1).map(n => (
-                          <option key={n} value={String(n)}>{n} Adult{n > 1 ? 's' : ''}</option>
-                        ))}
+                        {Array.from({ length: 50 }, (_, i) => i + 1).map(
+                          (n) => (
+                            <option key={n} value={String(n)}>
+                              {n} Adult{n > 1 ? "s" : ""}
+                            </option>
+                          ),
+                        )}
                       </select>
                       <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
-                      <span className="absolute -top-2 left-2 bg-white px-1 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Adults</span>
+                      <span className="absolute -top-2 left-2 bg-white px-1 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
+                        Adults
+                      </span>
                     </div>
 
                     {/* Children */}
                     <div className="relative">
                       <select
-                        {...register('children')}
-                        className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}
+                        {...register("children")}
+                        className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? "pointer-events-none bg-gray-100 opacity-80" : ""}`}
                       >
-                        {Array.from({ length: 51 }, (_, i) => i).map(n => (
-                          <option key={n} value={String(n)}>{n} Child{n !== 1 ? 'ren' : ''}</option>
+                        {Array.from({ length: 51 }, (_, i) => i).map((n) => (
+                          <option key={n} value={String(n)}>
+                            {n} Child{n !== 1 ? "ren" : ""}
+                          </option>
                         ))}
                       </select>
                       <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
-                      <span className="absolute -top-2 left-2 bg-white px-1 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">2–12y</span>
+                      <span className="absolute -top-2 left-2 bg-white px-1 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
+                        2–12y
+                      </span>
                     </div>
 
                     {/* Infants */}
                     <div className="relative">
                       <select
-                        {...register('infants')}
+                        {...register("infants")}
                         className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-3 py-3 text-[#041d3c] font-medium text-[12px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer"
                       >
-                        {Array.from({ length: 21 }, (_, i) => i).map(n => (
-                          <option key={n} value={String(n)}>{n} Infant{n !== 1 ? 's' : ''}</option>
+                        {Array.from({ length: 21 }, (_, i) => i).map((n) => (
+                          <option key={n} value={String(n)}>
+                            {n} Infant{n !== 1 ? "s" : ""}
+                          </option>
                         ))}
                       </select>
                       <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
-                      <span className="absolute -top-2 left-2 bg-white px-1 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Under 2</span>
+                      <span className="absolute -top-2 left-2 bg-white px-1 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
+                        Under 2
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Resort (readonly) */}
                 <div className="bg-[#f8fafc] rounded-[12px] px-4 py-3 border border-[#e4eaf2] flex items-center">
-                  <span className="text-[#041d3c] font-medium text-[13px] truncate">{resort.title}</span>
-                  <input type="hidden" value={resort.title} {...register('resort')} />
+                  <span className="text-[#041d3c] font-medium text-[13px] truncate">
+                    {resort.title}
+                  </span>
+                  <input
+                    type="hidden"
+                    value={resort.title}
+                    {...register("resort")}
+                  />
                 </div>
 
                 {/* Room type */}
                 <div className="relative">
-                  <select defaultValue="" {...register('roomType')} className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? 'pointer-events-none bg-gray-100 opacity-80' : ''}`}>
-                    <option value="" disabled className="text-gray-400">Room Type</option>
+                  <select
+                    defaultValue=""
+                    {...register("roomType")}
+                    className={`w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer ${isCustomOfferSelected ? "pointer-events-none bg-gray-100 opacity-80" : ""}`}
+                  >
+                    <option value="" disabled className="text-gray-400">
+                      Room Type
+                    </option>
                     {resort.villas?.length > 0 ? (
                       resort.villas.map((villa: any, idx: number) => (
-                        <option key={idx} value={villa.title}>{villa.title}</option>
+                        <option key={idx} value={villa.title}>
+                          {villa.title}
+                        </option>
                       ))
                     ) : (
                       <option value="Standard Room">Standard Room</option>
                     )}
                     {/* Add dynamic option if custom offer has multiple villas that don't match exactly */}
-                    {watchedSelectedOffer && watch('roomType') && !resort.villas?.some((v: any) => v.title === watch('roomType')) && (
-                      <option value={watch('roomType')} hidden>{watch('roomType')}</option>
-                    )}
+                    {watchedSelectedOffer &&
+                      watch("roomType") &&
+                      !resort.villas?.some(
+                        (v: any) => v.title === watch("roomType"),
+                      ) && (
+                        <option value={watch("roomType")} hidden>
+                          {watch("roomType")}
+                        </option>
+                      )}
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
 
                 {/* Notes */}
-                <textarea placeholder="Any special requests or details…" rows={4} {...register('details')} className="w-full bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400 resize-none" />
+                <textarea
+                  placeholder="Any special requests or details…"
+                  rows={4}
+                  {...register("details")}
+                  className="w-full bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors placeholder:text-gray-400 resize-none"
+                />
 
                 {/* Submit */}
-                <button type="submit" disabled={isSubmitting} className="w-full flex items-center justify-center gap-2 bg-[#041d3c] hover:bg-[#1a84ff] disabled:bg-[#041d3c]/60 text-white font-extrabold text-[13px] tracking-wider uppercase px-8 py-4 rounded-[14px] transition-all duration-300 shadow-[0_8px_24px_rgba(4,29,60,0.12)] hover:shadow-[0_12px_32px_rgba(26,132,255,0.25)] hover:-translate-y-0.5 mt-1">
-                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Request a Quote'}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full flex items-center justify-center gap-2 bg-[#041d3c] hover:bg-[#1a84ff] disabled:bg-[#041d3c]/60 text-white font-extrabold text-[13px] tracking-wider uppercase px-8 py-4 rounded-[14px] transition-all duration-300 shadow-[0_8px_24px_rgba(4,29,60,0.12)] hover:shadow-[0_12px_32px_rgba(26,132,255,0.25)] hover:-translate-y-0.5 mt-1"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "Request a Quote"
+                  )}
                 </button>
               </form>
             </div>
@@ -862,7 +1252,9 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1a84ff]/8 text-[#1a84ff] font-extrabold text-[10px] lg:text-[11px] tracking-wider uppercase mb-4 border border-[#1a84ff]/10">
             <span>✦ RESORT DETAILS</span>
           </div>
-          <h2 className="text-[#041d3c] font-black text-2xl sm:text-2xl sm:text-3xl lg:text-[42px] leading-tight  mb-4">Explore the Resort</h2>
+          <h2 className="text-[#041d3c] font-black text-2xl sm:text-2xl sm:text-3xl lg:text-[42px] leading-tight  mb-4">
+            Explore the Resort
+          </h2>
           <div className="w-20 h-1.5 bg-[#1a84ff] rounded-full" />
         </div>
 
@@ -876,8 +1268,8 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-5 py-2.5 rounded-[12px] text-[13px] font-extrabold uppercase tracking-wider transition-all duration-300 ${
                   isActive
-                    ? 'bg-[#041d3c] text-white shadow-[0_8px_24px_rgba(4,29,60,0.18)] -translate-y-0.5'
-                    : 'bg-white text-gray-500 border border-[#041d3c]/8 hover:border-[#041d3c]/20 hover:text-[#041d3c] hover:-translate-y-0.5 shadow-[0_2px_10px_rgba(4,29,60,0.04)]'
+                    ? "bg-[#041d3c] text-white shadow-[0_8px_24px_rgba(4,29,60,0.18)] -translate-y-0.5"
+                    : "bg-white text-gray-500 border border-[#041d3c]/8 hover:border-[#041d3c]/20 hover:text-[#041d3c] hover:-translate-y-0.5 shadow-[0_2px_10px_rgba(4,29,60,0.04)]"
                 }`}
               >
                 {tab.label}
@@ -889,32 +1281,75 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
         {/* Tab content panel */}
         <div className="bg-white rounded-[28px] shadow-[0_8px_40px_rgba(4,29,60,0.06)] p-8 lg:p-12 min-h-[400px] border border-[#041d3c]/5 overflow-hidden">
           <AnimatePresence mode="wait">
-
             {/* VILLAS */}
-            {activeTab === 'villas' && (
-              <motion.div key="villas" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -18 }} transition={{ duration: 0.35 }} className="flex flex-col space-y-0">
+            {activeTab === "villas" && (
+              <motion.div
+                key="villas"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -18 }}
+                transition={{ duration: 0.35 }}
+                className="flex flex-col space-y-0"
+              >
                 {resort.villas?.map((villa: any, idx: number) => (
-                  <div key={idx} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 py-10 border-b border-[#041d3c]/7 first:pt-0 last:border-0 last:pb-0">
+                  <div
+                    key={idx}
+                    className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 py-10 border-b border-[#041d3c]/7 first:pt-0 last:border-0 last:pb-0"
+                  >
                     <div className="lg:col-span-4">
-                      <VillaImageSlider images={villa.images} fallbackImage={resort.heroImage} alt={villa.title} />
+                      <VillaImageSlider
+                        images={villa.images}
+                        fallbackImage={resort.heroImage}
+                        alt={villa.title}
+                      />
                     </div>
                     <div className="lg:col-span-8 flex flex-col justify-between py-1">
                       <div>
-                        <h4 className="text-[#041d3c] text-[22px] font-black mb-3">{villa.title}</h4>
-                        <p className="text-gray-500 text-[15px] mb-6 leading-[1.8] whitespace-pre-wrap break-words">{villa.description}</p>
+                        <h4 className="text-[#041d3c] text-[22px] font-black mb-3">
+                          {villa.title}
+                        </h4>
+                        <p className="text-gray-500 text-[15px] mb-6 leading-[1.8] whitespace-pre-wrap break-words">
+                          {villa.description}
+                        </p>
 
                         {/* Stats strip */}
                         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-6 bg-[#f8fafc] py-3 px-5 rounded-[14px] border border-[#041d3c]/5 w-fit">
                           <div className="flex items-center gap-2 text-[#041d3c] text-[12.5px] font-semibold tracking-wide uppercase">
-                            <Maximize className="w-4 h-4 text-[#1a84ff]" /> {villa.size?.toString().replace(/sqm/i, '').trim() || '-'} sqm
+                            <Maximize className="w-4 h-4 text-[#1a84ff]" />{" "}
+                            {villa.size
+                              ?.toString()
+                              .replace(/sqm/i, "")
+                              .trim() || "-"}{" "}
+                            sqm
                           </div>
                           <div className="w-1 h-1 rounded-full bg-[#041d3c]/20 hidden sm:block" />
                           <div className="flex items-center gap-2 text-[#041d3c] text-[12.5px] font-semibold tracking-wide uppercase">
-                            <Users className="w-4 h-4 text-[#1a84ff]" /> {villa.capacity ? villa.capacity.split('|').map((combo:string) => combo.split(',').map((s:string) => s.trim()).filter((s:string) => !s.startsWith('0 ')).join(' and ')).filter(Boolean).join(' or ') : 'Not specified'}
+                            <Users className="w-4 h-4 text-[#1a84ff]" />{" "}
+                            {villa.capacity
+                              ? villa.capacity
+                                  .split("|")
+                                  .map((combo: string) =>
+                                    combo
+                                      .split(",")
+                                      .map((s: string) => s.trim())
+                                      .filter(
+                                        (s: string) => !s.startsWith("0 "),
+                                      )
+                                      .join(" and "),
+                                  )
+                                  .filter(Boolean)
+                                  .join(" or ")
+                              : "Not specified"}
                           </div>
                           <div className="w-1 h-1 rounded-full bg-[#041d3c]/20 hidden sm:block" />
                           <div className="flex items-center gap-2 text-[#041d3c] text-[12.5px] font-semibold tracking-wide uppercase">
-                            <BedDouble className="w-4 h-4 text-[#1a84ff]" /> {villa.bedType ? villa.bedType.split(',').map((s:string)=>s.trim()).join(' or ') : 'Not specified'}
+                            <BedDouble className="w-4 h-4 text-[#1a84ff]" />{" "}
+                            {villa.bedType
+                              ? villa.bedType
+                                  .split(",")
+                                  .map((s: string) => s.trim())
+                                  .join(" or ")
+                              : "Not specified"}
                           </div>
                         </div>
 
@@ -923,7 +1358,9 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                           {villa.features?.map((f: string, fi: number) => (
                             <div key={fi} className="flex items-center gap-2.5">
                               <CheckCircle2 className="w-4 h-4 text-[#1a84ff] shrink-0" />
-                              <span className="text-gray-600 text-[13.5px] font-medium">{f}</span>
+                              <span className="text-gray-600 text-[13.5px] font-medium">
+                                {f}
+                              </span>
                             </div>
                           ))}
                         </div>
@@ -931,12 +1368,25 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
 
                       {/* Buttons */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-6 border-t border-[#041d3c]/6">
-                        <button onClick={() => document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' })} className="flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-[#041d3c] hover:bg-[#1a84ff] text-white rounded-[14px] font-extrabold text-[13px] uppercase tracking-wider transition-all duration-300 hover:shadow-[0_8px_24px_rgba(26,132,255,0.25)] hover:-translate-y-0.5">
+                        <button
+                          onClick={() =>
+                            document
+                              .getElementById("inquire-form")
+                              ?.scrollIntoView({ behavior: "smooth" })
+                          }
+                          className="flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-[#041d3c] hover:bg-[#1a84ff] text-white rounded-[14px] font-extrabold text-[13px] uppercase tracking-wider transition-all duration-300 hover:shadow-[0_8px_24px_rgba(26,132,255,0.25)] hover:-translate-y-0.5"
+                        >
                           Book Now
                         </button>
-                        <a href={`https://wa.me/358408192758?text=Hi! I'm interested in the ${encodeURIComponent(resort.title)} resort. Can you help me check availability?`} target="_blank" rel="noopener noreferrer" className="flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[14px] font-extrabold text-[13px] uppercase tracking-wider transition-all duration-300 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 group relative overflow-hidden">
+                        <a
+                          href={`https://wa.me/358408192758?text=Hi! I'm interested in the ${encodeURIComponent(resort.title)} resort. Can you help me check availability?`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[14px] font-extrabold text-[13px] uppercase tracking-wider transition-all duration-300 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 group relative overflow-hidden"
+                        >
                           <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
-                          <WaIcon /><span className="relative z-10">WhatsApp Us</span>
+                          <WaIcon />
+                          <span className="relative z-10">WhatsApp Us</span>
                         </a>
                       </div>
                     </div>
@@ -946,22 +1396,48 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
             )}
 
             {/* RESTAURANTS */}
-            {activeTab === 'restaurants' && (
-              <motion.div key="restaurants" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -18 }} transition={{ duration: 0.35 }} className="flex flex-col">
+            {activeTab === "restaurants" && (
+              <motion.div
+                key="restaurants"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -18 }}
+                transition={{ duration: 0.35 }}
+                className="flex flex-col"
+              >
                 {resort.restaurants?.map((r: any, idx: number) => (
-                  <div key={idx} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 py-10 border-b border-[#041d3c]/7 first:pt-0 last:border-0 last:pb-0">
+                  <div
+                    key={idx}
+                    className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 py-10 border-b border-[#041d3c]/7 first:pt-0 last:border-0 last:pb-0"
+                  >
                     <div className="lg:col-span-4 overflow-hidden rounded-[20px] shadow-[0_4px_16px_rgba(4,29,60,0.08)] self-start">
-                      <ImageWithFallback src={r.image || resort.gallery?.[idx % resort.gallery.length]?.url || resort.heroImage} alt={r.title} className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-700" />
+                      <ImageWithFallback
+                        src={
+                          r.image ||
+                          resort.gallery?.[idx % resort.gallery.length]?.url ||
+                          resort.heroImage
+                        }
+                        alt={r.title}
+                        className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-700"
+                      />
                     </div>
                     <div className="lg:col-span-8 flex flex-col py-1">
-                      <h4 className="text-[#041d3c] text-[22px] font-black mb-3">{r.title}</h4>
-                      <p className="text-gray-500 text-[15px] mb-6 leading-[1.8] whitespace-pre-wrap break-words">{r.description}</p>
+                      <h4 className="text-[#041d3c] text-[22px] font-black mb-3">
+                        {r.title}
+                      </h4>
+                      <p className="text-gray-500 text-[15px] mb-6 leading-[1.8] whitespace-pre-wrap break-words">
+                        {r.description}
+                      </p>
                       <div className="flex flex-col gap-3 max-w-sm">
                         {r.schedules?.map((s: any, si: number) => (
                           <div key={si} className="flex items-center">
-                            <span className="text-[#041d3c] text-[12.5px] font-extrabold uppercase tracking-wider w-[110px] shrink-0">{s.meal}</span>
+                            <span className="text-[#041d3c] text-[12.5px] font-extrabold uppercase tracking-wider w-[110px] shrink-0">
+                              {s.meal}
+                            </span>
                             <div className="flex-1 border-b-2 border-dotted border-[#041d3c]/15 mx-4" />
-                            <span className="text-gray-600 text-[13.5px] font-semibold whitespace-nowrap shrink-0">{s.time}</span>
+                            <span className="text-gray-600 text-[13.5px] font-semibold whitespace-nowrap shrink-0">
+                              {s.time}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -972,16 +1448,29 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
             )}
 
             {/* FACILITIES */}
-            {activeTab === 'facilities' && (
-              <motion.div key="facilities" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -18 }} transition={{ duration: 0.35 }}>
-                <h3 className="text-[#041d3c] font-black text-[26px] mb-8">Resort Facilities</h3>
+            {activeTab === "facilities" && (
+              <motion.div
+                key="facilities"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -18 }}
+                transition={{ duration: 0.35 }}
+              >
+                <h3 className="text-[#041d3c] font-black text-[26px] mb-8">
+                  Resort Facilities
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {resort.facilities?.map((label: string, i: number) => (
-                    <div key={i} className="flex items-center gap-4 bg-[#f8fafc] rounded-[16px] px-5 py-4 border border-[#041d3c]/5 hover:border-[#1a84ff]/20 hover:bg-[#eef6ff] transition-all">
+                    <div
+                      key={i}
+                      className="flex items-center gap-4 bg-[#f8fafc] rounded-[16px] px-5 py-4 border border-[#041d3c]/5 hover:border-[#1a84ff]/20 hover:bg-[#eef6ff] transition-all"
+                    >
                       <div className="w-10 h-10 rounded-[12px] bg-[#1a84ff]/10 flex items-center justify-center shrink-0">
                         <Sparkles className="w-5 h-5 text-[#1a84ff]" />
                       </div>
-                      <p className="text-[#041d3c] font-bold text-[14px]">{label}</p>
+                      <p className="text-[#041d3c] font-bold text-[14px]">
+                        {label}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -989,154 +1478,360 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
             )}
 
             {/* FACT SHEET */}
-            {activeTab === 'fact-sheet' && (
-              <motion.div key="fact-sheet" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -18 }} transition={{ duration: 0.35 }}>
-                <h3 className="text-[#041d3c] font-black text-[26px] mb-4">FACT Sheet</h3>
-                <p className="text-gray-500 text-[15px] font-medium leading-[1.8] mb-6">Download or view our comprehensive resort fact sheet for detailed information on villa dimensions, dining hours, and the full amenities list.</p>
+            {activeTab === "fact-sheet" && (
+              <motion.div
+                key="fact-sheet"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -18 }}
+                transition={{ duration: 0.35 }}
+              >
+                <h3 className="text-[#041d3c] font-black text-[26px] mb-4">
+                  FACT Sheet
+                </h3>
+                <p className="text-gray-500 text-[15px] font-medium leading-[1.8] mb-6">
+                  Download or view our comprehensive resort fact sheet for
+                  detailed information on villa dimensions, dining hours, and
+                  the full amenities list.
+                </p>
                 {resort.factSheets && resort.factSheets.length > 0 ? (
                   <div className="flex flex-col gap-3">
                     {resort.factSheets.map((fs: any, i: number) => (
-                      <a key={i} href={fs.url} download target="_blank" rel="noopener noreferrer" className="inline-flex w-fit items-center gap-2 bg-[#041d3c] hover:bg-[#1a84ff] text-white font-extrabold text-[13px] uppercase tracking-wider px-7 py-3.5 rounded-[14px] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(26,132,255,0.25)] hover:-translate-y-0.5">
+                      <a
+                        key={i}
+                        href={fs.url}
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex w-fit items-center gap-2 bg-[#041d3c] hover:bg-[#1a84ff] text-white font-extrabold text-[13px] uppercase tracking-wider px-7 py-3.5 rounded-[14px] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(26,132,255,0.25)] hover:-translate-y-0.5"
+                      >
                         Download {fs.name} (PDF)
                       </a>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-400 font-medium">No FACT sheet available at this time.</p>
+                  <p className="text-gray-400 font-medium">
+                    No FACT sheet available at this time.
+                  </p>
                 )}
               </motion.div>
             )}
 
             {/* DEALS */}
-            {activeTab === 'deals' && (
-              <motion.div key="deals" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -18 }} transition={{ duration: 0.35 }}>
-                <h3 className="text-[#041d3c] font-black text-[26px] mb-6">Deals & Offers</h3>
-                
+            {activeTab === "deals" && (
+              <motion.div
+                key="deals"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -18 }}
+                transition={{ duration: 0.35 }}
+              >
+                <h3 className="text-[#041d3c] font-black text-[26px] mb-6">
+                  Deals & Offers
+                </h3>
+
                 {resort.discount > 0 && resort.offerPoster && (
                   <div className="w-full mb-8 rounded-[24px] overflow-hidden shadow-[0_16px_48px_rgba(4,29,60,0.08)] border border-[#041d3c]/5">
-                    <ImageWithFallback src={resort.offerPoster} alt="Resort Offer" className="w-full h-auto object-cover" />
+                    <ImageWithFallback
+                      src={resort.offerPoster}
+                      alt="Resort Offer"
+                      className="w-full h-auto object-cover"
+                    />
                   </div>
                 )}
                 {resort.customOffers && resort.customOffers.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                  <div className="flex flex-col gap-5 mb-8">
                     {resort.customOffers.map((co: any, i: number) => {
-                      const actualPrice = (Number(resort.price) || 0) * (Number(co.nights) || 0);
+                      const actualPrice =
+                        (Number(resort.price) || 0) * (Number(co.nights) || 0);
                       const adults = co.adults ?? 2;
                       const children = co.children ?? 0;
-                      const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ''}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(' or ')}` : ''} at ${resort.title} for $${co.offerPrice}. Can you check availability?`;
+                      const hasAnyInclusions =
+                        (co.includes && co.includes.length > 0) ||
+                        (co.excludes && co.excludes.length > 0);
+
+                      const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ""}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(" or ")}` : ""} at ${resort.title} for $${co.offerPrice}. Can you check availability?`;
                       return (
-                        <div key={i} className="bg-white border-2 border-rose-100 rounded-[24px] overflow-hidden shadow-sm relative group hover:border-rose-300 transition-colors flex flex-col">
-                          {co.posterUrl && (
-                            <div className="w-full aspect-[2/1] relative overflow-hidden bg-gray-100">
-                              <img src={co.posterUrl} alt={`${co.nights} Nights Offer`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                            </div>
-                          )}
-                          <div className="p-6 relative z-10 flex flex-col items-center text-center flex-1">
-                            <span className="bg-rose-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full mb-4 inline-block">Special Package</span>
-                            <h4 className="text-[#041d3c] text-[22px] font-black mb-5">{co.nights} Nights Offer</h4>
-                            
-                            <div className="flex flex-col gap-3 w-full mb-6 bg-[#f8fafc] border border-[#e4eaf2] p-4 rounded-[16px]">
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-gray-500">
-                                  <Moon className="w-4 h-4 text-[#1a84ff]" />
-                                  <span className="text-[13px] font-bold">Duration</span>
-                                </div>
-                                <span className="text-[#041d3c] font-black text-[14px]">{co.nights} Nights</span>
+                        <div
+                          key={i}
+                          className={`bg-white border-2 border-rose-100 rounded-[24px] overflow-hidden shadow-sm relative group hover:border-rose-300 transition-colors ${hasAnyInclusions ? "flex flex-col lg:flex-row" : "flex flex-col max-w-2xl"}`}
+                        >
+                          {/* Left Side: Details */}
+                          <div
+                            className={`flex flex-col flex-1 ${hasAnyInclusions ? "lg:border-r-2 lg:border-rose-100 lg:max-w-md xl:max-w-xl" : ""}`}
+                          >
+                            {co.posterUrl && (
+                              <div className="w-full aspect-[2/1] relative overflow-hidden bg-gray-100">
+                                <img
+                                  src={co.posterUrl}
+                                  alt={`${co.nights} Nights Offer`}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                />
                               </div>
-                              <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-gray-500">
-                                  <Users className="w-4 h-4 text-[#1a84ff]" />
-                                  <span className="text-[13px] font-bold">Guests</span>
+                            )}
+                            <div className="p-6 relative z-10 flex flex-col items-center text-center flex-1">
+                              <span className="bg-rose-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full mb-4 inline-block">
+                                Special Package
+                              </span>
+                              <h4 className="text-[#041d3c] text-[22px] font-black mb-5">
+                                {co.nights} Nights Offer
+                              </h4>
+
+                              <div className="flex flex-col gap-3 w-full mb-6 bg-[#f8fafc] border border-[#e4eaf2] p-4 rounded-[16px]">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2 text-gray-500">
+                                    <Moon className="w-4 h-4 text-[#1a84ff]" />
+                                    <span className="text-[13px] font-bold">
+                                      Duration
+                                    </span>
+                                  </div>
+                                  <span className="text-[#041d3c] font-black text-[14px]">
+                                    {co.nights} Nights
+                                  </span>
                                 </div>
-                                <span className="text-[#041d3c] font-black text-[14px]">{adults} Adults{children > 0 ? `, ${children} Children` : ''}</span>
+                                <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2 text-gray-500">
+                                    <Users className="w-4 h-4 text-[#1a84ff]" />
+                                    <span className="text-[13px] font-bold">
+                                      Guests
+                                    </span>
+                                  </div>
+                                  <span className="text-[#041d3c] font-black text-[14px]">
+                                    {adults} Adults
+                                    {children > 0
+                                      ? `, ${children} Children`
+                                      : ""}
+                                  </span>
+                                </div>
+                                {co.villas && co.villas.length > 0 && (
+                                  <>
+                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                                    <div className="flex items-center justify-between text-left gap-4">
+                                      <div className="flex items-center gap-2 text-gray-500 shrink-0">
+                                        <BedDouble className="w-4 h-4 text-[#1a84ff]" />
+                                        <span className="text-[13px] font-bold">
+                                          Room/Villa
+                                        </span>
+                                      </div>
+                                      <span className="text-[#041d3c] font-black text-[14px] leading-tight text-right">
+                                        {co.villas.join(", ")}
+                                      </span>
+                                    </div>
+                                  </>
+                                )}
+                                {co.flightIncluded && (
+                                  <>
+                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2 text-gray-500">
+                                        <Plane className="w-4 h-4 text-[#1a84ff]" />
+                                        <span className="text-[13px] font-bold">
+                                          Flight
+                                        </span>
+                                      </div>
+                                      <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[13px] font-black flex items-center gap-1">
+                                        <CheckCircle2 className="w-3.5 h-3.5" />{" "}
+                                        Included
+                                      </span>
+                                    </div>
+                                  </>
+                                )}
+                                {co.mealPlan && (
+                                  <>
+                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2 text-gray-500">
+                                        <UtensilsCrossed className="w-4 h-4 text-[#1a84ff]" />
+                                        <span className="text-[13px] font-bold">
+                                          Meal Plan
+                                        </span>
+                                      </div>
+                                      <span className="text-[#041d3c] font-black text-[14px]">
+                                        {co.mealPlan === "BB"
+                                          ? "Bed and Breakfast"
+                                          : co.mealPlan === "HB"
+                                            ? "Half Board"
+                                            : co.mealPlan === "FB"
+                                              ? "Full Board"
+                                              : co.mealPlan === "AI"
+                                                ? "All Inclusive"
+                                                : co.mealPlan}
+                                      </span>
+                                    </div>
+                                  </>
+                                )}
+                                {co.transfer && (
+                                  <>
+                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2 text-gray-500">
+                                        <Plane className="w-4 h-4 text-[#1a84ff]" />
+                                        <span className="text-[13px] font-bold">
+                                          Transfer
+                                        </span>
+                                      </div>
+                                      <span className="text-[#041d3c] font-black text-[14px]">
+                                        {co.transfer}
+                                      </span>
+                                    </div>
+                                  </>
+                                )}
+                                {co.validFrom && co.validTo && (
+                                  <>
+                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2 text-gray-500">
+                                        <Calendar className="w-4 h-4 text-[#1a84ff]" />
+                                        <span className="text-[13px] font-bold">
+                                          Travel Period
+                                        </span>
+                                      </div>
+                                      <span className="text-[#041d3c] font-black text-[13px]">
+                                        {new Date(
+                                          co.validFrom + "T00:00:00Z",
+                                        ).toLocaleDateString("en-GB", {
+                                          day: "numeric",
+                                          month: "short",
+                                          timeZone: "UTC",
+                                        })}{" "}
+                                        -{" "}
+                                        {new Date(
+                                          co.validTo + "T00:00:00Z",
+                                        ).toLocaleDateString("en-GB", {
+                                          day: "numeric",
+                                          month: "short",
+                                          year: "numeric",
+                                          timeZone: "UTC",
+                                        })}
+                                      </span>
+                                    </div>
+                                  </>
+                                )}
+                                {co.bookBefore && (
+                                  <>
+                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2 text-gray-500">
+                                        <Clock className="w-4 h-4 text-rose-500" />
+                                        <span className="text-[13px] font-bold text-rose-500">
+                                          Book Before
+                                        </span>
+                                      </div>
+                                      <span className="text-rose-500 font-black text-[13px]">
+                                        {new Date(
+                                          co.bookBefore + "T00:00:00Z",
+                                        ).toLocaleDateString("en-GB", {
+                                          day: "numeric",
+                                          month: "short",
+                                          year: "numeric",
+                                          timeZone: "UTC",
+                                        })}
+                                      </span>
+                                    </div>
+                                  </>
+                                )}
                               </div>
-                              {co.mealPlan && (
-                                <>
-                                  <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-gray-500">
-                                      <UtensilsCrossed className="w-4 h-4 text-[#1a84ff]" />
-                                      <span className="text-[13px] font-bold">Meal Plan</span>
-                                    </div>
-                                    <span className="text-[#041d3c] font-black text-[14px]">
-                                      {co.mealPlan === 'BB' ? 'Bed and Breakfast' : 
-                                       co.mealPlan === 'HB' ? 'Half Board' : 
-                                       co.mealPlan === 'FB' ? 'Full Board' : 
-                                       co.mealPlan === 'AI' ? 'All Inclusive' : 
-                                       co.mealPlan}
-                                    </span>
-                                  </div>
-                                </>
-                              )}
-                              {co.transfer && (
-                                <>
-                                  <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-gray-500">
-                                      <Plane className="w-4 h-4 text-[#1a84ff]" />
-                                      <span className="text-[13px] font-bold">Transfer</span>
-                                    </div>
-                                    <span className="text-[#041d3c] font-black text-[14px]">{co.transfer}</span>
-                                  </div>
-                                </>
-                              )}
-                              {co.validFrom && co.validTo && (
-                                <>
-                                  <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-gray-500">
-                                      <Calendar className="w-4 h-4 text-[#1a84ff]" />
-                                      <span className="text-[13px] font-bold">Travel Period</span>
-                                    </div>
-                                    <span className="text-[#041d3c] font-black text-[13px]">
-                                      {new Date(co.validFrom + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })} - {new Date(co.validTo + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
-                                    </span>
-                                  </div>
-                                </>
-                              )}
-                              {co.bookBefore && (
-                                <>
-                                  <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-gray-500">
-                                      <Clock className="w-4 h-4 text-rose-500" />
-                                      <span className="text-[13px] font-bold text-rose-500">Book Before</span>
-                                    </div>
-                                    <span className="text-rose-500 font-black text-[13px]">
-                                      {new Date(co.bookBefore + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
-                                    </span>
-                                  </div>
-                                </>
-                              )}
-                            </div>
-                            
-                            <div className="flex items-center justify-center gap-2 mt-auto pt-2 mb-1">
-                              <span className="text-gray-400 text-[14px] font-bold line-through">${actualPrice}</span>
-                              <span className="text-rose-500 text-[28px] font-black leading-none">${co.offerPrice}</span>
-                            </div>
-                            <p className="text-gray-500 text-[12px] font-medium mb-6">Total package price</p>
-                            
-                            <div className="flex flex-col gap-2 w-full">
-                              <button
-                                onClick={() => {
-                                  const adults = co.adults ?? 2;
-                                  const children = co.children ?? 0;
-                                  const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ''}${co.villas?.length > 0 ? ` · ${co.villas.join(' or ')}` : ''} · $${co.offerPrice}`;
-                                  setValue('selectedOffer', valString);
-                                  document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' });
-                                }}
-                                className="w-full bg-[#041d3c] text-white rounded-[12px] py-3 font-extrabold text-[14px] flex items-center justify-center transition-all duration-300 hover:bg-[#1a84ff] hover:-translate-y-0.5"
-                              >
-                                Book Now
-                              </button>
-                              <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden">
-                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
-                                <WaIcon />
-                                <span className="relative z-10">WhatsApp Us</span>
-                              </a>
+
+                              <div className="flex items-center justify-center gap-2 mt-auto pt-2 mb-1">
+                                <span className="text-gray-400 text-[14px] font-bold line-through">
+                                  ${actualPrice}
+                                </span>
+                                <span className="text-rose-500 text-[28px] font-black leading-none">
+                                  ${co.offerPrice}
+                                </span>
+                              </div>
+                              <p className="text-gray-500 text-[12px] font-medium mb-6">
+                                Total package price
+                              </p>
+
+                              <div className="flex flex-col gap-2 w-full">
+                                <button
+                                  onClick={() => {
+                                    const adults = co.adults ?? 2;
+                                    const children = co.children ?? 0;
+                                    const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · $${co.offerPrice}`;
+                                    setValue("selectedOffer", valString);
+                                    document
+                                      .getElementById("inquire-form")
+                                      ?.scrollIntoView({ behavior: "smooth" });
+                                  }}
+                                  className="w-full bg-[#041d3c] text-white rounded-[12px] py-3 font-extrabold text-[14px] flex items-center justify-center transition-all duration-300 hover:bg-[#1a84ff] hover:-translate-y-0.5"
+                                >
+                                  Book Now
+                                </button>
+                                <a
+                                  href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
+                                >
+                                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
+                                  <WaIcon />
+                                  <span className="relative z-10">
+                                    WhatsApp Us
+                                  </span>
+                                </a>
+                              </div>
                             </div>
                           </div>
+
+                          {/* Right Side: Inclusions/Exclusions (if any) */}
+                          {hasAnyInclusions && (
+                            <div className="p-6 lg:p-8 bg-rose-50/20 flex-1 flex flex-col gap-8">
+                              {co.includes?.length > 0 && (
+                                <div>
+                                  <h5 className="text-[#041d3c] font-black text-[16px] mb-4 flex items-center gap-2">
+                                    <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                    </div>
+                                    What's Included
+                                  </h5>
+                                  <ul className="space-y-3">
+                                    {co.includes.map(
+                                      (inc: string, idx: number) => (
+                                        <li
+                                          key={idx}
+                                          className="flex items-start gap-3 text-[14px] text-gray-700 font-medium"
+                                        >
+                                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-[6px] shrink-0" />
+                                          <span className="leading-snug">
+                                            {inc}
+                                          </span>
+                                        </li>
+                                      ),
+                                    )}
+                                  </ul>
+                                </div>
+                              )}
+
+                              {co.excludes?.length > 0 && (
+                                <div>
+                                  <h5 className="text-[#041d3c] font-black text-[16px] mb-4 flex items-center gap-2">
+                                    <div className="w-6 h-6 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                                      <XCircle className="w-3.5 h-3.5 text-rose-600" />
+                                    </div>
+                                    What's Not Included
+                                  </h5>
+                                  <ul className="space-y-3">
+                                    {co.excludes.map(
+                                      (exc: string, idx: number) => (
+                                        <li
+                                          key={idx}
+                                          className="flex items-start gap-3 text-[14px] text-gray-500 font-medium"
+                                        >
+                                          <div className="w-1.5 h-1.5 rounded-full bg-rose-300 mt-[6px] shrink-0" />
+                                          <span className="leading-snug">
+                                            {exc}
+                                          </span>
+                                        </li>
+                                      ),
+                                    )}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
@@ -1148,22 +1843,35 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                     {resort.offers.map((offer: string, i: number) => {
                       const waText = `Hi! I'm interested in the special offer: "${offer}" at ${resort.title}. Can you check availability?`;
                       return (
-                        <div key={i} className="bg-gradient-to-br from-[#1a84ff]/6 to-[#041d3c]/4 border border-[#1a84ff]/12 p-8 rounded-[20px] flex flex-col h-full">
+                        <div
+                          key={i}
+                          className="bg-gradient-to-br from-[#1a84ff]/6 to-[#041d3c]/4 border border-[#1a84ff]/12 p-8 rounded-[20px] flex flex-col h-full"
+                        >
                           <div className="inline-flex items-center self-start gap-1.5 bg-[#e11d48] text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-[6px] mb-4">
-                            <Star className="w-3 h-3 fill-white" /> Featured Offer
+                            <Star className="w-3 h-3 fill-white" /> Featured
+                            Offer
                           </div>
-                          <h4 className="text-[#041d3c] text-[18px] font-black leading-snug mb-6 flex-1">{offer}</h4>
+                          <h4 className="text-[#041d3c] text-[18px] font-black leading-snug mb-6 flex-1">
+                            {offer}
+                          </h4>
                           <div className="flex flex-col sm:flex-row gap-2 w-full mt-auto">
                             <button
                               onClick={() => {
-                                setValue('selectedOffer', offer);
-                                document.getElementById('inquire-form')?.scrollIntoView({ behavior: 'smooth' });
+                                setValue("selectedOffer", offer);
+                                document
+                                  .getElementById("inquire-form")
+                                  ?.scrollIntoView({ behavior: "smooth" });
                               }}
                               className="flex-1 bg-[#041d3c] text-white rounded-[12px] py-3 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center transition-all duration-300 hover:bg-[#1a84ff] hover:-translate-y-0.5"
                             >
                               Book Now
                             </button>
-                            <a href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer" className="flex-1 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden">
+                            <a
+                              href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-1 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
+                            >
                               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
                               <WaIcon />
                               <span className="relative z-10">WhatsApp Us</span>
@@ -1174,13 +1882,16 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
                     })}
                   </div>
                 )}
-                
-                {(!resort.offers || resort.offers.length === 0) && (!resort.customOffers || resort.customOffers.length === 0) && !(resort.discount > 0 && resort.offerPoster) && (
-                  <p className="text-gray-400 font-medium">No special offers available at this time.</p>
-                )}
+
+                {(!resort.offers || resort.offers.length === 0) &&
+                  (!resort.customOffers || resort.customOffers.length === 0) &&
+                  !(resort.discount > 0 && resort.offerPoster) && (
+                    <p className="text-gray-400 font-medium">
+                      No special offers available at this time.
+                    </p>
+                  )}
               </motion.div>
             )}
-
           </AnimatePresence>
         </div>
       </section>
@@ -1220,7 +1931,10 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
 
             {/* Prev arrow */}
             <button
-              onClick={(e) => { e.stopPropagation(); prevImage(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                prevImage();
+              }}
               className="absolute left-4 lg:left-8 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 border border-white/20 flex items-center justify-center text-white transition-all duration-200 hover:scale-110 hover:-translate-x-0.5"
             >
               <ChevronLeft className="w-6 h-6" />
@@ -1228,7 +1942,10 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
 
             {/* Next arrow */}
             <button
-              onClick={(e) => { e.stopPropagation(); nextImage(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                nextImage();
+              }}
               className="absolute right-4 lg:right-8 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 border border-white/20 flex items-center justify-center text-white transition-all duration-200 hover:scale-110 hover:translate-x-0.5"
             >
               <ChevronRight className="w-6 h-6" />
@@ -1240,20 +1957,20 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
               initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
               className="relative z-10 max-w-[88vw] max-h-[82vh] flex flex-col items-center"
               onClick={(e) => e.stopPropagation()}
             >
               <img
                 src={resort.gallery[lightboxIndex].url}
-                alt={resort.gallery[lightboxIndex].caption || 'Resort View'}
+                alt={resort.gallery[lightboxIndex].caption || "Resort View"}
                 className="max-w-full max-h-[75vh] rounded-[20px] shadow-[0_32px_80px_rgba(0,0,0,0.6)] object-contain"
               />
               {/* Caption */}
               <div className="mt-4 flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
                 <span className="text-white/70 text-[13px] font-semibold tracking-wide">
-                  {resort.gallery[lightboxIndex].caption || 'Resort View'}
+                  {resort.gallery[lightboxIndex].caption || "Resort View"}
                 </span>
               </div>
             </motion.div>
@@ -1263,21 +1980,27 @@ export function ResortPackageClient({ resort, categoryId, offerIndex = 0 }: { re
               {resort.gallery.map((img: any, idx: number) => (
                 <button
                   key={idx}
-                  onClick={(e) => { e.stopPropagation(); openLightbox(idx); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openLightbox(idx);
+                  }}
                   className={`shrink-0 w-12 h-9 rounded-[8px] overflow-hidden border-2 transition-all duration-200 ${
                     idx === lightboxIndex
-                      ? 'border-[#D4AF37] scale-110 shadow-[0_0_12px_rgba(212,175,55,0.5)]'
-                      : 'border-white/20 opacity-50 hover:opacity-80 hover:border-white/50'
+                      ? "border-[#D4AF37] scale-110 shadow-[0_0_12px_rgba(212,175,55,0.5)]"
+                      : "border-white/20 opacity-50 hover:opacity-80 hover:border-white/50"
                   }`}
                 >
-                  <img src={img.url} alt={img.caption || 'Thumbnail'} className="w-full h-full object-cover" />
+                  <img
+                    src={img.url}
+                    alt={img.caption || "Thumbnail"}
+                    className="w-full h-full object-cover"
+                  />
                 </button>
               ))}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   );
 }

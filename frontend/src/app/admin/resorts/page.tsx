@@ -1,18 +1,30 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
-import { Plus, X, Search, MapPin, Trash2, Filter, Edit, Check, ChevronRight, ChevronLeft, Loader2, GripVertical } from "lucide-react";
+import {
+  Plus,
+  X,
+  Search,
+  MapPin,
+  Trash2,
+  Filter,
+  Edit,
+  Check,
+  ChevronRight,
+  ChevronLeft,
+  Loader2,
+  GripVertical,
+} from "lucide-react";
 import { Reorder } from "framer-motion";
 import { toast } from "sonner";
 import { resortApi } from "../../../lib/resortApi";
 import { ImageUpload } from "../../../components/admin/ImageUpload";
 import { PdfUpload } from "../../../components/admin/PdfUpload";
 
-
-const inputCls = "w-full px-4 py-3 bg-[#f4f7fb] border border-[#e2e8f0] rounded-[12px] text-[13px] font-medium text-[#041d3c] placeholder:text-gray-300 focus:outline-none focus:border-[#1a84ff]/60 focus:ring-2 focus:ring-[#1a84ff]/10 transition-all";
-const labelCls = "block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider mb-1.5";
-
-
+const inputCls =
+  "w-full px-4 py-3 bg-[#f4f7fb] border border-[#e2e8f0] rounded-[12px] text-[13px] font-medium text-[#041d3c] placeholder:text-gray-300 focus:outline-none focus:border-[#1a84ff]/60 focus:ring-2 focus:ring-[#1a84ff]/10 transition-all";
+const labelCls =
+  "block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider mb-1.5";
 
 export default function AdminResorts() {
   const [resorts, setResorts] = useState<any[]>([]);
@@ -24,7 +36,10 @@ export default function AdminResorts() {
   const [transferOptions, setTransferOptions] = useState<any[]>([]);
   const [facilityOptions, setFacilityOptions] = useState<any[]>([]);
   const [offerOptions, setOfferOptions] = useState<any[]>([]);
-  const [villaOptions, setVillaOptions] = useState<{ bedTypes: string[], features: string[] }>({ bedTypes: [], features: [] });
+  const [villaOptions, setVillaOptions] = useState<{
+    bedTypes: string[];
+    features: string[];
+  }>({ bedTypes: [], features: [] });
 
   // Facility prompt replacement
   const [newFacilityName, setNewFacilityName] = useState("");
@@ -42,19 +57,67 @@ export default function AdminResorts() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [discountModalId, setDiscountModalId] = useState<string | null>(null);
-  const [discountForm, setDiscountForm] = useState<{ discount: string; offerPoster: string; offerPosterPublicId: string; customOffers: { nights: number; offerPrice: number; adults: number; children: number; posterUrl?: string; posterPublicId?: string; villas?: string[]; transfer?: string; mealPlan?: string; validFrom?: string; validTo?: string; bookBefore?: string; }[] }>({ discount: '', offerPoster: '', offerPosterPublicId: '', customOffers: [] });
+  const [discountForm, setDiscountForm] = useState<{
+    discount: string;
+    offerPoster: string;
+    offerPosterPublicId: string;
+    customOffers: {
+      nights: number;
+      offerPrice: number;
+      adults: number;
+      children: number;
+      posterUrl?: string;
+      posterPublicId?: string;
+      villas?: string[];
+      transfer?: string;
+      mealPlan?: string;
+      validFrom?: string;
+      validTo?: string;
+      bookBefore?: string;
+      flightIncluded?: boolean;
+      includes?: string[];
+      excludes?: string[];
+    }[];
+  }>({
+    discount: "",
+    offerPoster: "",
+    offerPosterPublicId: "",
+    customOffers: [],
+  });
 
   // Form State
   const [step, setStep] = useState(1);
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState<any>({
-    id: "", title: "", categoryIds: [], summary: "", location: "", transfer: "Seaplane Transfer", price: "", status: "active",
-    tripAdvisorRating: "", tripAdvisorReviews: "", bookingScore: "", bookingReviews: "",
-    heroImage: "", heroImagePublicId: "", packageImage: "", packageImagePublicId: "",
-    facilities: [], offers: [], customOffers: [], gallery: [], villas: [], restaurants: [], factSheets: []
+    id: "",
+    title: "",
+    categoryIds: [],
+    summary: "",
+    location: "",
+    transfer: "Seaplane Transfer",
+    price: "",
+    status: "active",
+    tripAdvisorRating: "",
+    tripAdvisorReviews: "",
+    bookingScore: "",
+    bookingReviews: "",
+    heroImage: "",
+    heroImagePublicId: "",
+    packageImage: "",
+    packageImagePublicId: "",
+    facilities: [],
+    offers: [],
+    customOffers: [],
+    gallery: [],
+    villas: [],
+    restaurants: [],
+    factSheets: [],
   });
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") || "" : "";
+  const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem("auth_token") || ""
+      : "";
 
   useEffect(() => {
     fetchData();
@@ -63,13 +126,20 @@ export default function AdminResorts() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [fetchedResorts, fetchedCategories, fetchedTransfers, fetchedFacilities, fetchedOffers, fetchedVillaOpts] = await Promise.all([
+      const [
+        fetchedResorts,
+        fetchedCategories,
+        fetchedTransfers,
+        fetchedFacilities,
+        fetchedOffers,
+        fetchedVillaOpts,
+      ] = await Promise.all([
         resortApi.getAdminResorts(token),
         resortApi.getCategories(),
         resortApi.getTransferOptions(),
         resortApi.getFacilityOptions(),
         resortApi.getOfferOptions(),
-        resortApi.getVillaOptions()
+        resortApi.getVillaOptions(),
       ]);
       setResorts(fetchedResorts);
       setCategories(fetchedCategories);
@@ -93,7 +163,7 @@ export default function AdminResorts() {
         setIsEditing(true);
         setForm({
           ...fullResort,
-          categoryIds: fullResort.categories?.map((c:any) => c.id) || [],
+          categoryIds: fullResort.categories?.map((c: any) => c.id) || [],
           price: fullResort.price.toString(),
           tripAdvisorRating: fullResort.tripAdvisorRating?.toString() || "",
           tripAdvisorReviews: fullResort.tripAdvisorReviews?.toString() || "",
@@ -103,17 +173,19 @@ export default function AdminResorts() {
             return {
               ...v,
               _uiId: Math.random().toString(36).substring(7),
-              capacityList: v.capacity ? v.capacity.split('|').map((s:string) => {
-                const matchAdults = s.match(/(\d+)\s+Adult/);
-                const matchChildren = s.match(/(\d+)\s+Child/);
-                const matchInfants = s.match(/(\d+)\s+Infant/);
-                return {
-                  adults: matchAdults ? matchAdults[1] : "2",
-                  children: matchChildren ? matchChildren[1] : "0",
-                  infants: matchInfants ? matchInfants[1] : "0",
-                };
-              }) : [{ adults: "2", children: "0", infants: "0" }],
-              features: v.features.join(", ")
+              capacityList: v.capacity
+                ? v.capacity.split("|").map((s: string) => {
+                    const matchAdults = s.match(/(\d+)\s+Adult/);
+                    const matchChildren = s.match(/(\d+)\s+Child/);
+                    const matchInfants = s.match(/(\d+)\s+Infant/);
+                    return {
+                      adults: matchAdults ? matchAdults[1] : "2",
+                      children: matchChildren ? matchChildren[1] : "0",
+                      infants: matchInfants ? matchInfants[1] : "0",
+                    };
+                  })
+                : [{ adults: "2", children: "0", infants: "0" }],
+              features: v.features.join(", "),
             };
           }),
           restaurants: fullResort.restaurants.map((r: any) => ({
@@ -122,8 +194,8 @@ export default function AdminResorts() {
             schedules: r.schedules.map((s: any) => {
               const [from, to] = (s.time || "").split(" - ");
               return { ...s, timeFrom: from || "07:00", timeTo: to || "10:30" };
-            })
-          }))
+            }),
+          })),
         });
       } catch (err) {
         toast.error("Failed to fetch resort details");
@@ -133,10 +205,30 @@ export default function AdminResorts() {
     } else {
       setIsEditing(false);
       setForm({
-        id: "", title: "", categoryId: categories[0]?.id || "", summary: "", location: "", transfer: "Seaplane Transfer", duration: "", price: "", status: "active",
-        tripAdvisorRating: "", tripAdvisorReviews: "", bookingScore: "", bookingReviews: "",
-        heroImage: "", heroImagePublicId: "", packageImage: "", packageImagePublicId: "",
-        facilities: [], offers: [], customOffers: [], gallery: [], villas: [], restaurants: [], factSheets: []
+        id: "",
+        title: "",
+        categoryId: categories[0]?.id || "",
+        summary: "",
+        location: "",
+        transfer: "Seaplane Transfer",
+        duration: "",
+        price: "",
+        status: "active",
+        tripAdvisorRating: "",
+        tripAdvisorReviews: "",
+        bookingScore: "",
+        bookingReviews: "",
+        heroImage: "",
+        heroImagePublicId: "",
+        packageImage: "",
+        packageImagePublicId: "",
+        facilities: [],
+        offers: [],
+        customOffers: [],
+        gallery: [],
+        villas: [],
+        restaurants: [],
+        factSheets: [],
       });
     }
     setStep(1);
@@ -149,18 +241,29 @@ export default function AdminResorts() {
         ...form,
         villas: form.villas.map((v: any) => ({
           ...v,
-          capacity: Array.isArray(v.capacityList) && v.capacityList.length > 0 
-            ? v.capacityList.map((c:any) => `${c.adults || "2"} Adults, ${c.children || "0"} Children, ${c.infants || "0"} Infants`).join(" | ")
-            : (v.capacity || "2 Adults, 0 Children, 0 Infants"),
-          features: Array.isArray(v.features) ? v.features : v.features.split(",").map((s: string) => s.trim()).filter(Boolean)
+          capacity:
+            Array.isArray(v.capacityList) && v.capacityList.length > 0
+              ? v.capacityList
+                  .map(
+                    (c: any) =>
+                      `${c.adults || "2"} Adults, ${c.children || "0"} Children, ${c.infants || "0"} Infants`,
+                  )
+                  .join(" | ")
+              : v.capacity || "2 Adults, 0 Children, 0 Infants",
+          features: Array.isArray(v.features)
+            ? v.features
+            : v.features
+                .split(",")
+                .map((s: string) => s.trim())
+                .filter(Boolean),
         })),
         restaurants: form.restaurants.map((r: any) => ({
           ...r,
           schedules: r.schedules.map((s: any) => ({
             meal: s.meal,
-            time: `${s.timeFrom || "07:00"} - ${s.timeTo || "10:30"}`
-          }))
-        }))
+            time: `${s.timeFrom || "07:00"} - ${s.timeTo || "10:30"}`,
+          })),
+        })),
       };
 
       if (isEditing) {
@@ -193,7 +296,9 @@ export default function AdminResorts() {
     try {
       await resortApi.toggleStatus(token, id, next);
       toast.success(`Status changed to ${next}`);
-      setResorts(prev => prev.map(r => r.id === id ? { ...r, status: next } : r));
+      setResorts((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, status: next } : r)),
+      );
     } catch (err) {
       toast.error("Failed to update status");
     }
@@ -201,10 +306,12 @@ export default function AdminResorts() {
 
   const openDiscountModal = (resort: any) => {
     setDiscountForm({
-      discount: resort.discount || '',
-      offerPoster: resort.offerPoster || '',
-      offerPosterPublicId: resort.offerPosterPublicId || '',
-      customOffers: Array.isArray(resort.customOffers) ? resort.customOffers : []
+      discount: resort.discount || "",
+      offerPoster: resort.offerPoster || "",
+      offerPosterPublicId: resort.offerPosterPublicId || "",
+      customOffers: Array.isArray(resort.customOffers)
+        ? resort.customOffers
+        : [],
     });
     setDiscountModalId(resort.id);
   };
@@ -214,12 +321,12 @@ export default function AdminResorts() {
     if (!discountModalId) return;
     try {
       await resortApi.updateDiscount(
-        token, 
-        discountModalId, 
+        token,
+        discountModalId,
         discountForm.discount ? Number(discountForm.discount) : null,
         discountForm.offerPoster,
         discountForm.offerPosterPublicId,
-        discountForm.customOffers
+        discountForm.customOffers,
       );
       toast.success("Offers updated");
       setDiscountModalId(null);
@@ -229,9 +336,12 @@ export default function AdminResorts() {
     }
   };
 
-  const filtered = resorts.filter(r => {
-    const matchSearch = r.title.toLowerCase().includes(searchQuery.toLowerCase()) || r.location.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchCat = selectedCategory === "All" || r.category?.name === selectedCategory;
+  const filtered = resorts.filter((r) => {
+    const matchSearch =
+      r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      r.location.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchCat =
+      selectedCategory === "All" || r.category?.name === selectedCategory;
     return matchSearch && matchCat;
   });
 
@@ -240,8 +350,12 @@ export default function AdminResorts() {
       {/* ── Top bar ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-[17px] font-extrabold text-[#041d3c] ">Maldives Resorts</h2>
-          <p className="text-[12px] text-gray-400 font-medium mt-0.5">Manage luxury resorts and villas</p>
+          <h2 className="text-[17px] font-extrabold text-[#041d3c] ">
+            Maldives Resorts
+          </h2>
+          <p className="text-[12px] text-gray-400 font-medium mt-0.5">
+            Manage luxury resorts and villas
+          </p>
         </div>
         <button
           onClick={() => openWizard()}
@@ -256,15 +370,19 @@ export default function AdminResorts() {
         <div className="relative w-full md:max-w-[280px]">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
           <input
-            type="text" placeholder="Search resorts..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+            type="text"
+            placeholder="Search resorts..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-[#f4f7fb] border border-[#e8edf4] rounded-[11px] text-[12.5px] font-medium"
           />
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 flex-1">
           <Filter className="w-3.5 h-3.5 text-gray-400 shrink-0 mr-2" />
-          {["All", ...categories.map(c => c.name)].map(cat => (
+          {["All", ...categories.map((c) => c.name)].map((cat) => (
             <button
-              key={cat} onClick={() => setSelectedCategory(cat)}
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
               className={`px-3.5 py-1.5 rounded-full text-[11.5px] font-bold whitespace-nowrap transition-all border ${
                 selectedCategory === cat
                   ? "bg-[#041d3c] text-white border-[#041d3c]"
@@ -284,45 +402,99 @@ export default function AdminResorts() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map(resort => (
-            <div key={resort.id} className="bg-white rounded-[16px] border border-[#e8edf4] overflow-hidden group hover:border-[#1a84ff]/30 hover:shadow-[0_12px_32px_rgba(26,132,255,0.08)] transition-all">
+          {filtered.map((resort) => (
+            <div
+              key={resort.id}
+              className="bg-white rounded-[16px] border border-[#e8edf4] overflow-hidden group hover:border-[#1a84ff]/30 hover:shadow-[0_12px_32px_rgba(26,132,255,0.08)] transition-all"
+            >
               <div className="relative h-44 overflow-hidden">
-                <img src={resort.packageImage || resort.heroImage || '/placeholder.jpg'} alt={resort.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img
+                  src={
+                    resort.packageImage ||
+                    resort.heroImage ||
+                    "/placeholder.jpg"
+                  }
+                  alt={resort.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#041d3c]/80 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-[6px] text-[#041d3c] text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
-                  {resort.categories?.[0]?.name || 'Uncategorized'}
+                  {resort.categories?.[0]?.name || "Uncategorized"}
                 </div>
                 {resort.status === "inactive" && (
-                  <div className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-[4px]">Hidden</div>
+                  <div className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-[4px]">
+                    Hidden
+                  </div>
                 )}
                 <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
                   <div className="flex items-center gap-1.5 text-white/90 text-[11.5px] font-semibold">
-                    <MapPin className="w-3 h-3 text-[#1a84ff]" /> {resort.location}
+                    <MapPin className="w-3 h-3 text-[#1a84ff]" />{" "}
+                    {resort.location}
                   </div>
                   <div className="text-right text-white">
-                    <p className="text-[10px] font-bold text-white/70 uppercase tracking-widest mb-0.5">Price</p>
-                    <p className="text-[15px] font-black leading-none">${resort.discount ? Math.round(resort.price * (1 - resort.discount / 100)) : resort.price}</p>
-                    {resort.discount && <p className="text-[10px] line-through text-white/50">${resort.price}</p>}
+                    <p className="text-[10px] font-bold text-white/70 uppercase tracking-widest mb-0.5">
+                      Price
+                    </p>
+                    <p className="text-[15px] font-black leading-none">
+                      $
+                      {resort.discount
+                        ? Math.round(resort.price * (1 - resort.discount / 100))
+                        : resort.price}
+                    </p>
+                    {resort.discount && (
+                      <p className="text-[10px] line-through text-white/50">
+                        ${resort.price}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
 
               <div className="p-4 flex flex-col justify-between h-[120px]">
                 <div>
-                  <h3 className="text-[#041d3c] font-bold text-[14.5px] leading-snug line-clamp-2">{resort.title}</h3>
+                  <h3 className="text-[#041d3c] font-bold text-[14.5px] leading-snug line-clamp-2">
+                    {resort.title}
+                  </h3>
                 </div>
                 <div className="flex items-center justify-between mt-auto pt-3 border-t border-[#e8edf4]">
-                  <button onClick={() => toggleStatus(resort.id, resort.status)} className={`text-[11px] font-bold px-3 py-1.5 rounded-[6px] transition-colors ${resort.status === 'active' ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
-                    {resort.status === 'active' ? 'Active' : 'Inactive'}
+                  <button
+                    onClick={() => toggleStatus(resort.id, resort.status)}
+                    className={`text-[11px] font-bold px-3 py-1.5 rounded-[6px] transition-colors ${resort.status === "active" ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+                  >
+                    {resort.status === "active" ? "Active" : "Inactive"}
                   </button>
                   <div className="flex items-center gap-1.5">
-                    <button onClick={() => openDiscountModal(resort)} className="w-8 h-8 rounded-[8px] bg-blue-50 text-blue-500 hover:bg-blue-100 flex items-center justify-center transition-all" title="Manage Discount">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
+                    <button
+                      onClick={() => openDiscountModal(resort)}
+                      className="w-8 h-8 rounded-[8px] bg-blue-50 text-blue-500 hover:bg-blue-100 flex items-center justify-center transition-all"
+                      title="Manage Discount"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <line x1="19" y1="5" x2="5" y2="19"></line>
+                        <circle cx="6.5" cy="6.5" r="2.5"></circle>
+                        <circle cx="17.5" cy="17.5" r="2.5"></circle>
+                      </svg>
                     </button>
-                    <button onClick={() => openWizard(resort)} className="w-8 h-8 rounded-[8px] bg-[#f4f7fb] text-gray-500 flex items-center justify-center hover:bg-[#1a84ff] hover:text-white transition-colors">
+                    <button
+                      onClick={() => openWizard(resort)}
+                      className="w-8 h-8 rounded-[8px] bg-[#f4f7fb] text-gray-500 flex items-center justify-center hover:bg-[#1a84ff] hover:text-white transition-colors"
+                    >
                       <Edit className="w-4 h-4" />
                     </button>
-                    <button onClick={() => setDeleteConfirmId(resort.id)} className="w-8 h-8 rounded-[8px] bg-rose-50 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors">
+                    <button
+                      onClick={() => setDeleteConfirmId(resort.id)}
+                      className="w-8 h-8 rounded-[8px] bg-rose-50 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors"
+                    >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -340,10 +512,17 @@ export default function AdminResorts() {
             {/* Header */}
             <div className="px-8 py-6 border-b border-[#f0f4f9] flex items-center justify-between bg-white">
               <div>
-                <h3 className="text-[20px] font-extrabold text-[#041d3c]">{isEditing ? 'Edit Resort' : 'Build Resort Package'}</h3>
-                <p className="text-[13px] text-gray-500 font-medium mt-0.5">Step {step} of 6</p>
+                <h3 className="text-[20px] font-extrabold text-[#041d3c]">
+                  {isEditing ? "Edit Resort" : "Build Resort Package"}
+                </h3>
+                <p className="text-[13px] text-gray-500 font-medium mt-0.5">
+                  Step {step} of 6
+                </p>
               </div>
-              <button onClick={() => setIsWizardOpen(false)} className="p-2 rounded-full hover:bg-gray-100 transition-colors">
+              <button
+                onClick={() => setIsWizardOpen(false)}
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              >
                 <X className="w-5 h-5 text-gray-500" />
               </button>
             </div>
@@ -351,251 +530,792 @@ export default function AdminResorts() {
             {/* Stepper */}
             <div className="px-8 pt-5 pb-2">
               <div className="flex gap-2">
-                {[1,2,3,4,5,6].map(s => (
-                  <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${s <= step ? 'bg-[#1a84ff]' : 'bg-[#e8edf4]'}`} />
+                {[1, 2, 3, 4, 5, 6].map((s) => (
+                  <div
+                    key={s}
+                    className={`h-1.5 flex-1 rounded-full transition-colors ${s <= step ? "bg-[#1a84ff]" : "bg-[#e8edf4]"}`}
+                  />
                 ))}
               </div>
               <div className="flex justify-between mt-3 text-[10px] font-extrabold uppercase tracking-wider text-gray-400">
-                <span className={step >= 1 ? 'text-[#1a84ff]' : ''}>Basic</span>
-                <span className={step >= 2 ? 'text-[#1a84ff]' : ''}>Ratings</span>
-                <span className={step >= 3 ? 'text-[#1a84ff]' : ''}>Media</span>
-                <span className={step >= 4 ? 'text-[#1a84ff]' : ''}>Villas</span>
-                <span className={step >= 5 ? 'text-[#1a84ff]' : ''}>Restaurants</span>
-                <span className={step >= 6 ? 'text-[#1a84ff]' : ''}>Extras</span>
+                <span className={step >= 1 ? "text-[#1a84ff]" : ""}>Basic</span>
+                <span className={step >= 2 ? "text-[#1a84ff]" : ""}>
+                  Ratings
+                </span>
+                <span className={step >= 3 ? "text-[#1a84ff]" : ""}>Media</span>
+                <span className={step >= 4 ? "text-[#1a84ff]" : ""}>
+                  Villas
+                </span>
+                <span className={step >= 5 ? "text-[#1a84ff]" : ""}>
+                  Restaurants
+                </span>
+                <span className={step >= 6 ? "text-[#1a84ff]" : ""}>
+                  Extras
+                </span>
               </div>
             </div>
 
             {/* Body */}
             <div className="flex-1 overflow-y-auto px-8 py-6 scrollbar-thin scrollbar-thumb-gray-200">
-              
               {step === 1 && (
                 <div className="space-y-5 animate-in slide-in-from-right-4 duration-300">
                   <div className="grid grid-cols-2 gap-5">
                     <div>
                       <label className={labelCls}>Categories</label>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#f8fafc] border border-[#e8edf4] p-4 rounded-[12px]">
-                        {categories.map(c => (
-                          <label key={c.id} className="flex items-center gap-2.5 cursor-pointer">
+                        {categories.map((c) => (
+                          <label
+                            key={c.id}
+                            className="flex items-center gap-2.5 cursor-pointer"
+                          >
                             <input
                               type="checkbox"
                               checked={form.categoryIds?.includes(c.id)}
                               onChange={(e) => {
-                                const newCatIds = e.target.checked 
+                                const newCatIds = e.target.checked
                                   ? [...(form.categoryIds || []), c.id]
-                                  : (form.categoryIds || []).filter((id: string) => id !== c.id);
-                                setForm({...form, categoryIds: newCatIds});
+                                  : (form.categoryIds || []).filter(
+                                      (id: string) => id !== c.id,
+                                    );
+                                setForm({ ...form, categoryIds: newCatIds });
                               }}
                               className="w-4 h-4 rounded-[4px] border-gray-300 text-[#1a84ff]"
                             />
-                            <span className="text-[13px] font-semibold text-[#041d3c]">{c.name}</span>
+                            <span className="text-[13px] font-semibold text-[#041d3c]">
+                              {c.name}
+                            </span>
                           </label>
                         ))}
                       </div>
                     </div>
                     <div>
                       <label className={labelCls}>Resort Title</label>
-                      <input type="text" placeholder="e.g. Soneva Jani" value={form.title} onChange={e => setForm({...form, title: e.target.value})} className={inputCls} />
+                      <input
+                        type="text"
+                        placeholder="e.g. Soneva Jani"
+                        value={form.title}
+                        onChange={(e) =>
+                          setForm({ ...form, title: e.target.value })
+                        }
+                        className={inputCls}
+                      />
                     </div>
                   </div>
                   <div>
                     <label className={labelCls}>About This Resort</label>
-                    <textarea rows={4} placeholder="Describe the resort experience..." value={form.summary} onChange={e => setForm({...form, summary: e.target.value})} className={`${inputCls} resize-none`} />
+                    <textarea
+                      rows={4}
+                      placeholder="Describe the resort experience..."
+                      value={form.summary}
+                      onChange={(e) =>
+                        setForm({ ...form, summary: e.target.value })
+                      }
+                      className={`${inputCls} resize-none`}
+                    />
                   </div>
                   <div className="grid grid-cols-4 gap-5">
                     <div>
                       <label className={labelCls}>Location</label>
-                      <input type="text" placeholder="e.g. Noonu Atoll" value={form.location} onChange={e => setForm({...form, location: e.target.value})} className={inputCls} />
+                      <input
+                        type="text"
+                        placeholder="e.g. Noonu Atoll"
+                        value={form.location}
+                        onChange={(e) =>
+                          setForm({ ...form, location: e.target.value })
+                        }
+                        className={inputCls}
+                      />
                     </div>
                     <div>
                       <label className={labelCls}>Transfer Method</label>
                       <div className="flex gap-2">
-                        <select value={form.transfer} onChange={e => setForm({...form, transfer: e.target.value})} className={inputCls}>
-                          <option value="">Select Transfer...</option>
-                          {transferOptions.map(t => <option key={t.id} value={t.name}>{t.name}</option>)}
-                        </select>
-                        <button type="button" onClick={() => {
-                          const name = prompt("Enter new transfer method:");
-                          if (name) {
-                            resortApi.createTransferOption(token, { name }).then(opt => {
-                              setTransferOptions([...transferOptions, opt]);
-                              setForm({...form, transfer: opt.name});
-                            }).catch(e => toast.error(e.message));
+                        <select
+                          value={form.transfer}
+                          onChange={(e) =>
+                            setForm({ ...form, transfer: e.target.value })
                           }
-                        }} className="px-3 bg-gray-100 rounded-[12px] text-gray-500 hover:text-black font-bold transition-colors border border-[#e2e8f0]">+</button>
+                          className={inputCls}
+                        >
+                          <option value="">Select Transfer...</option>
+                          {transferOptions.map((t) => (
+                            <option key={t.id} value={t.name}>
+                              {t.name}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const name = prompt("Enter new transfer method:");
+                            if (name) {
+                              resortApi
+                                .createTransferOption(token, { name })
+                                .then((opt) => {
+                                  setTransferOptions([...transferOptions, opt]);
+                                  setForm({ ...form, transfer: opt.name });
+                                })
+                                .catch((e) => toast.error(e.message));
+                            }
+                          }}
+                          className="px-3 bg-gray-100 rounded-[12px] text-gray-500 hover:text-black font-bold transition-colors border border-[#e2e8f0]"
+                        >
+                          +
+                        </button>
                       </div>
                     </div>
                     <div>
                       <label className={labelCls}>Duration</label>
-                      <input type="text" placeholder="e.g. 45 Minutes" value={form.duration || ''} onChange={e => setForm({...form, duration: e.target.value})} className={inputCls} />
+                      <input
+                        type="text"
+                        placeholder="e.g. 45 Minutes"
+                        value={form.duration || ""}
+                        onChange={(e) =>
+                          setForm({ ...form, duration: e.target.value })
+                        }
+                        className={inputCls}
+                      />
                     </div>
                     <div>
                       <label className={labelCls}>Starting Price ($)</label>
-                      <input type="number" placeholder="e.g. 1500" value={form.price} onChange={e => setForm({...form, price: e.target.value})} className={inputCls} />
+                      <input
+                        type="number"
+                        placeholder="e.g. 1500"
+                        value={form.price}
+                        onChange={(e) =>
+                          setForm({ ...form, price: e.target.value })
+                        }
+                        className={inputCls}
+                      />
                     </div>
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">Global Special Offers (Tags)</label>
-                      <button type="button" onClick={() => {
-                        const name = prompt("Enter new global offer tag:");
-                        if (name) {
-                          resortApi.createOfferOption(token, { name }).then(opt => {
-                            setOfferOptions([...offerOptions, opt]);
-                            setForm({...form, offers: [...(form.offers || []), opt.name]});
-                          }).catch(e => toast.error(e.message));
-                        }
-                      }} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Global Tag</button>
+                      <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">
+                        Global Special Offers (Tags)
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const name = prompt("Enter new global offer tag:");
+                          if (name) {
+                            resortApi
+                              .createOfferOption(token, { name })
+                              .then((opt) => {
+                                setOfferOptions([...offerOptions, opt]);
+                                setForm({
+                                  ...form,
+                                  offers: [...(form.offers || []), opt.name],
+                                });
+                              })
+                              .catch((e) => toast.error(e.message));
+                          }
+                        }}
+                        className="text-[#1a84ff] text-[11px] font-bold hover:underline"
+                      >
+                        + Add Global Tag
+                      </button>
                     </div>
                     <div className="grid grid-cols-2 gap-3 bg-[#f8fafc] border border-[#e8edf4] p-4 rounded-[12px] mb-4">
-                      {offerOptions.map(offer => (
-                        <label key={offer.id} className="flex items-center gap-2.5 cursor-pointer">
+                      {offerOptions.map((offer) => (
+                        <label
+                          key={offer.id}
+                          className="flex items-center gap-2.5 cursor-pointer"
+                        >
                           <input
                             type="checkbox"
                             checked={form.offers?.includes(offer.name)}
                             onChange={(e) => {
-                              const newOffers = e.target.checked 
+                              const newOffers = e.target.checked
                                 ? [...(form.offers || []), offer.name]
-                                : form.offers.filter((o: string) => o !== offer.name);
-                              setForm({...form, offers: newOffers});
+                                : form.offers.filter(
+                                    (o: string) => o !== offer.name,
+                                  );
+                              setForm({ ...form, offers: newOffers });
                             }}
                             className="w-4 h-4 rounded-[4px] border-gray-300 text-[#1a84ff] focus:ring-[#1a84ff]"
                           />
-                          <span className="text-[13px] font-semibold text-[#041d3c]">{offer.name}</span>
+                          <span className="text-[13px] font-semibold text-[#041d3c]">
+                            {offer.name}
+                          </span>
                         </label>
                       ))}
                     </div>
 
                     <div className="flex items-center justify-between mb-1.5">
-                      <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">Custom Resort-Specific Text Offers</label>
-                      <button type="button" onClick={() => {
-                        const name = prompt("Enter a special offer text unique to this resort:");
-                        if (name) {
-                          setForm({...form, offers: [...(form.offers || []), name]});
-                        }
-                      }} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Custom Text Offer</button>
+                      <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">
+                        Custom Resort-Specific Text Offers
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const name = prompt(
+                            "Enter a special offer text unique to this resort:",
+                          );
+                          if (name) {
+                            setForm({
+                              ...form,
+                              offers: [...(form.offers || []), name],
+                            });
+                          }
+                        }}
+                        className="text-[#1a84ff] text-[11px] font-bold hover:underline"
+                      >
+                        + Add Custom Text Offer
+                      </button>
                     </div>
                     <div className="bg-[#f8fafc] border border-[#e8edf4] p-4 rounded-[12px] mb-6">
-                      {form.offers?.filter((o: string) => !offerOptions.some(opt => opt.name === o)).length === 0 ? (
-                        <p className="text-[11px] text-gray-400 italic text-center">No custom text offers added yet.</p>
+                      {form.offers?.filter(
+                        (o: string) =>
+                          !offerOptions.some((opt) => opt.name === o),
+                      ).length === 0 ? (
+                        <p className="text-[11px] text-gray-400 italic text-center">
+                          No custom text offers added yet.
+                        </p>
                       ) : (
                         <ul className="space-y-2">
-                          {form.offers?.filter((o: string) => !offerOptions.some(opt => opt.name === o)).map((offerText: string, idx: number) => (
-                            <li key={idx} className="flex justify-between items-center bg-white p-2 border border-gray-100 rounded-[8px]">
-                              <span className="text-[12px] text-[#041d3c] font-semibold">{offerText}</span>
-                              <button type="button" onClick={() => {
-                                setForm({...form, offers: form.offers.filter((o: string) => o !== offerText)});
-                              }} className="text-rose-400 hover:text-rose-600"><Trash2 className="w-3.5 h-3.5" /></button>
-                            </li>
-                          ))}
+                          {form.offers
+                            ?.filter(
+                              (o: string) =>
+                                !offerOptions.some((opt) => opt.name === o),
+                            )
+                            .map((offerText: string, idx: number) => (
+                              <li
+                                key={idx}
+                                className="flex justify-between items-center bg-white p-2 border border-gray-100 rounded-[8px]"
+                              >
+                                <span className="text-[12px] text-[#041d3c] font-semibold">
+                                  {offerText}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setForm({
+                                      ...form,
+                                      offers: form.offers.filter(
+                                        (o: string) => o !== offerText,
+                                      ),
+                                    });
+                                  }}
+                                  className="text-rose-400 hover:text-rose-600"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </li>
+                            ))}
                         </ul>
                       )}
                     </div>
 
                     <div className="flex items-center justify-between mb-1.5 mt-2">
-                      <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">Custom Package Offers (Nights/Price)</label>
-                      <button type="button" onClick={() => setForm({...form, customOffers: [...(form.customOffers||[]), { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [], transfer: form.transfer || '', mealPlan: '', validFrom: '', validTo: '', bookBefore: '' }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Package</button>
+                      <label className="block text-[11px] font-extrabold text-[#041d3c]/50 uppercase tracking-wider">
+                        Custom Package Offers (Nights/Price)
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setForm({
+                            ...form,
+                            customOffers: [
+                              ...(form.customOffers || []),
+                              {
+                                nights: 1,
+                                adults: 2,
+                                children: 0,
+                                offerPrice: 0,
+                                villas: [],
+                                transfer: form.transfer || "",
+                                mealPlan: "",
+                                validFrom: "",
+                                validTo: "",
+                                bookBefore: "",
+                                flightIncluded: false,
+                                includes: [],
+                                excludes: [],
+                              },
+                            ],
+                          })
+                        }
+                        className="text-[#1a84ff] text-[11px] font-bold hover:underline"
+                      >
+                        + Add Package
+                      </button>
                     </div>
                     <div className="space-y-4">
-                      {(!form.customOffers || form.customOffers.length === 0) ? (
-                        <div className="text-[11px] text-gray-400 italic bg-[#f8fafc] border border-dashed border-[#e2e8f0] rounded-[10px] p-3 text-center">No custom package offers yet. Click "+ Add Package" to add one.</div>
+                      {!form.customOffers || form.customOffers.length === 0 ? (
+                        <div className="text-[11px] text-gray-400 italic bg-[#f8fafc] border border-dashed border-[#e2e8f0] rounded-[10px] p-3 text-center">
+                          No custom package offers yet. Click "+ Add Package" to
+                          add one.
+                        </div>
                       ) : (
                         form.customOffers.map((co: any, i: number) => {
-                          const actualPrice = (Number(form.price) || 0) * (Number(co.nights) || 0);
+                          const actualPrice =
+                            (Number(form.price) || 0) *
+                            (Number(co.nights) || 0);
                           return (
-                            <div key={i} className="flex flex-col gap-3 bg-[#f8fafc] border border-[#e8edf4] p-3 rounded-[10px]">
+                            <div
+                              key={i}
+                              className="flex flex-col gap-3 bg-[#f8fafc] border border-[#e8edf4] p-3 rounded-[10px]"
+                            >
                               <div className="flex items-center justify-between">
-                                <span className="text-[11px] font-bold text-gray-600">Package #{i + 1}</span>
-                                <button type="button" onClick={() => { const n = [...form.customOffers]; n.splice(i,1); setForm({...form, customOffers: n}); }} className="w-6 h-6 rounded-[6px] bg-rose-50 text-rose-400 hover:bg-rose-100 flex items-center justify-center shrink-0">
+                                <span className="text-[11px] font-bold text-gray-600">
+                                  Package #{i + 1}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const n = [...form.customOffers];
+                                    n.splice(i, 1);
+                                    setForm({ ...form, customOffers: n });
+                                  }}
+                                  className="w-6 h-6 rounded-[6px] bg-rose-50 text-rose-400 hover:bg-rose-100 flex items-center justify-center shrink-0"
+                                >
                                   <Trash2 className="w-3 h-3" />
                                 </button>
                               </div>
                               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                 <div>
-                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Nights</label>
-                                  <input type="number" min="1" value={co.nights} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], nights: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                    Nights
+                                  </label>
+                                  <input
+                                    type="number"
+                                    min="1"
+                                    value={co.nights}
+                                    onChange={(e) => {
+                                      const n = [...form.customOffers];
+                                      n[i] = {
+                                        ...n[i],
+                                        nights: Number(e.target.value),
+                                      };
+                                      setForm({ ...form, customOffers: n });
+                                    }}
+                                    className={inputCls}
+                                  />
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Adults</label>
-                                  <input type="number" min="1" value={co.adults ?? 2} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], adults: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                    Adults
+                                  </label>
+                                  <input
+                                    type="number"
+                                    min="1"
+                                    value={co.adults ?? 2}
+                                    onChange={(e) => {
+                                      const n = [...form.customOffers];
+                                      n[i] = {
+                                        ...n[i],
+                                        adults: Number(e.target.value),
+                                      };
+                                      setForm({ ...form, customOffers: n });
+                                    }}
+                                    className={inputCls}
+                                  />
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Children</label>
-                                  <input type="number" min="0" value={co.children ?? 0} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], children: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                    Children
+                                  </label>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    value={co.children ?? 0}
+                                    onChange={(e) => {
+                                      const n = [...form.customOffers];
+                                      n[i] = {
+                                        ...n[i],
+                                        children: Number(e.target.value),
+                                      };
+                                      setForm({ ...form, customOffers: n });
+                                    }}
+                                    className={inputCls}
+                                  />
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Price ($)</label>
-                                  <input type="number" min="1" required value={co.offerPrice || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                    Offer Price ($)
+                                  </label>
+                                  <input
+                                    type="number"
+                                    min="1"
+                                    required
+                                    value={co.offerPrice || ""}
+                                    onChange={(e) => {
+                                      const n = [...form.customOffers];
+                                      n[i] = {
+                                        ...n[i],
+                                        offerPrice: Number(e.target.value),
+                                      };
+                                      setForm({ ...form, customOffers: n });
+                                    }}
+                                    className={inputCls}
+                                  />
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Meal Plan</label>
-                                  <select value={co.mealPlan || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], mealPlan: e.target.value}; setForm({...form, customOffers: n}); }} className={inputCls}>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                    Meal Plan
+                                  </label>
+                                  <select
+                                    value={co.mealPlan || ""}
+                                    onChange={(e) => {
+                                      const n = [...form.customOffers];
+                                      n[i] = {
+                                        ...n[i],
+                                        mealPlan: e.target.value,
+                                      };
+                                      setForm({ ...form, customOffers: n });
+                                    }}
+                                    className={inputCls}
+                                  >
                                     <option value="">None / Default</option>
-                                    <option value="BB">Bed and Breakfast</option>
+                                    <option value="BB">
+                                      Bed and Breakfast
+                                    </option>
                                     <option value="HB">Half Board</option>
                                     <option value="FB">Full Board</option>
                                     <option value="AI">All Inclusive</option>
                                   </select>
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Transfer Method</label>
-                                  <select value={co.transfer || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], transfer: e.target.value}; setForm({...form, customOffers: n}); }} className={inputCls}>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                    Transfer Method
+                                  </label>
+                                  <select
+                                    value={co.transfer || ""}
+                                    onChange={(e) => {
+                                      const n = [...form.customOffers];
+                                      n[i] = {
+                                        ...n[i],
+                                        transfer: e.target.value,
+                                      };
+                                      setForm({ ...form, customOffers: n });
+                                    }}
+                                    className={inputCls}
+                                  >
                                     <option value="">None / Default</option>
-                                    {transferOptions.map(t => <option key={t.id} value={t.name}>{t.name}</option>)}
+                                    {transferOptions.map((t) => (
+                                      <option key={t.id} value={t.name}>
+                                        {t.name}
+                                      </option>
+                                    ))}
                                   </select>
                                 </div>
-                                
+
                                 <div>
-                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Travel From</label>
-                                  <input type="date" value={co.validFrom || ''} max={co.validTo || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], validFrom: e.target.value}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                    Travel From
+                                  </label>
+                                  <input
+                                    type="date"
+                                    value={co.validFrom || ""}
+                                    max={co.validTo || ""}
+                                    onChange={(e) => {
+                                      const n = [...form.customOffers];
+                                      n[i] = {
+                                        ...n[i],
+                                        validFrom: e.target.value,
+                                      };
+                                      setForm({ ...form, customOffers: n });
+                                    }}
+                                    className={inputCls}
+                                  />
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Travel To</label>
-                                  <input type="date" value={co.validTo || ''} min={co.validFrom || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], validTo: e.target.value}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                    Travel To
+                                  </label>
+                                  <input
+                                    type="date"
+                                    value={co.validTo || ""}
+                                    min={co.validFrom || ""}
+                                    onChange={(e) => {
+                                      const n = [...form.customOffers];
+                                      n[i] = {
+                                        ...n[i],
+                                        validTo: e.target.value,
+                                      };
+                                      setForm({ ...form, customOffers: n });
+                                    }}
+                                    className={inputCls}
+                                  />
                                 </div>
                                 <div>
-                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">Book Before</label>
-                                  <input type="date" value={co.bookBefore || ''} max={co.validTo || ''} onChange={e => { const n = [...form.customOffers]; n[i] = {...n[i], bookBefore: e.target.value}; setForm({...form, customOffers: n}); }} className={inputCls} />
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                    Book Before
+                                  </label>
+                                  <input
+                                    type="date"
+                                    value={co.bookBefore || ""}
+                                    max={co.validTo || ""}
+                                    onChange={(e) => {
+                                      const n = [...form.customOffers];
+                                      n[i] = {
+                                        ...n[i],
+                                        bookBefore: e.target.value,
+                                      };
+                                      setForm({ ...form, customOffers: n });
+                                    }}
+                                    className={inputCls}
+                                  />
                                 </div>
-                                
+
                                 <div className="col-span-2 sm:col-span-4 mt-2">
-                                  <label className="block text-[10px] font-bold text-gray-400 mb-2">Valid Villa Types</label>
+                                  <label className="block text-[10px] font-bold text-gray-400 mb-2">
+                                    Valid Villa Types
+                                  </label>
                                   <div className="flex flex-wrap gap-2">
                                     {form.villas?.map((v: any, idx: number) => {
-                                      const isSelected = co.villas?.includes(v.title);
+                                      const isSelected = co.villas?.includes(
+                                        v.title,
+                                      );
                                       return (
-                                        <label key={idx} className={`cursor-pointer px-3 py-1.5 rounded-[8px] text-[11px] font-bold border transition-colors ${isSelected ? 'bg-[#1a84ff] text-white border-[#1a84ff]' : 'bg-white text-gray-500 border-gray-200 hover:border-blue-300'}`}>
-                                          <input type="checkbox" className="hidden" checked={isSelected || false} onChange={(e) => {
-                                            const n = [...form.customOffers];
-                                            const currentVillas = n[i].villas || [];
-                                            if (e.target.checked) {
-                                              n[i].villas = [...currentVillas, v.title];
-                                            } else {
-                                              n[i].villas = currentVillas.filter((val: string) => val !== v.title);
-                                            }
-                                            setForm({...form, customOffers: n});
-                                          }} />
+                                        <label
+                                          key={idx}
+                                          className={`cursor-pointer px-3 py-1.5 rounded-[8px] text-[11px] font-bold border transition-colors ${isSelected ? "bg-[#1a84ff] text-white border-[#1a84ff]" : "bg-white text-gray-500 border-gray-200 hover:border-blue-300"}`}
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            className="hidden"
+                                            checked={isSelected || false}
+                                            onChange={(e) => {
+                                              const n = [...form.customOffers];
+                                              const currentVillas =
+                                                n[i].villas || [];
+                                              if (e.target.checked) {
+                                                n[i].villas = [
+                                                  ...currentVillas,
+                                                  v.title,
+                                                ];
+                                              } else {
+                                                n[i].villas =
+                                                  currentVillas.filter(
+                                                    (val: string) =>
+                                                      val !== v.title,
+                                                  );
+                                              }
+                                              setForm({
+                                                ...form,
+                                                customOffers: n,
+                                              });
+                                            }}
+                                          />
                                           {v.title}
                                         </label>
                                       );
                                     })}
-                                    {(!form.villas || form.villas.length === 0) && (
-                                      <span className="text-[11px] text-gray-400">No villas added to this resort yet. Go to Step 4.</span>
+                                    {(!form.villas ||
+                                      form.villas.length === 0) && (
+                                      <span className="text-[11px] text-gray-400">
+                                        No villas added to this resort yet. Go
+                                        to Step 4.
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="col-span-2 sm:col-span-4 mt-2 border-t border-[#e8edf4] pt-2">
+                                  <label className="flex items-center gap-2 cursor-pointer text-[11px] font-bold text-[#041d3c]">
+                                    <input
+                                      type="checkbox"
+                                      checked={co.flightIncluded || false}
+                                      onChange={(e) => {
+                                        const n = [...form.customOffers];
+                                        n[i] = {
+                                          ...n[i],
+                                          flightIncluded: e.target.checked,
+                                        };
+                                        setForm({ ...form, customOffers: n });
+                                      }}
+                                      className="rounded text-[#1a84ff] focus:ring-[#1a84ff]"
+                                    />
+                                    Flight Included
+                                  </label>
+                                </div>
+
+                                <div className="col-span-2 sm:col-span-4 mt-2">
+                                  <div className="flex items-center justify-between mb-1">
+                                    <label className="block text-[10px] font-bold text-gray-400">
+                                      What's Included
+                                    </label>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const n = [...form.customOffers];
+                                        n[i] = {
+                                          ...n[i],
+                                          includes: [
+                                            ...(n[i].includes || []),
+                                            "",
+                                          ],
+                                        };
+                                        setForm({ ...form, customOffers: n });
+                                      }}
+                                      className="text-[#1a84ff] text-[10px] font-bold hover:underline"
+                                    >
+                                      + Add Inclusion
+                                    </button>
+                                  </div>
+                                  <div className="space-y-1">
+                                    {co.includes?.map(
+                                      (inc: string, idx: number) => (
+                                        <div key={idx} className="flex gap-2">
+                                          <input
+                                            type="text"
+                                            value={inc}
+                                            onChange={(e) => {
+                                              const n = [...form.customOffers];
+                                              const newIncludes = [
+                                                ...(n[i].includes || []),
+                                              ];
+                                              newIncludes[idx] = e.target.value;
+                                              n[i] = {
+                                                ...n[i],
+                                                includes: newIncludes,
+                                              };
+                                              setForm({
+                                                ...form,
+                                                customOffers: n,
+                                              });
+                                            }}
+                                            className={inputCls}
+                                            placeholder="e.g. Daily breakfast"
+                                          />
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const n = [...form.customOffers];
+                                              const newIncludes = [
+                                                ...(n[i].includes || []),
+                                              ];
+                                              newIncludes.splice(idx, 1);
+                                              n[i] = {
+                                                ...n[i],
+                                                includes: newIncludes,
+                                              };
+                                              setForm({
+                                                ...form,
+                                                customOffers: n,
+                                              });
+                                            }}
+                                            className="text-rose-400 hover:text-rose-600 px-2 font-bold"
+                                          >
+                                            ×
+                                          </button>
+                                        </div>
+                                      ),
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="col-span-2 sm:col-span-4 mt-2">
+                                  <div className="flex items-center justify-between mb-1">
+                                    <label className="block text-[10px] font-bold text-gray-400">
+                                      What's Not Included
+                                    </label>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const n = [...form.customOffers];
+                                        n[i] = {
+                                          ...n[i],
+                                          excludes: [
+                                            ...(n[i].excludes || []),
+                                            "",
+                                          ],
+                                        };
+                                        setForm({ ...form, customOffers: n });
+                                      }}
+                                      className="text-[#1a84ff] text-[10px] font-bold hover:underline"
+                                    >
+                                      + Add Exclusion
+                                    </button>
+                                  </div>
+                                  <div className="space-y-1">
+                                    {co.excludes?.map(
+                                      (exc: string, idx: number) => (
+                                        <div key={idx} className="flex gap-2">
+                                          <input
+                                            type="text"
+                                            value={exc}
+                                            onChange={(e) => {
+                                              const n = [...form.customOffers];
+                                              const newExcludes = [
+                                                ...(n[i].excludes || []),
+                                              ];
+                                              newExcludes[idx] = e.target.value;
+                                              n[i] = {
+                                                ...n[i],
+                                                excludes: newExcludes,
+                                              };
+                                              setForm({
+                                                ...form,
+                                                customOffers: n,
+                                              });
+                                            }}
+                                            className={inputCls}
+                                            placeholder="e.g. Travel insurance"
+                                          />
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const n = [...form.customOffers];
+                                              const newExcludes = [
+                                                ...(n[i].excludes || []),
+                                              ];
+                                              newExcludes.splice(idx, 1);
+                                              n[i] = {
+                                                ...n[i],
+                                                excludes: newExcludes,
+                                              };
+                                              setForm({
+                                                ...form,
+                                                customOffers: n,
+                                              });
+                                            }}
+                                            className="text-rose-400 hover:text-rose-600 px-2 font-bold"
+                                          >
+                                            ×
+                                          </button>
+                                        </div>
+                                      ),
                                     )}
                                   </div>
                                 </div>
                               </div>
                               <div className="flex items-center justify-between mt-1">
                                 <div className="text-[10px] text-gray-400 font-bold uppercase flex gap-2">
-                                  <span>Actual: <span className="line-through">${actualPrice}</span></span>
+                                  <span>
+                                    Actual:{" "}
+                                    <span className="line-through">
+                                      ${actualPrice}
+                                    </span>
+                                  </span>
                                 </div>
                               </div>
                               <div className="pt-2 border-t border-[#e8edf4]">
-                                <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Specific Poster</label>
+                                <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                  Offer Specific Poster
+                                </label>
                                 <div className="scale-[0.85] origin-top-left w-[117%]">
                                   <ImageUpload
                                     value={co.posterUrl || ""}
-                                    onChange={(url, publicId) => { const n = [...form.customOffers]; n[i] = {...n[i], posterUrl: url, posterPublicId: publicId}; setForm({...form, customOffers: n}); }}
-                                    onRemove={() => { const n = [...form.customOffers]; n[i] = {...n[i], posterUrl: undefined, posterPublicId: undefined}; setForm({...form, customOffers: n}); }}
+                                    onChange={(url, publicId) => {
+                                      const n = [...form.customOffers];
+                                      n[i] = {
+                                        ...n[i],
+                                        posterUrl: url,
+                                        posterPublicId: publicId,
+                                      };
+                                      setForm({ ...form, customOffers: n });
+                                    }}
+                                    onRemove={() => {
+                                      const n = [...form.customOffers];
+                                      n[i] = {
+                                        ...n[i],
+                                        posterUrl: undefined,
+                                        posterPublicId: undefined,
+                                      };
+                                      setForm({ ...form, customOffers: n });
+                                    }}
                                     folder="simplifly/offers"
                                   />
                                 </div>
@@ -613,32 +1333,84 @@ export default function AdminResorts() {
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <div className="p-6 bg-emerald-50 rounded-[16px] border border-emerald-100">
                     <div className="mb-5">
-                      <img src="/images/tripadvisor-logo.png" alt="TripAdvisor Ratings" className="h-8 w-auto object-contain" />
+                      <img
+                        src="/images/tripadvisor-logo.png"
+                        alt="TripAdvisor Ratings"
+                        className="h-8 w-auto object-contain"
+                      />
                     </div>
                     <div className="grid grid-cols-2 gap-5">
                       <div>
-                        <label className={labelCls}>Rating Score (e.g. 5.0)</label>
-                        <input type="number" step="0.1" value={form.tripAdvisorRating} onChange={e => setForm({...form, tripAdvisorRating: e.target.value})} className={inputCls} />
+                        <label className={labelCls}>
+                          Rating Score (e.g. 5.0)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={form.tripAdvisorRating}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              tripAdvisorRating: e.target.value,
+                            })
+                          }
+                          className={inputCls}
+                        />
                       </div>
                       <div>
-                        <label className={labelCls}>Review Count (e.g. 1200)</label>
-                        <input type="number" value={form.tripAdvisorReviews} onChange={e => setForm({...form, tripAdvisorReviews: e.target.value})} className={inputCls} />
+                        <label className={labelCls}>
+                          Review Count (e.g. 1200)
+                        </label>
+                        <input
+                          type="number"
+                          value={form.tripAdvisorReviews}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              tripAdvisorReviews: e.target.value,
+                            })
+                          }
+                          className={inputCls}
+                        />
                       </div>
                     </div>
                   </div>
 
                   <div className="p-6 bg-blue-50 rounded-[16px] border border-blue-100">
                     <div className="mb-5">
-                      <img src="/images/booking-logo.png" alt="Booking.com Ratings" className="h-8 w-auto object-contain" />
+                      <img
+                        src="/images/booking-logo.png"
+                        alt="Booking.com Ratings"
+                        className="h-8 w-auto object-contain"
+                      />
                     </div>
                     <div className="grid grid-cols-2 gap-5">
                       <div>
-                        <label className={labelCls}>Rating Score (e.g. 9.8)</label>
-                        <input type="number" step="0.1" value={form.bookingScore} onChange={e => setForm({...form, bookingScore: e.target.value})} className={inputCls} />
+                        <label className={labelCls}>
+                          Rating Score (e.g. 9.8)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={form.bookingScore}
+                          onChange={(e) =>
+                            setForm({ ...form, bookingScore: e.target.value })
+                          }
+                          className={inputCls}
+                        />
                       </div>
                       <div>
-                        <label className={labelCls}>Review Count (e.g. 850)</label>
-                        <input type="number" value={form.bookingReviews} onChange={e => setForm({...form, bookingReviews: e.target.value})} className={inputCls} />
+                        <label className={labelCls}>
+                          Review Count (e.g. 850)
+                        </label>
+                        <input
+                          type="number"
+                          value={form.bookingReviews}
+                          onChange={(e) =>
+                            setForm({ ...form, bookingReviews: e.target.value })
+                          }
+                          className={inputCls}
+                        />
                       </div>
                     </div>
                   </div>
@@ -649,11 +1421,25 @@ export default function AdminResorts() {
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <div className="grid grid-cols-2 gap-6">
                     <div>
-                      <label className={labelCls}>Hero Image (Wide Header)</label>
+                      <label className={labelCls}>
+                        Hero Image (Wide Header)
+                      </label>
                       <ImageUpload
                         value={form.heroImage}
-                        onChange={(url, publicId) => setForm({...form, heroImage: url, heroImagePublicId: publicId})}
-                        onRemove={() => setForm({...form, heroImage: "", heroImagePublicId: ""})}
+                        onChange={(url, publicId) =>
+                          setForm({
+                            ...form,
+                            heroImage: url,
+                            heroImagePublicId: publicId,
+                          })
+                        }
+                        onRemove={() =>
+                          setForm({
+                            ...form,
+                            heroImage: "",
+                            heroImagePublicId: "",
+                          })
+                        }
                         folder="simplifly/resorts/hero"
                         requireLandscape={true}
                       />
@@ -662,8 +1448,20 @@ export default function AdminResorts() {
                       <label className={labelCls}>Package Card Image</label>
                       <ImageUpload
                         value={form.packageImage}
-                        onChange={(url, publicId) => setForm({...form, packageImage: url, packageImagePublicId: publicId})}
-                        onRemove={() => setForm({...form, packageImage: "", packageImagePublicId: ""})}
+                        onChange={(url, publicId) =>
+                          setForm({
+                            ...form,
+                            packageImage: url,
+                            packageImagePublicId: publicId,
+                          })
+                        }
+                        onRemove={() =>
+                          setForm({
+                            ...form,
+                            packageImage: "",
+                            packageImagePublicId: "",
+                          })
+                        }
                         folder="simplifly/resorts/cards"
                         requireLandscape={true}
                       />
@@ -674,20 +1472,37 @@ export default function AdminResorts() {
                     <div className="bg-[#f8fafc] border border-[#e8edf4] rounded-[16px] p-5">
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         {form.gallery?.map((img: any, i: number) => (
-                          <div key={i} className="relative aspect-square rounded-[12px] overflow-hidden group">
-                            <img src={img.url || img.src} className="w-full h-full object-cover" />
-                            <button onClick={() => {
-                              const newG = [...form.gallery];
-                              newG.splice(i, 1);
-                              setForm({...form, gallery: newG});
-                            }} className="absolute top-2 right-2 bg-rose-500 text-white rounded-[6px] p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="w-3.5 h-3.5"/></button>
+                          <div
+                            key={i}
+                            className="relative aspect-square rounded-[12px] overflow-hidden group"
+                          >
+                            <img
+                              src={img.url || img.src}
+                              className="w-full h-full object-cover"
+                            />
+                            <button
+                              onClick={() => {
+                                const newG = [...form.gallery];
+                                newG.splice(i, 1);
+                                setForm({ ...form, gallery: newG });
+                              }}
+                              className="absolute top-2 right-2 bg-rose-500 text-white rounded-[6px] p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
                           </div>
                         ))}
                         <div className="aspect-square">
                           <ImageUpload
                             value=""
                             onChange={(url, publicId) => {
-                              setForm({...form, gallery: [...(form.gallery||[]), { url, publicId }]});
+                              setForm({
+                                ...form,
+                                gallery: [
+                                  ...(form.gallery || []),
+                                  { url, publicId },
+                                ],
+                              });
                             }}
                             onRemove={() => {}}
                             folder="simplifly/resorts/gallery"
@@ -702,166 +1517,477 @@ export default function AdminResorts() {
               {step === 4 && (
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-[13px] text-gray-500 font-medium">Add all available villas and their specifications.</p>
-                    <button onClick={() => setForm({...form, villas: [...(form.villas||[]), { _uiId: Math.random().toString(36).substring(7), title: "", description: "", size: "", capacity: "", bedType: "", features: "", images: [] }]})} className="px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold uppercase tracking-wider rounded-[8px] hover:bg-[#1a84ff] hover:text-white transition-colors">
+                    <p className="text-[13px] text-gray-500 font-medium">
+                      Add all available villas and their specifications.
+                    </p>
+                    <button
+                      onClick={() =>
+                        setForm({
+                          ...form,
+                          villas: [
+                            ...(form.villas || []),
+                            {
+                              _uiId: Math.random().toString(36).substring(7),
+                              title: "",
+                              description: "",
+                              size: "",
+                              capacity: "",
+                              bedType: "",
+                              features: "",
+                              images: [],
+                            },
+                          ],
+                        })
+                      }
+                      className="px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold uppercase tracking-wider rounded-[8px] hover:bg-[#1a84ff] hover:text-white transition-colors"
+                    >
                       + Add Villa
                     </button>
                   </div>
-                  
-                  {(!form.villas || form.villas.length === 0) ? (
+
+                  {!form.villas || form.villas.length === 0 ? (
                     <div className="text-center py-10 bg-[#f8fafc] border border-dashed border-[#e8edf4] rounded-[16px]">
-                      <span className="text-gray-400 text-[13px] font-semibold">No villas added yet</span>
+                      <span className="text-gray-400 text-[13px] font-semibold">
+                        No villas added yet
+                      </span>
                     </div>
                   ) : (
-                    <Reorder.Group axis="y" values={form.villas} onReorder={(newVillas) => setForm({...form, villas: newVillas})} className="space-y-4">
+                    <Reorder.Group
+                      axis="y"
+                      values={form.villas}
+                      onReorder={(newVillas) =>
+                        setForm({ ...form, villas: newVillas })
+                      }
+                      className="space-y-4"
+                    >
                       {form.villas.map((villa: any, idx: number) => (
-                        <Reorder.Item key={villa._uiId || (villa._uiId = Math.random().toString(36).substring(7))} value={villa} className="bg-white border border-[#e8edf4] rounded-[16px] p-5 relative shadow-sm">
+                        <Reorder.Item
+                          key={
+                            villa._uiId ||
+                            (villa._uiId = Math.random()
+                              .toString(36)
+                              .substring(7))
+                          }
+                          value={villa}
+                          className="bg-white border border-[#e8edf4] rounded-[16px] p-5 relative shadow-sm"
+                        >
                           <div className="absolute top-4 left-4 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 transition-colors">
                             <GripVertical className="w-5 h-5" />
                           </div>
-                          <button onClick={() => {
-                            const newV = [...form.villas];
-                            newV.splice(idx, 1);
-                            setForm({...form, villas: newV});
-                          }} className="absolute top-4 right-4 text-rose-400 hover:text-rose-600">
+                          <button
+                            onClick={() => {
+                              const newV = [...form.villas];
+                              newV.splice(idx, 1);
+                              setForm({ ...form, villas: newV });
+                            }}
+                            className="absolute top-4 right-4 text-rose-400 hover:text-rose-600"
+                          >
                             <Trash2 className="w-4 h-4" />
                           </button>
-                          <h4 className="text-[14px] font-bold text-[#041d3c] mb-4 pl-8">Villa {idx + 1}</h4>
+                          <h4 className="text-[14px] font-bold text-[#041d3c] mb-4 pl-8">
+                            Villa {idx + 1}
+                          </h4>
                           <div className="grid grid-cols-2 gap-4 mb-4 items-start">
-                          <div>
-                            <label className={labelCls}>Villa Title</label>
-                            <input type="text" placeholder="e.g. Overwater Pool Villa" value={villa.title} onChange={e => {
-                              const newV = [...form.villas]; newV[idx].title = e.target.value; setForm({...form, villas: newV});
-                            }} className={inputCls} />
-                          </div>
-                          <div>
-                            <label className={labelCls}>Bed Type</label>
-                            
-                            <div className="flex flex-wrap gap-2 mb-3">
-                              {(typeof villa.bedType === 'string' ? villa.bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.bedType || [])).map((bed: string, bIdx: number) => (
-                                <div key={bIdx} className="flex items-center gap-1.5 px-3 py-1 bg-[#f4f7fb] border border-[#e8edf4] rounded-[8px]">
-                                  <span className="text-[11px] font-bold text-[#041d3c]">{bed}</span>
-                                  <button type="button" onClick={() => {
-                                    let currentBeds = typeof villa.bedType === 'string' ? villa.bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.bedType || []);
-                                    const newBeds = currentBeds.filter((_: any, i: number) => i !== bIdx);
-                                    const newV = [...form.villas]; newV[idx].bedType = newBeds.join(', '); setForm({...form, villas: newV});
-                                  }} className="text-gray-400 hover:text-rose-500 ml-1">
-                                    <X className="w-3 h-3" />
-                                  </button>
-                                </div>
-                              ))}
+                            <div>
+                              <label className={labelCls}>Villa Title</label>
+                              <input
+                                type="text"
+                                placeholder="e.g. Overwater Pool Villa"
+                                value={villa.title}
+                                onChange={(e) => {
+                                  const newV = [...form.villas];
+                                  newV[idx].title = e.target.value;
+                                  setForm({ ...form, villas: newV });
+                                }}
+                                className={inputCls}
+                              />
                             </div>
+                            <div>
+                              <label className={labelCls}>Bed Type</label>
 
-                            {addingBedIdx === idx ? (
-                              <div className="flex items-center gap-2 mt-1">
-                                <input type="text" value={newBedType} onChange={e => setNewBedType(e.target.value)} placeholder="E.g. 1 King Bed" className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff] w-full" autoFocus onKeyDown={e => {
-                                  if (e.key === 'Enter') {
-                                    e.preventDefault();
-                                    if (newBedType.trim()) {
-                                      let currentBeds = typeof villa.bedType === 'string' ? villa.bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.bedType || []);
-                                      if (!currentBeds.includes(newBedType.trim())) { currentBeds.push(newBedType.trim()); const newV = [...form.villas]; newV[idx].bedType = currentBeds.join(', '); setForm({...form, villas: newV}); }
-                                      setNewBedType(""); setAddingBedIdx(null);
-                                    } else { setAddingBedIdx(null); }
-                                  }
-                                }} />
-                                <button type="button" onClick={() => {
-                                  if (newBedType.trim()) {
-                                    let currentBeds = typeof villa.bedType === 'string' ? villa.bedType.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.bedType || []);
-                                    if (!currentBeds.includes(newBedType.trim())) { currentBeds.push(newBedType.trim()); const newV = [...form.villas]; newV[idx].bedType = currentBeds.join(', '); setForm({...form, villas: newV}); }
-                                    setNewBedType(""); setAddingBedIdx(null);
-                                  } else { setAddingBedIdx(null); }
-                                }} className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold">Add</button>
-                                <button type="button" onClick={() => { setAddingBedIdx(null); setNewBedType(""); }} className="text-gray-400 hover:text-gray-600 p-1.5">
-                                  <X className="w-4 h-4" />
-                                </button>
+                              <div className="flex flex-wrap gap-2 mb-3">
+                                {(typeof villa.bedType === "string"
+                                  ? villa.bedType
+                                      .split(",")
+                                      .map((s: string) => s.trim())
+                                      .filter(Boolean)
+                                  : villa.bedType || []
+                                ).map((bed: string, bIdx: number) => (
+                                  <div
+                                    key={bIdx}
+                                    className="flex items-center gap-1.5 px-3 py-1 bg-[#f4f7fb] border border-[#e8edf4] rounded-[8px]"
+                                  >
+                                    <span className="text-[11px] font-bold text-[#041d3c]">
+                                      {bed}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        let currentBeds =
+                                          typeof villa.bedType === "string"
+                                            ? villa.bedType
+                                                .split(",")
+                                                .map((s: string) => s.trim())
+                                                .filter(Boolean)
+                                            : villa.bedType || [];
+                                        const newBeds = currentBeds.filter(
+                                          (_: any, i: number) => i !== bIdx,
+                                        );
+                                        const newV = [...form.villas];
+                                        newV[idx].bedType = newBeds.join(", ");
+                                        setForm({ ...form, villas: newV });
+                                      }}
+                                      className="text-gray-400 hover:text-rose-500 ml-1"
+                                    >
+                                      <X className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                ))}
                               </div>
-                            ) : (
-                              <button type="button" onClick={() => setAddingBedIdx(idx)} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold rounded-[6px] hover:bg-[#1a84ff] hover:text-white transition-colors">
-                                <Plus className="w-3.5 h-3.5" /> Add Bed Type
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                        <div className="mb-4">
-                          <label className={labelCls}>Short Description</label>
-                          <textarea rows={2} value={villa.description} onChange={e => {
-                            const newV = [...form.villas]; newV[idx].description = e.target.value; setForm({...form, villas: newV});
-                          }} className={`${inputCls} resize-none`} />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <label className={labelCls}>Room Size (sqm)</label>
-                            <input type="text" placeholder="e.g. 150 sqm" value={villa.size} onChange={e => {
-                              const newV = [...form.villas]; newV[idx].size = e.target.value; setForm({...form, villas: newV});
-                            }} className={inputCls} />
-                          </div>
-                          <div>
-                            <label className={labelCls}>Capacity Combinations</label>
-                            <div className="space-y-3">
-                              {(Array.isArray(villa.capacityList) ? villa.capacityList : [{ adults: "2", children: "0", infants: "0" }]).map((cap: any, capIdx: number) => (
-                                <div key={capIdx} className="flex gap-2 items-center bg-[#f8fafc] border border-[#e8edf4] p-2.5 rounded-[12px]">
-                                  <select value={cap.adults} onChange={e => {
-                                    const newV = [...form.villas];
-                                    const newList = [...(Array.isArray(newV[idx].capacityList) ? newV[idx].capacityList : [{ adults: "2", children: "0", infants: "0" }])];
-                                    newList[capIdx] = { ...newList[capIdx], adults: e.target.value };
-                                    newV[idx].capacityList = newList;
-                                    setForm({...form, villas: newV});
-                                  }} className={inputCls + " py-2 !bg-white"}>
-                                    {[...Array(50)].map((_, i) => i + 1).map(n => <option key={n} value={String(n)}>{n} Adult{n>1?'s':''}</option>)}
-                                  </select>
-                                  <select value={cap.children} onChange={e => {
-                                    const newV = [...form.villas];
-                                    const newList = [...(Array.isArray(newV[idx].capacityList) ? newV[idx].capacityList : [{ adults: "2", children: "0", infants: "0" }])];
-                                    newList[capIdx] = { ...newList[capIdx], children: e.target.value };
-                                    newV[idx].capacityList = newList;
-                                    setForm({...form, villas: newV});
-                                  }} className={inputCls + " py-2 !bg-white"}>
-                                    {[...Array(51)].map((_, i) => i).map(n => <option key={n} value={String(n)}>{n} Child{n!==1?'ren':''}</option>)}
-                                  </select>
-                                  <select value={cap.infants} onChange={e => {
-                                    const newV = [...form.villas];
-                                    const newList = [...(Array.isArray(newV[idx].capacityList) ? newV[idx].capacityList : [{ adults: "2", children: "0", infants: "0" }])];
-                                    newList[capIdx] = { ...newList[capIdx], infants: e.target.value };
-                                    newV[idx].capacityList = newList;
-                                    setForm({...form, villas: newV});
-                                  }} className={inputCls + " py-2 !bg-white"}>
-                                    {[...Array(51)].map((_, i) => i).map(n => <option key={n} value={String(n)}>{n} Infant{n!==1?'s':''}</option>)}
-                                  </select>
-                                  <button type="button" onClick={() => {
-                                    const newV = [...form.villas];
-                                    const newList = [...(Array.isArray(newV[idx].capacityList) ? newV[idx].capacityList : [{ adults: "2", children: "0", infants: "0" }])];
-                                    newList.splice(capIdx, 1);
-                                    newV[idx].capacityList = newList;
-                                    setForm({...form, villas: newV});
-                                  }} className="px-2.5 bg-red-50 text-red-500 rounded-[8px] hover:bg-red-100 transition-colors h-[38px] shrink-0">
+
+                              {addingBedIdx === idx ? (
+                                <div className="flex items-center gap-2 mt-1">
+                                  <input
+                                    type="text"
+                                    value={newBedType}
+                                    onChange={(e) =>
+                                      setNewBedType(e.target.value)
+                                    }
+                                    placeholder="E.g. 1 King Bed"
+                                    className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff] w-full"
+                                    autoFocus
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") {
+                                        e.preventDefault();
+                                        if (newBedType.trim()) {
+                                          let currentBeds =
+                                            typeof villa.bedType === "string"
+                                              ? villa.bedType
+                                                  .split(",")
+                                                  .map((s: string) => s.trim())
+                                                  .filter(Boolean)
+                                              : villa.bedType || [];
+                                          if (
+                                            !currentBeds.includes(
+                                              newBedType.trim(),
+                                            )
+                                          ) {
+                                            currentBeds.push(newBedType.trim());
+                                            const newV = [...form.villas];
+                                            newV[idx].bedType =
+                                              currentBeds.join(", ");
+                                            setForm({ ...form, villas: newV });
+                                          }
+                                          setNewBedType("");
+                                          setAddingBedIdx(null);
+                                        } else {
+                                          setAddingBedIdx(null);
+                                        }
+                                      }
+                                    }}
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (newBedType.trim()) {
+                                        let currentBeds =
+                                          typeof villa.bedType === "string"
+                                            ? villa.bedType
+                                                .split(",")
+                                                .map((s: string) => s.trim())
+                                                .filter(Boolean)
+                                            : villa.bedType || [];
+                                        if (
+                                          !currentBeds.includes(
+                                            newBedType.trim(),
+                                          )
+                                        ) {
+                                          currentBeds.push(newBedType.trim());
+                                          const newV = [...form.villas];
+                                          newV[idx].bedType =
+                                            currentBeds.join(", ");
+                                          setForm({ ...form, villas: newV });
+                                        }
+                                        setNewBedType("");
+                                        setAddingBedIdx(null);
+                                      } else {
+                                        setAddingBedIdx(null);
+                                      }
+                                    }}
+                                    className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold"
+                                  >
+                                    Add
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setAddingBedIdx(null);
+                                      setNewBedType("");
+                                    }}
+                                    className="text-gray-400 hover:text-gray-600 p-1.5"
+                                  >
                                     <X className="w-4 h-4" />
                                   </button>
                                 </div>
-                              ))}
-                              <button type="button" onClick={() => {
-                                const newV = [...form.villas];
-                                const newList = [...(Array.isArray(newV[idx].capacityList) ? newV[idx].capacityList : [{ adults: "2", children: "0", infants: "0" }])];
-                                newList.push({ adults: "2", children: "0", infants: "0" });
-                                newV[idx].capacityList = newList;
-                                setForm({...form, villas: newV});
-                              }} className="text-[#1a84ff] text-[11px] font-bold hover:underline flex items-center gap-1 mt-2">
-                                <Plus className="w-3 h-3" /> Add Capacity Option
-                              </button>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => setAddingBedIdx(idx)}
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold rounded-[6px] hover:bg-[#1a84ff] hover:text-white transition-colors"
+                                >
+                                  <Plus className="w-3.5 h-3.5" /> Add Bed Type
+                                </button>
+                              )}
                             </div>
                           </div>
-                        </div>
+                          <div className="mb-4">
+                            <label className={labelCls}>
+                              Short Description
+                            </label>
+                            <textarea
+                              rows={2}
+                              value={villa.description}
+                              onChange={(e) => {
+                                const newV = [...form.villas];
+                                newV[idx].description = e.target.value;
+                                setForm({ ...form, villas: newV });
+                              }}
+                              className={`${inputCls} resize-none`}
+                            />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                              <label className={labelCls}>
+                                Room Size (sqm)
+                              </label>
+                              <input
+                                type="text"
+                                placeholder="e.g. 150 sqm"
+                                value={villa.size}
+                                onChange={(e) => {
+                                  const newV = [...form.villas];
+                                  newV[idx].size = e.target.value;
+                                  setForm({ ...form, villas: newV });
+                                }}
+                                className={inputCls}
+                              />
+                            </div>
+                            <div>
+                              <label className={labelCls}>
+                                Capacity Combinations
+                              </label>
+                              <div className="space-y-3">
+                                {(Array.isArray(villa.capacityList)
+                                  ? villa.capacityList
+                                  : [
+                                      {
+                                        adults: "2",
+                                        children: "0",
+                                        infants: "0",
+                                      },
+                                    ]
+                                ).map((cap: any, capIdx: number) => (
+                                  <div
+                                    key={capIdx}
+                                    className="flex gap-2 items-center bg-[#f8fafc] border border-[#e8edf4] p-2.5 rounded-[12px]"
+                                  >
+                                    <select
+                                      value={cap.adults}
+                                      onChange={(e) => {
+                                        const newV = [...form.villas];
+                                        const newList = [
+                                          ...(Array.isArray(
+                                            newV[idx].capacityList,
+                                          )
+                                            ? newV[idx].capacityList
+                                            : [
+                                                {
+                                                  adults: "2",
+                                                  children: "0",
+                                                  infants: "0",
+                                                },
+                                              ]),
+                                        ];
+                                        newList[capIdx] = {
+                                          ...newList[capIdx],
+                                          adults: e.target.value,
+                                        };
+                                        newV[idx].capacityList = newList;
+                                        setForm({ ...form, villas: newV });
+                                      }}
+                                      className={inputCls + " py-2 !bg-white"}
+                                    >
+                                      {[...Array(50)]
+                                        .map((_, i) => i + 1)
+                                        .map((n) => (
+                                          <option key={n} value={String(n)}>
+                                            {n} Adult{n > 1 ? "s" : ""}
+                                          </option>
+                                        ))}
+                                    </select>
+                                    <select
+                                      value={cap.children}
+                                      onChange={(e) => {
+                                        const newV = [...form.villas];
+                                        const newList = [
+                                          ...(Array.isArray(
+                                            newV[idx].capacityList,
+                                          )
+                                            ? newV[idx].capacityList
+                                            : [
+                                                {
+                                                  adults: "2",
+                                                  children: "0",
+                                                  infants: "0",
+                                                },
+                                              ]),
+                                        ];
+                                        newList[capIdx] = {
+                                          ...newList[capIdx],
+                                          children: e.target.value,
+                                        };
+                                        newV[idx].capacityList = newList;
+                                        setForm({ ...form, villas: newV });
+                                      }}
+                                      className={inputCls + " py-2 !bg-white"}
+                                    >
+                                      {[...Array(51)]
+                                        .map((_, i) => i)
+                                        .map((n) => (
+                                          <option key={n} value={String(n)}>
+                                            {n} Child{n !== 1 ? "ren" : ""}
+                                          </option>
+                                        ))}
+                                    </select>
+                                    <select
+                                      value={cap.infants}
+                                      onChange={(e) => {
+                                        const newV = [...form.villas];
+                                        const newList = [
+                                          ...(Array.isArray(
+                                            newV[idx].capacityList,
+                                          )
+                                            ? newV[idx].capacityList
+                                            : [
+                                                {
+                                                  adults: "2",
+                                                  children: "0",
+                                                  infants: "0",
+                                                },
+                                              ]),
+                                        ];
+                                        newList[capIdx] = {
+                                          ...newList[capIdx],
+                                          infants: e.target.value,
+                                        };
+                                        newV[idx].capacityList = newList;
+                                        setForm({ ...form, villas: newV });
+                                      }}
+                                      className={inputCls + " py-2 !bg-white"}
+                                    >
+                                      {[...Array(51)]
+                                        .map((_, i) => i)
+                                        .map((n) => (
+                                          <option key={n} value={String(n)}>
+                                            {n} Infant{n !== 1 ? "s" : ""}
+                                          </option>
+                                        ))}
+                                    </select>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const newV = [...form.villas];
+                                        const newList = [
+                                          ...(Array.isArray(
+                                            newV[idx].capacityList,
+                                          )
+                                            ? newV[idx].capacityList
+                                            : [
+                                                {
+                                                  adults: "2",
+                                                  children: "0",
+                                                  infants: "0",
+                                                },
+                                              ]),
+                                        ];
+                                        newList.splice(capIdx, 1);
+                                        newV[idx].capacityList = newList;
+                                        setForm({ ...form, villas: newV });
+                                      }}
+                                      className="px-2.5 bg-red-50 text-red-500 rounded-[8px] hover:bg-red-100 transition-colors h-[38px] shrink-0"
+                                    >
+                                      <X className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                ))}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newV = [...form.villas];
+                                    const newList = [
+                                      ...(Array.isArray(newV[idx].capacityList)
+                                        ? newV[idx].capacityList
+                                        : [
+                                            {
+                                              adults: "2",
+                                              children: "0",
+                                              infants: "0",
+                                            },
+                                          ]),
+                                    ];
+                                    newList.push({
+                                      adults: "2",
+                                      children: "0",
+                                      infants: "0",
+                                    });
+                                    newV[idx].capacityList = newList;
+                                    setForm({ ...form, villas: newV });
+                                  }}
+                                  className="text-[#1a84ff] text-[11px] font-bold hover:underline flex items-center gap-1 mt-2"
+                                >
+                                  <Plus className="w-3 h-3" /> Add Capacity
+                                  Option
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                           <div>
                             <label className={labelCls}>Villa Features</label>
-                            
+
                             <div className="flex flex-wrap gap-2 mb-3">
-                              {(typeof villa.features === 'string' ? villa.features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.features || [])).map((feat: string, fIdx: number) => (
-                                <div key={fIdx} className="flex items-center gap-1.5 px-3 py-1 bg-[#f4f7fb] border border-[#e8edf4] rounded-[8px]">
-                                  <span className="text-[11px] font-bold text-[#041d3c]">{feat}</span>
-                                  <button type="button" onClick={() => {
-                                    let currentFeats = typeof villa.features === 'string' ? villa.features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.features || []);
-                                    const newFeats = currentFeats.filter((_: any, i: number) => i !== fIdx);
-                                    const newV = [...form.villas]; newV[idx].features = newFeats.join(', '); setForm({...form, villas: newV});
-                                  }} className="text-gray-400 hover:text-rose-500 ml-1">
+                              {(typeof villa.features === "string"
+                                ? villa.features
+                                    .split(",")
+                                    .map((s: string) => s.trim())
+                                    .filter(Boolean)
+                                : villa.features || []
+                              ).map((feat: string, fIdx: number) => (
+                                <div
+                                  key={fIdx}
+                                  className="flex items-center gap-1.5 px-3 py-1 bg-[#f4f7fb] border border-[#e8edf4] rounded-[8px]"
+                                >
+                                  <span className="text-[11px] font-bold text-[#041d3c]">
+                                    {feat}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      let currentFeats =
+                                        typeof villa.features === "string"
+                                          ? villa.features
+                                              .split(",")
+                                              .map((s: string) => s.trim())
+                                              .filter(Boolean)
+                                          : villa.features || [];
+                                      const newFeats = currentFeats.filter(
+                                        (_: any, i: number) => i !== fIdx,
+                                      );
+                                      const newV = [...form.villas];
+                                      newV[idx].features = newFeats.join(", ");
+                                      setForm({ ...form, villas: newV });
+                                    }}
+                                    className="text-gray-400 hover:text-rose-500 ml-1"
+                                  >
                                     <X className="w-3 h-3" />
                                   </button>
                                 </div>
@@ -870,78 +1996,143 @@ export default function AdminResorts() {
 
                             {addingFeatureIdx === idx ? (
                               <div className="flex items-center gap-2 mt-1">
-                                <input type="text" value={newFeature} onChange={e => setNewFeature(e.target.value)} placeholder="E.g. Private Pool" className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff] w-full" autoFocus onKeyDown={e => {
-                                  if (e.key === 'Enter') {
-                                    e.preventDefault();
+                                <input
+                                  type="text"
+                                  value={newFeature}
+                                  onChange={(e) =>
+                                    setNewFeature(e.target.value)
+                                  }
+                                  placeholder="E.g. Private Pool"
+                                  className="px-3 py-1.5 border border-[#e2e8f0] rounded-[6px] text-[12px] font-medium focus:outline-none focus:border-[#1a84ff] w-full"
+                                  autoFocus
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      if (newFeature.trim()) {
+                                        let currentFeats =
+                                          typeof villa.features === "string"
+                                            ? villa.features
+                                                .split(",")
+                                                .map((s: string) => s.trim())
+                                                .filter(Boolean)
+                                            : villa.features || [];
+                                        if (
+                                          !currentFeats.includes(
+                                            newFeature.trim(),
+                                          )
+                                        ) {
+                                          currentFeats.push(newFeature.trim());
+                                          const newV = [...form.villas];
+                                          newV[idx].features =
+                                            currentFeats.join(", ");
+                                          setForm({ ...form, villas: newV });
+                                        }
+                                        setNewFeature("");
+                                        setAddingFeatureIdx(null);
+                                      } else {
+                                        setAddingFeatureIdx(null);
+                                      }
+                                    }
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
                                     if (newFeature.trim()) {
-                                      let currentFeats = typeof villa.features === 'string' ? villa.features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.features || []);
-                                      if (!currentFeats.includes(newFeature.trim())) {
+                                      let currentFeats =
+                                        typeof villa.features === "string"
+                                          ? villa.features
+                                              .split(",")
+                                              .map((s: string) => s.trim())
+                                              .filter(Boolean)
+                                          : villa.features || [];
+                                      if (
+                                        !currentFeats.includes(
+                                          newFeature.trim(),
+                                        )
+                                      ) {
                                         currentFeats.push(newFeature.trim());
                                         const newV = [...form.villas];
-                                        newV[idx].features = currentFeats.join(', ');
-                                        setForm({...form, villas: newV});
+                                        newV[idx].features =
+                                          currentFeats.join(", ");
+                                        setForm({ ...form, villas: newV });
                                       }
                                       setNewFeature("");
                                       setAddingFeatureIdx(null);
                                     } else {
                                       setAddingFeatureIdx(null);
                                     }
-                                  }
-                                }} />
-                                <button type="button" onClick={() => {
-                                  if (newFeature.trim()) {
-                                    let currentFeats = typeof villa.features === 'string' ? villa.features.split(',').map((s:string)=>s.trim()).filter(Boolean) : (villa.features || []);
-                                    if (!currentFeats.includes(newFeature.trim())) {
-                                      currentFeats.push(newFeature.trim());
-                                      const newV = [...form.villas];
-                                      newV[idx].features = currentFeats.join(', ');
-                                      setForm({...form, villas: newV});
-                                    }
+                                  }}
+                                  className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold"
+                                >
+                                  Add
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setAddingFeatureIdx(null);
                                     setNewFeature("");
-                                    setAddingFeatureIdx(null);
-                                  } else {
-                                    setAddingFeatureIdx(null);
-                                  }
-                                }} className="text-white bg-[#1a84ff] px-3 py-1.5 rounded-[6px] text-[11px] font-bold">Add</button>
-                                <button type="button" onClick={() => { setAddingFeatureIdx(null); setNewFeature(""); }} className="text-gray-400 hover:text-gray-600 p-1.5">
+                                  }}
+                                  className="text-gray-400 hover:text-gray-600 p-1.5"
+                                >
                                   <X className="w-4 h-4" />
                                 </button>
                               </div>
                             ) : (
-                              <button type="button" onClick={() => setAddingFeatureIdx(idx)} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold rounded-[6px] hover:bg-[#1a84ff] hover:text-white transition-colors">
+                              <button
+                                type="button"
+                                onClick={() => setAddingFeatureIdx(idx)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold rounded-[6px] hover:bg-[#1a84ff] hover:text-white transition-colors"
+                              >
                                 <Plus className="w-3.5 h-3.5" /> Add Feature
                               </button>
                             )}
                           </div>
-                        
-                        <div>
-                          <label className={labelCls}>Villa Images (Rotating preview)</label>
-                          <div className="flex gap-3 overflow-x-auto pb-2">
-                            {villa.images?.map((img: any, imgIdx: number) => (
-                              <div key={imgIdx} className="w-24 h-24 shrink-0 relative rounded-[8px] overflow-hidden group">
-                                <img src={img.url || img.src} className="w-full h-full object-cover" />
-                                <button onClick={() => {
-                                  const newV = [...form.villas]; newV[idx].images.splice(imgIdx, 1); setForm({...form, villas: newV});
-                                }} className="absolute top-1 right-1 bg-rose-500 text-white rounded-[4px] p-1 opacity-0 group-hover:opacity-100"><Trash2 className="w-3 h-3"/></button>
+
+                          <div>
+                            <label className={labelCls}>
+                              Villa Images (Rotating preview)
+                            </label>
+                            <div className="flex gap-3 overflow-x-auto pb-2">
+                              {villa.images?.map((img: any, imgIdx: number) => (
+                                <div
+                                  key={imgIdx}
+                                  className="w-24 h-24 shrink-0 relative rounded-[8px] overflow-hidden group"
+                                >
+                                  <img
+                                    src={img.url || img.src}
+                                    className="w-full h-full object-cover"
+                                  />
+                                  <button
+                                    onClick={() => {
+                                      const newV = [...form.villas];
+                                      newV[idx].images.splice(imgIdx, 1);
+                                      setForm({ ...form, villas: newV });
+                                    }}
+                                    className="absolute top-1 right-1 bg-rose-500 text-white rounded-[4px] p-1 opacity-0 group-hover:opacity-100"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              ))}
+                              <div className="w-24 h-24 shrink-0">
+                                <ImageUpload
+                                  value=""
+                                  onChange={(url, publicId) => {
+                                    const newV = [...form.villas];
+                                    if (!newV[idx].images)
+                                      newV[idx].images = [];
+                                    newV[idx].images.push({ url, publicId });
+                                    setForm({ ...form, villas: newV });
+                                  }}
+                                  onRemove={() => {}}
+                                  folder="simplifly/resorts/villas"
+                                />
                               </div>
-                            ))}
-                            <div className="w-24 h-24 shrink-0">
-                              <ImageUpload
-                                value=""
-                                onChange={(url, publicId) => {
-                                  const newV = [...form.villas];
-                                  if(!newV[idx].images) newV[idx].images = [];
-                                  newV[idx].images.push({ url, publicId });
-                                  setForm({...form, villas: newV});
-                                }}
-                                onRemove={() => {}}
-                                folder="simplifly/resorts/villas"
-                              />
                             </div>
                           </div>
-                        </div>
-                      </Reorder.Item>
-                    ))}
+                        </Reorder.Item>
+                      ))}
                     </Reorder.Group>
                   )}
                 </div>
@@ -950,107 +2141,207 @@ export default function AdminResorts() {
               {step === 5 && (
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-[13px] text-gray-500 font-medium">Add restaurants and their dining schedules.</p>
-                    <button onClick={() => setForm({...form, restaurants: [...(form.restaurants||[]), { _uiId: Math.random().toString(36).substring(7), title: "", description: "", schedules: [] }]})} className="px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold uppercase tracking-wider rounded-[8px] hover:bg-[#1a84ff] hover:text-white transition-colors">
+                    <p className="text-[13px] text-gray-500 font-medium">
+                      Add restaurants and their dining schedules.
+                    </p>
+                    <button
+                      onClick={() =>
+                        setForm({
+                          ...form,
+                          restaurants: [
+                            ...(form.restaurants || []),
+                            {
+                              _uiId: Math.random().toString(36).substring(7),
+                              title: "",
+                              description: "",
+                              schedules: [],
+                            },
+                          ],
+                        })
+                      }
+                      className="px-3 py-1.5 bg-[#f4f7fb] text-[#1a84ff] text-[11px] font-bold uppercase tracking-wider rounded-[8px] hover:bg-[#1a84ff] hover:text-white transition-colors"
+                    >
                       + Add Restaurant
                     </button>
                   </div>
 
-                  {(!form.restaurants || form.restaurants.length === 0) ? (
+                  {!form.restaurants || form.restaurants.length === 0 ? (
                     <div className="text-center py-10 bg-[#f8fafc] border border-dashed border-[#e8edf4] rounded-[16px]">
-                      <span className="text-gray-400 text-[13px] font-semibold">No restaurants added yet</span>
+                      <span className="text-gray-400 text-[13px] font-semibold">
+                        No restaurants added yet
+                      </span>
                     </div>
                   ) : (
-                    <Reorder.Group axis="y" values={form.restaurants} onReorder={(newRests) => setForm({...form, restaurants: newRests})} className="space-y-4">
+                    <Reorder.Group
+                      axis="y"
+                      values={form.restaurants}
+                      onReorder={(newRests) =>
+                        setForm({ ...form, restaurants: newRests })
+                      }
+                      className="space-y-4"
+                    >
                       {form.restaurants.map((rest: any, idx: number) => (
-                        <Reorder.Item key={rest._uiId || (rest._uiId = Math.random().toString(36).substring(7))} value={rest} className="bg-white border border-[#e8edf4] rounded-[16px] p-5 relative shadow-sm">
+                        <Reorder.Item
+                          key={
+                            rest._uiId ||
+                            (rest._uiId = Math.random()
+                              .toString(36)
+                              .substring(7))
+                          }
+                          value={rest}
+                          className="bg-white border border-[#e8edf4] rounded-[16px] p-5 relative shadow-sm"
+                        >
                           <div className="absolute top-4 left-4 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 transition-colors">
                             <GripVertical className="w-5 h-5" />
                           </div>
-                          <button onClick={() => {
-                            const newR = [...form.restaurants];
-                            newR.splice(idx, 1);
-                            setForm({...form, restaurants: newR});
-                          }} className="absolute top-4 right-4 text-rose-400 hover:text-rose-600">
+                          <button
+                            onClick={() => {
+                              const newR = [...form.restaurants];
+                              newR.splice(idx, 1);
+                              setForm({ ...form, restaurants: newR });
+                            }}
+                            className="absolute top-4 right-4 text-rose-400 hover:text-rose-600"
+                          >
                             <Trash2 className="w-4 h-4" />
                           </button>
-                          <h4 className="text-[14px] font-bold text-[#041d3c] mb-4 pl-8">Restaurant {idx + 1}</h4>
-                        
-                        <div className="mb-4">
-                          <label className={labelCls}>Restaurant Name</label>
-                          <input type="text" value={rest.title} onChange={e => {
-                            const newR = [...form.restaurants]; newR[idx].title = e.target.value; setForm({...form, restaurants: newR});
-                          }} className={inputCls} />
-                        </div>
-                        <div className="mb-4">
-                          <label className={labelCls}>Description</label>
-                          <textarea rows={2} value={rest.description} onChange={e => {
-                            const newR = [...form.restaurants]; newR[idx].description = e.target.value; setForm({...form, restaurants: newR});
-                          }} className={`${inputCls} resize-none`} />
-                        </div>
-                        <div className="mb-4">
-                          <label className={labelCls}>Restaurant Image</label>
-                          <div className="w-full max-w-sm">
-                            <ImageUpload
-                              value={rest.image || ""}
-                              onChange={(url, publicId) => {
+                          <h4 className="text-[14px] font-bold text-[#041d3c] mb-4 pl-8">
+                            Restaurant {idx + 1}
+                          </h4>
+
+                          <div className="mb-4">
+                            <label className={labelCls}>Restaurant Name</label>
+                            <input
+                              type="text"
+                              value={rest.title}
+                              onChange={(e) => {
                                 const newR = [...form.restaurants];
-                                newR[idx].image = url;
-                                newR[idx].imagePublicId = publicId;
-                                setForm({...form, restaurants: newR});
+                                newR[idx].title = e.target.value;
+                                setForm({ ...form, restaurants: newR });
                               }}
-                              onRemove={() => {
-                                const newR = [...form.restaurants];
-                                newR[idx].image = "";
-                                newR[idx].imagePublicId = "";
-                                setForm({...form, restaurants: newR});
-                              }}
-                              folder="simplifly/resorts/restaurants"
+                              className={inputCls}
                             />
                           </div>
-                        </div>
-                        
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <label className={labelCls}>Meal Timings</label>
-                            <button onClick={() => {
+                          <div className="mb-4">
+                            <label className={labelCls}>Description</label>
+                            <textarea
+                              rows={2}
+                              value={rest.description}
+                              onChange={(e) => {
+                                const newR = [...form.restaurants];
+                                newR[idx].description = e.target.value;
+                                setForm({ ...form, restaurants: newR });
+                              }}
+                              className={`${inputCls} resize-none`}
+                            />
+                          </div>
+                          <div className="mb-4">
+                            <label className={labelCls}>Restaurant Image</label>
+                            <div className="w-full max-w-sm">
+                              <ImageUpload
+                                value={rest.image || ""}
+                                onChange={(url, publicId) => {
                                   const newR = [...form.restaurants];
-                                  if(!newR[idx].schedules) newR[idx].schedules = [];
-                                  newR[idx].schedules.push({ meal: "Breakfast", timeFrom: "07:00", timeTo: "10:30" });
-                                  setForm({...form, restaurants: newR});
-                                }} className="text-[11px] font-bold text-[#1a84ff]">+ Add Timing</button>
-                              </div>
-                              
-                              <div className="space-y-2">
-                                {rest.schedules?.map((sch: any, sIdx: number) => (
-                                  <div key={sIdx} className="flex gap-2 items-center">
-                                    <select value={sch.meal} onChange={e => {
-                                      const newR = [...form.restaurants]; newR[idx].schedules[sIdx].meal = e.target.value; setForm({...form, restaurants: newR});
-                                    }} className={`${inputCls} py-2 !w-1/3`}>
-                                      <option>Breakfast</option>
-                                      <option>Lunch</option>
-                                      <option>Dinner</option>
-                                      <option>All Day Dining</option>
-                                      <option>Timing</option>
-                                    </select>
-                                    <div className="flex items-center gap-1.5 flex-1">
-                                      <input type="time" value={sch.timeFrom || "07:00"} onChange={e => {
-                                        const newR = [...form.restaurants]; newR[idx].schedules[sIdx].timeFrom = e.target.value; setForm({...form, restaurants: newR});
-                                      }} className={`${inputCls} py-2 text-center`} />
-                                      <span className="text-gray-400 font-bold text-[11px]">to</span>
-                                      <input type="time" value={sch.timeTo || "10:30"} onChange={e => {
-                                        const newR = [...form.restaurants]; newR[idx].schedules[sIdx].timeTo = e.target.value; setForm({...form, restaurants: newR});
-                                      }} className={`${inputCls} py-2 text-center`} />
-                                    </div>
-                                    <button onClick={() => {
-                                      const newR = [...form.restaurants]; newR[idx].schedules.splice(sIdx, 1); setForm({...form, restaurants: newR});
-                                    }} className="text-rose-400 p-2 hover:bg-rose-50 rounded-lg transition-colors"><Trash2 className="w-4 h-4"/></button>
+                                  newR[idx].image = url;
+                                  newR[idx].imagePublicId = publicId;
+                                  setForm({ ...form, restaurants: newR });
+                                }}
+                                onRemove={() => {
+                                  const newR = [...form.restaurants];
+                                  newR[idx].image = "";
+                                  newR[idx].imagePublicId = "";
+                                  setForm({ ...form, restaurants: newR });
+                                }}
+                                folder="simplifly/resorts/restaurants"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <label className={labelCls}>Meal Timings</label>
+                              <button
+                                onClick={() => {
+                                  const newR = [...form.restaurants];
+                                  if (!newR[idx].schedules)
+                                    newR[idx].schedules = [];
+                                  newR[idx].schedules.push({
+                                    meal: "Breakfast",
+                                    timeFrom: "07:00",
+                                    timeTo: "10:30",
+                                  });
+                                  setForm({ ...form, restaurants: newR });
+                                }}
+                                className="text-[11px] font-bold text-[#1a84ff]"
+                              >
+                                + Add Timing
+                              </button>
+                            </div>
+
+                            <div className="space-y-2">
+                              {rest.schedules?.map((sch: any, sIdx: number) => (
+                                <div
+                                  key={sIdx}
+                                  className="flex gap-2 items-center"
+                                >
+                                  <select
+                                    value={sch.meal}
+                                    onChange={(e) => {
+                                      const newR = [...form.restaurants];
+                                      newR[idx].schedules[sIdx].meal =
+                                        e.target.value;
+                                      setForm({ ...form, restaurants: newR });
+                                    }}
+                                    className={`${inputCls} py-2 !w-1/3`}
+                                  >
+                                    <option>Breakfast</option>
+                                    <option>Lunch</option>
+                                    <option>Dinner</option>
+                                    <option>All Day Dining</option>
+                                    <option>Timing</option>
+                                  </select>
+                                  <div className="flex items-center gap-1.5 flex-1">
+                                    <input
+                                      type="time"
+                                      value={sch.timeFrom || "07:00"}
+                                      onChange={(e) => {
+                                        const newR = [...form.restaurants];
+                                        newR[idx].schedules[sIdx].timeFrom =
+                                          e.target.value;
+                                        setForm({ ...form, restaurants: newR });
+                                      }}
+                                      className={`${inputCls} py-2 text-center`}
+                                    />
+                                    <span className="text-gray-400 font-bold text-[11px]">
+                                      to
+                                    </span>
+                                    <input
+                                      type="time"
+                                      value={sch.timeTo || "10:30"}
+                                      onChange={(e) => {
+                                        const newR = [...form.restaurants];
+                                        newR[idx].schedules[sIdx].timeTo =
+                                          e.target.value;
+                                        setForm({ ...form, restaurants: newR });
+                                      }}
+                                      className={`${inputCls} py-2 text-center`}
+                                    />
                                   </div>
-                                ))}
-                              </div>
-                        </div>
-                      </Reorder.Item>
-                    ))}
+                                  <button
+                                    onClick={() => {
+                                      const newR = [...form.restaurants];
+                                      newR[idx].schedules.splice(sIdx, 1);
+                                      setForm({ ...form, restaurants: newR });
+                                    }}
+                                    className="text-rose-400 p-2 hover:bg-rose-50 rounded-lg transition-colors"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </Reorder.Item>
+                      ))}
                     </Reorder.Group>
                   )}
                 </div>
@@ -1058,104 +2349,184 @@ export default function AdminResorts() {
 
               {step === 6 && (
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
-                  
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <label className={labelCls}>Luxury Facilities</label>
-                        <p className="text-[12px] text-gray-500 font-medium">Add facilities available at this resort.</p>
+                        <p className="text-[12px] text-gray-500 font-medium">
+                          Add facilities available at this resort.
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {(form.facilities || []).map((fac: string, idx: number) => (
-                        <div key={idx} className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fb] border border-[#e8edf4] rounded-[8px]">
-                          <span className="text-[12px] font-bold text-[#041d3c]">{fac}</span>
-                          <button type="button" onClick={() => {
-                            const newF = form.facilities.filter((_: any, i: number) => i !== idx);
-                            setForm({...form, facilities: newF});
-                          }} className="text-gray-400 hover:text-rose-500 ml-1">
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ))}
+                      {(form.facilities || []).map(
+                        (fac: string, idx: number) => (
+                          <div
+                            key={idx}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f4f7fb] border border-[#e8edf4] rounded-[8px]"
+                          >
+                            <span className="text-[12px] font-bold text-[#041d3c]">
+                              {fac}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newF = form.facilities.filter(
+                                  (_: any, i: number) => i !== idx,
+                                );
+                                setForm({ ...form, facilities: newF });
+                              }}
+                              className="text-gray-400 hover:text-rose-500 ml-1"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ),
+                      )}
                     </div>
 
                     {isAddingFacility ? (
                       <div className="flex items-center gap-2 max-w-sm">
-                        <input type="text" value={newFacilityName} onChange={e => setNewFacilityName(e.target.value)} placeholder="E.g. Free WiFi" className={`${inputCls} py-2`} autoFocus onKeyDown={e => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            if (newFacilityName.trim() && !form.facilities?.includes(newFacilityName.trim())) {
-                              resortApi.createFacilityOption(token, { name: newFacilityName.trim() }).catch(() => {});
-                              setForm({...form, facilities: [...(form.facilities || []), newFacilityName.trim()]});
+                        <input
+                          type="text"
+                          value={newFacilityName}
+                          onChange={(e) => setNewFacilityName(e.target.value)}
+                          placeholder="E.g. Free WiFi"
+                          className={`${inputCls} py-2`}
+                          autoFocus
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              if (
+                                newFacilityName.trim() &&
+                                !form.facilities?.includes(
+                                  newFacilityName.trim(),
+                                )
+                              ) {
+                                resortApi
+                                  .createFacilityOption(token, {
+                                    name: newFacilityName.trim(),
+                                  })
+                                  .catch(() => {});
+                                setForm({
+                                  ...form,
+                                  facilities: [
+                                    ...(form.facilities || []),
+                                    newFacilityName.trim(),
+                                  ],
+                                });
+                                setNewFacilityName("");
+                                setIsAddingFacility(false);
+                              } else {
+                                setIsAddingFacility(false);
+                              }
+                            }
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (
+                              newFacilityName.trim() &&
+                              !form.facilities?.includes(newFacilityName.trim())
+                            ) {
+                              resortApi
+                                .createFacilityOption(token, {
+                                  name: newFacilityName.trim(),
+                                })
+                                .catch(() => {});
+                              setForm({
+                                ...form,
+                                facilities: [
+                                  ...(form.facilities || []),
+                                  newFacilityName.trim(),
+                                ],
+                              });
                               setNewFacilityName("");
                               setIsAddingFacility(false);
                             } else {
                               setIsAddingFacility(false);
                             }
-                          }
-                        }} />
-                        <button type="button" onClick={() => {
-                          if (newFacilityName.trim() && !form.facilities?.includes(newFacilityName.trim())) {
-                            resortApi.createFacilityOption(token, { name: newFacilityName.trim() }).catch(() => {});
-                            setForm({...form, facilities: [...(form.facilities || []), newFacilityName.trim()]});
+                          }}
+                          className="text-white bg-[#1a84ff] px-4 py-2 rounded-[12px] text-[12px] font-bold"
+                        >
+                          Add
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsAddingFacility(false);
                             setNewFacilityName("");
-                            setIsAddingFacility(false);
-                          } else {
-                            setIsAddingFacility(false);
-                          }
-                        }} className="text-white bg-[#1a84ff] px-4 py-2 rounded-[12px] text-[12px] font-bold">Add</button>
-                        <button type="button" onClick={() => { setIsAddingFacility(false); setNewFacilityName(""); }} className="text-gray-400 hover:text-gray-600 p-2">
+                          }}
+                          className="text-gray-400 hover:text-gray-600 p-2"
+                        >
                           <X className="w-4 h-4" />
                         </button>
                       </div>
                     ) : (
-                      <button type="button" onClick={() => setIsAddingFacility(true)} className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#f4f7fb] text-[#1a84ff] text-[12px] font-bold rounded-[8px] hover:bg-[#1a84ff] hover:text-white transition-colors">
+                      <button
+                        type="button"
+                        onClick={() => setIsAddingFacility(true)}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#f4f7fb] text-[#1a84ff] text-[12px] font-bold rounded-[8px] hover:bg-[#1a84ff] hover:text-white transition-colors"
+                      >
                         <Plus className="w-3.5 h-3.5" /> Add Facility
                       </button>
                     )}
                   </div>
 
                   <div className="pt-6 border-t border-[#e8edf4]">
-                    <label className={labelCls}>Resort Fact Sheet (PDF only)</label>
+                    <label className={labelCls}>
+                      Resort Fact Sheet (PDF only)
+                    </label>
                     <div className="w-full max-w-sm">
                       <PdfUpload
                         value={form.factSheets?.[0]?.url || ""}
-                        onChange={(url) => setForm({...form, factSheets: [{ name: "Fact Sheet", url, publicId: '' }]})}
-                        onRemove={() => setForm({...form, factSheets: []})}
+                        onChange={(url) =>
+                          setForm({
+                            ...form,
+                            factSheets: [
+                              { name: "Fact Sheet", url, publicId: "" },
+                            ],
+                          })
+                        }
+                        onRemove={() => setForm({ ...form, factSheets: [] })}
                       />
                     </div>
                   </div>
-
                 </div>
               )}
-
             </div>
 
             {/* Footer */}
             <div className="px-8 py-6 border-t border-[#f0f4f9] flex items-center justify-between bg-white">
               <button
-                onClick={() => setStep(s => s - 1)}
+                onClick={() => setStep((s) => s - 1)}
                 disabled={step === 1}
                 className="inline-flex items-center gap-1.5 px-4 py-2 text-[12.5px] font-bold text-gray-500 disabled:opacity-30 hover:text-[#041d3c] transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" /> Back
               </button>
-              
+
               <div className="flex gap-2">
                 {step < 6 ? (
-                  <button onClick={() => setStep(s => s + 1)} className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-[12px] bg-[#041d3c] text-white text-[12.5px] font-bold hover:bg-[#062c5b] transition-all">
+                  <button
+                    onClick={() => setStep((s) => s + 1)}
+                    className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-[12px] bg-[#041d3c] text-white text-[12.5px] font-bold hover:bg-[#062c5b] transition-all"
+                  >
                     Next Step <ChevronRight className="w-4 h-4" />
                   </button>
                 ) : (
-                  <button onClick={saveResort} className="inline-flex items-center gap-2 px-6 py-2.5 rounded-[12px] bg-emerald-500 text-white text-[12.5px] font-bold hover:bg-emerald-600 transition-all shadow-sm">
-                    <Check className="w-4 h-4" /> {isEditing ? 'Save Changes' : 'Publish Resort'}
+                  <button
+                    onClick={saveResort}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-[12px] bg-emerald-500 text-white text-[12.5px] font-bold hover:bg-emerald-600 transition-all shadow-sm"
+                  >
+                    <Check className="w-4 h-4" />{" "}
+                    {isEditing ? "Save Changes" : "Publish Resort"}
                   </button>
                 )}
               </div>
             </div>
-
           </div>
         </div>
       )}
@@ -1167,11 +2538,26 @@ export default function AdminResorts() {
             <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center mx-auto mb-4">
               <Trash2 className="w-8 h-8 text-rose-500" />
             </div>
-            <h3 className="text-[20px] font-black text-[#041d3c] mb-2">Delete Resort?</h3>
-            <p className="text-[13px] text-gray-500 font-medium mb-8">This action cannot be undone. This will permanently remove the resort and all its related content from the system.</p>
+            <h3 className="text-[20px] font-black text-[#041d3c] mb-2">
+              Delete Resort?
+            </h3>
+            <p className="text-[13px] text-gray-500 font-medium mb-8">
+              This action cannot be undone. This will permanently remove the
+              resort and all its related content from the system.
+            </p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 py-3 bg-[#f4f7fb] text-gray-600 text-[13px] font-bold rounded-[12px] hover:bg-gray-200 transition-colors">Cancel</button>
-              <button onClick={() => deleteResort(deleteConfirmId)} className="flex-1 py-3 bg-rose-500 text-white text-[13px] font-bold rounded-[12px] hover:bg-rose-600 transition-colors shadow-sm">Delete Forever</button>
+              <button
+                onClick={() => setDeleteConfirmId(null)}
+                className="flex-1 py-3 bg-[#f4f7fb] text-gray-600 text-[13px] font-bold rounded-[12px] hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => deleteResort(deleteConfirmId)}
+                className="flex-1 py-3 bg-rose-500 text-white text-[13px] font-bold rounded-[12px] hover:bg-rose-600 transition-colors shadow-sm"
+              >
+                Delete Forever
+              </button>
             </div>
           </div>
         </div>
@@ -1183,24 +2569,48 @@ export default function AdminResorts() {
           <div className="bg-white rounded-[20px] shadow-2xl w-full max-w-md animate-in fade-in zoom-in-95 duration-200 overflow-hidden my-auto">
             <div className="px-6 py-5 border-b border-[#f0f4f9] flex justify-between items-center bg-[#f8fafc]">
               <div>
-                <h3 className="text-[16px] font-extrabold text-[#041d3c]">Manage Offer & Discount</h3>
-                <p className="text-[11px] text-gray-500 font-medium">Add a percentage discount, custom package offers, and an offer poster.</p>
+                <h3 className="text-[16px] font-extrabold text-[#041d3c]">
+                  Manage Offer & Discount
+                </h3>
+                <p className="text-[11px] text-gray-500 font-medium">
+                  Add a percentage discount, custom package offers, and an offer
+                  poster.
+                </p>
               </div>
-              <button onClick={() => setDiscountModalId(null)} className="p-1.5 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-[8px] transition-colors"><X className="w-4 h-4" /></button>
+              <button
+                onClick={() => setDiscountModalId(null)}
+                className="p-1.5 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-[8px] transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
             <form onSubmit={applyDiscount} className="p-6 space-y-5">
-
               {/* Discount Percentage */}
               <div>
-                <label className={labelCls}>Discount Percentage (%) <span className="text-gray-400 font-normal normal-case">(optional)</span></label>
+                <label className={labelCls}>
+                  Discount Percentage (%){" "}
+                  <span className="text-gray-400 font-normal normal-case">
+                    (optional)
+                  </span>
+                </label>
                 <div className="relative">
                   <input
-                    type="number" min="0" max="100" placeholder="e.g. 15"
+                    type="number"
+                    min="0"
+                    max="100"
+                    placeholder="e.g. 15"
                     value={discountForm.discount}
-                    onChange={e => setDiscountForm({...discountForm, discount: e.target.value})}
+                    onChange={(e) =>
+                      setDiscountForm({
+                        ...discountForm,
+                        discount: e.target.value,
+                      })
+                    }
                     className={inputCls}
                   />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-[13px]">%</div>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-[13px]">
+                    %
+                  </div>
                 </div>
               </div>
 
@@ -1208,52 +2618,183 @@ export default function AdminResorts() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className={labelCls}>Custom Package Offers</label>
-                  <button type="button" onClick={() => setDiscountForm({...discountForm, customOffers: [...discountForm.customOffers, { nights: 1, adults: 2, children: 0, offerPrice: 0, villas: [], transfer: resorts.find(r => r.id === discountModalId)?.transfer || '', mealPlan: '', validFrom: '', validTo: '', bookBefore: '' }]})} className="text-[#1a84ff] text-[11px] font-bold hover:underline">+ Add Offer</button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setDiscountForm({
+                        ...discountForm,
+                        customOffers: [
+                          ...discountForm.customOffers,
+                          {
+                            nights: 1,
+                            adults: 2,
+                            children: 0,
+                            offerPrice: 0,
+                            villas: [],
+                            transfer:
+                              resorts.find((r) => r.id === discountModalId)
+                                ?.transfer || "",
+                            mealPlan: "",
+                            validFrom: "",
+                            validTo: "",
+                            bookBefore: "",
+                            flightIncluded: false,
+                            includes: [],
+                            excludes: [],
+                          },
+                        ],
+                      })
+                    }
+                    className="text-[#1a84ff] text-[11px] font-bold hover:underline"
+                  >
+                    + Add Offer
+                  </button>
                 </div>
                 <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2">
                   {discountForm.customOffers.length === 0 ? (
-                    <div className="text-[11px] text-gray-400 italic bg-[#f8fafc] border border-dashed border-[#e2e8f0] rounded-[10px] p-3 text-center">No custom package offers yet. Click "+ Add Offer" to add one.</div>
+                    <div className="text-[11px] text-gray-400 italic bg-[#f8fafc] border border-dashed border-[#e2e8f0] rounded-[10px] p-3 text-center">
+                      No custom package offers yet. Click "+ Add Offer" to add
+                      one.
+                    </div>
                   ) : (
                     discountForm.customOffers.map((co, i) => {
-                      const resortForModal = resorts.find(r => r.id === discountModalId);
-                      const actualPrice = (Number(resortForModal?.price) || 0) * (Number(co.nights) || 0);
+                      const resortForModal = resorts.find(
+                        (r) => r.id === discountModalId,
+                      );
+                      const actualPrice =
+                        (Number(resortForModal?.price) || 0) *
+                        (Number(co.nights) || 0);
                       return (
-                        <div key={i} className="flex flex-col gap-3 bg-[#f8fafc] border border-[#e8edf4] p-3 rounded-[10px]">
+                        <div
+                          key={i}
+                          className="flex flex-col gap-3 bg-[#f8fafc] border border-[#e8edf4] p-3 rounded-[10px]"
+                        >
                           <div className="flex items-center justify-between">
-                            <span className="text-[11px] font-bold text-gray-600">Offer #{i + 1}</span>
-                            <button type="button" onClick={() => { const n = [...discountForm.customOffers]; n.splice(i,1); setDiscountForm({...discountForm, customOffers: n}); }} className="w-6 h-6 rounded-[6px] bg-rose-50 text-rose-400 hover:bg-rose-100 flex items-center justify-center shrink-0">
+                            <span className="text-[11px] font-bold text-gray-600">
+                              Offer #{i + 1}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const n = [...discountForm.customOffers];
+                                n.splice(i, 1);
+                                setDiscountForm({
+                                  ...discountForm,
+                                  customOffers: n,
+                                });
+                              }}
+                              className="w-6 h-6 rounded-[6px] bg-rose-50 text-rose-400 hover:bg-rose-100 flex items-center justify-center shrink-0"
+                            >
                               <Trash2 className="w-3 h-3" />
                             </button>
                           </div>
-                          
+
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                             <div>
-                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Nights</label>
-                              <input type="number" min="1" value={co.nights}
-                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], nights: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
-                                className={inputCls} />
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                Nights
+                              </label>
+                              <input
+                                type="number"
+                                min="1"
+                                value={co.nights}
+                                onChange={(e) => {
+                                  const n = [...discountForm.customOffers];
+                                  n[i] = {
+                                    ...n[i],
+                                    nights: Number(e.target.value),
+                                  };
+                                  setDiscountForm({
+                                    ...discountForm,
+                                    customOffers: n,
+                                  });
+                                }}
+                                className={inputCls}
+                              />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Adults</label>
-                              <input type="number" min="1" value={co.adults ?? 2}
-                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], adults: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
-                                className={inputCls} />
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                Adults
+                              </label>
+                              <input
+                                type="number"
+                                min="1"
+                                value={co.adults ?? 2}
+                                onChange={(e) => {
+                                  const n = [...discountForm.customOffers];
+                                  n[i] = {
+                                    ...n[i],
+                                    adults: Number(e.target.value),
+                                  };
+                                  setDiscountForm({
+                                    ...discountForm,
+                                    customOffers: n,
+                                  });
+                                }}
+                                className={inputCls}
+                              />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Children</label>
-                              <input type="number" min="0" value={co.children ?? 0}
-                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], children: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
-                                className={inputCls} />
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                Children
+                              </label>
+                              <input
+                                type="number"
+                                min="0"
+                                value={co.children ?? 0}
+                                onChange={(e) => {
+                                  const n = [...discountForm.customOffers];
+                                  n[i] = {
+                                    ...n[i],
+                                    children: Number(e.target.value),
+                                  };
+                                  setDiscountForm({
+                                    ...discountForm,
+                                    customOffers: n,
+                                  });
+                                }}
+                                className={inputCls}
+                              />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Price ($)</label>
-                              <input type="number" min="1" required value={co.offerPrice || ''}
-                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], offerPrice: Number(e.target.value)}; setDiscountForm({...discountForm, customOffers: n}); }}
-                                className={inputCls} />
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                Offer Price ($)
+                              </label>
+                              <input
+                                type="number"
+                                min="1"
+                                required
+                                value={co.offerPrice || ""}
+                                onChange={(e) => {
+                                  const n = [...discountForm.customOffers];
+                                  n[i] = {
+                                    ...n[i],
+                                    offerPrice: Number(e.target.value),
+                                  };
+                                  setDiscountForm({
+                                    ...discountForm,
+                                    customOffers: n,
+                                  });
+                                }}
+                                className={inputCls}
+                              />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Meal Plan</label>
-                              <select value={co.mealPlan || ''} onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], mealPlan: e.target.value}; setDiscountForm({...discountForm, customOffers: n}); }} className={inputCls}>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                Meal Plan
+                              </label>
+                              <select
+                                value={co.mealPlan || ""}
+                                onChange={(e) => {
+                                  const n = [...discountForm.customOffers];
+                                  n[i] = { ...n[i], mealPlan: e.target.value };
+                                  setDiscountForm({
+                                    ...discountForm,
+                                    customOffers: n,
+                                  });
+                                }}
+                                className={inputCls}
+                              >
                                 <option value="">None / Default</option>
                                 <option value="BB">Bed and Breakfast</option>
                                 <option value="HB">Half Board</option>
@@ -1262,73 +2803,372 @@ export default function AdminResorts() {
                               </select>
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Transfer Method</label>
-                              <select value={co.transfer || ''} onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], transfer: e.target.value}; setDiscountForm({...discountForm, customOffers: n}); }} className={inputCls}>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                Transfer Method
+                              </label>
+                              <select
+                                value={co.transfer || ""}
+                                onChange={(e) => {
+                                  const n = [...discountForm.customOffers];
+                                  n[i] = { ...n[i], transfer: e.target.value };
+                                  setDiscountForm({
+                                    ...discountForm,
+                                    customOffers: n,
+                                  });
+                                }}
+                                className={inputCls}
+                              >
                                 <option value="">None / Default</option>
-                                {transferOptions.map(t => <option key={t.id} value={t.name}>{t.name}</option>)}
+                                {transferOptions.map((t) => (
+                                  <option key={t.id} value={t.name}>
+                                    {t.name}
+                                  </option>
+                                ))}
                               </select>
                             </div>
 
                             <div>
-                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Travel From</label>
-                              <input type="date" value={co.validFrom || ''} max={co.validTo || ''}
-                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], validFrom: e.target.value}; setDiscountForm({...discountForm, customOffers: n}); }}
-                                className={inputCls} />
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                Travel From
+                              </label>
+                              <input
+                                type="date"
+                                value={co.validFrom || ""}
+                                max={co.validTo || ""}
+                                onChange={(e) => {
+                                  const n = [...discountForm.customOffers];
+                                  n[i] = { ...n[i], validFrom: e.target.value };
+                                  setDiscountForm({
+                                    ...discountForm,
+                                    customOffers: n,
+                                  });
+                                }}
+                                className={inputCls}
+                              />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Travel To</label>
-                              <input type="date" value={co.validTo || ''} min={co.validFrom || ''}
-                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], validTo: e.target.value}; setDiscountForm({...discountForm, customOffers: n}); }}
-                                className={inputCls} />
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                Travel To
+                              </label>
+                              <input
+                                type="date"
+                                value={co.validTo || ""}
+                                min={co.validFrom || ""}
+                                onChange={(e) => {
+                                  const n = [...discountForm.customOffers];
+                                  n[i] = { ...n[i], validTo: e.target.value };
+                                  setDiscountForm({
+                                    ...discountForm,
+                                    customOffers: n,
+                                  });
+                                }}
+                                className={inputCls}
+                              />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-bold text-gray-400 mb-1">Book Before</label>
-                              <input type="date" value={co.bookBefore || ''} max={co.validTo || ''}
-                                onChange={e => { const n = [...discountForm.customOffers]; n[i] = {...n[i], bookBefore: e.target.value}; setDiscountForm({...discountForm, customOffers: n}); }}
-                                className={inputCls} />
+                              <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                                Book Before
+                              </label>
+                              <input
+                                type="date"
+                                value={co.bookBefore || ""}
+                                max={co.validTo || ""}
+                                onChange={(e) => {
+                                  const n = [...discountForm.customOffers];
+                                  n[i] = {
+                                    ...n[i],
+                                    bookBefore: e.target.value,
+                                  };
+                                  setDiscountForm({
+                                    ...discountForm,
+                                    customOffers: n,
+                                  });
+                                }}
+                                className={inputCls}
+                              />
                             </div>
 
                             <div className="col-span-2 sm:col-span-4 mt-2">
-                              <label className="block text-[10px] font-bold text-gray-400 mb-2">Valid Villa Types</label>
+                              <label className="block text-[10px] font-bold text-gray-400 mb-2">
+                                Valid Villa Types
+                              </label>
                               <div className="flex flex-wrap gap-2">
-                                {resortForModal?.villas?.map((v: any, idx: number) => {
-                                  const isSelected = co.villas?.includes(v.title);
-                                  return (
-                                    <label key={idx} className={`cursor-pointer px-3 py-1.5 rounded-[8px] text-[11px] font-bold border transition-colors ${isSelected ? 'bg-[#1a84ff] text-white border-[#1a84ff]' : 'bg-white text-gray-500 border-gray-200 hover:border-blue-300'}`}>
-                                      <input type="checkbox" className="hidden" checked={isSelected || false} onChange={(e) => {
-                                        const n = [...discountForm.customOffers];
-                                        const currentVillas = n[i].villas || [];
-                                        if (e.target.checked) {
-                                          n[i].villas = [...currentVillas, v.title];
-                                        } else {
-                                          n[i].villas = currentVillas.filter((val: string) => val !== v.title);
-                                        }
-                                        setDiscountForm({...discountForm, customOffers: n});
-                                      }} />
-                                      {v.title}
-                                    </label>
-                                  );
-                                })}
-                                {(!resortForModal?.villas || resortForModal.villas.length === 0) && (
-                                  <span className="text-[11px] text-gray-400">No villas available. Please ensure this resort has villas added.</span>
+                                {resortForModal?.villas?.map(
+                                  (v: any, idx: number) => {
+                                    const isSelected = co.villas?.includes(
+                                      v.title,
+                                    );
+                                    return (
+                                      <label
+                                        key={idx}
+                                        className={`cursor-pointer px-3 py-1.5 rounded-[8px] text-[11px] font-bold border transition-colors ${isSelected ? "bg-[#1a84ff] text-white border-[#1a84ff]" : "bg-white text-gray-500 border-gray-200 hover:border-blue-300"}`}
+                                      >
+                                        <input
+                                          type="checkbox"
+                                          className="hidden"
+                                          checked={isSelected || false}
+                                          onChange={(e) => {
+                                            const n = [
+                                              ...discountForm.customOffers,
+                                            ];
+                                            const currentVillas =
+                                              n[i].villas || [];
+                                            if (e.target.checked) {
+                                              n[i].villas = [
+                                                ...currentVillas,
+                                                v.title,
+                                              ];
+                                            } else {
+                                              n[i].villas =
+                                                currentVillas.filter(
+                                                  (val: string) =>
+                                                    val !== v.title,
+                                                );
+                                            }
+                                            setDiscountForm({
+                                              ...discountForm,
+                                              customOffers: n,
+                                            });
+                                          }}
+                                        />
+                                        {v.title}
+                                      </label>
+                                    );
+                                  },
+                                )}
+                                {(!resortForModal?.villas ||
+                                  resortForModal.villas.length === 0) && (
+                                  <span className="text-[11px] text-gray-400">
+                                    No villas available. Please ensure this
+                                    resort has villas added.
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="col-span-2 sm:col-span-4 mt-2 border-t border-[#e8edf4] pt-2">
+                              <label className="flex items-center gap-2 cursor-pointer text-[11px] font-bold text-[#041d3c]">
+                                <input
+                                  type="checkbox"
+                                  checked={co.flightIncluded || false}
+                                  onChange={(e) => {
+                                    const n = [...discountForm.customOffers];
+                                    n[i] = {
+                                      ...n[i],
+                                      flightIncluded: e.target.checked,
+                                    };
+                                    setDiscountForm({
+                                      ...discountForm,
+                                      customOffers: n,
+                                    });
+                                  }}
+                                  className="rounded text-[#1a84ff] focus:ring-[#1a84ff]"
+                                />
+                                Flight Included
+                              </label>
+                            </div>
+
+                            <div className="col-span-2 sm:col-span-4 mt-2">
+                              <div className="flex items-center justify-between mb-1">
+                                <label className="block text-[10px] font-bold text-gray-400">
+                                  What's Included
+                                </label>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const n = [...discountForm.customOffers];
+                                    n[i] = {
+                                      ...n[i],
+                                      includes: [...(n[i].includes || []), ""],
+                                    };
+                                    setDiscountForm({
+                                      ...discountForm,
+                                      customOffers: n,
+                                    });
+                                  }}
+                                  className="text-[#1a84ff] text-[10px] font-bold hover:underline"
+                                >
+                                  + Add Inclusion
+                                </button>
+                              </div>
+                              <div className="space-y-1">
+                                {co.includes?.map(
+                                  (inc: string, idx: number) => (
+                                    <div key={idx} className="flex gap-2">
+                                      <input
+                                        type="text"
+                                        value={inc}
+                                        onChange={(e) => {
+                                          const n = [
+                                            ...discountForm.customOffers,
+                                          ];
+                                          const newIncludes = [
+                                            ...(n[i].includes || []),
+                                          ];
+                                          newIncludes[idx] = e.target.value;
+                                          n[i] = {
+                                            ...n[i],
+                                            includes: newIncludes,
+                                          };
+                                          setDiscountForm({
+                                            ...discountForm,
+                                            customOffers: n,
+                                          });
+                                        }}
+                                        className={inputCls}
+                                        placeholder="e.g. Daily breakfast"
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const n = [
+                                            ...discountForm.customOffers,
+                                          ];
+                                          const newIncludes = [
+                                            ...(n[i].includes || []),
+                                          ];
+                                          newIncludes.splice(idx, 1);
+                                          n[i] = {
+                                            ...n[i],
+                                            includes: newIncludes,
+                                          };
+                                          setDiscountForm({
+                                            ...discountForm,
+                                            customOffers: n,
+                                          });
+                                        }}
+                                        className="text-rose-400 hover:text-rose-600 px-2 font-bold"
+                                      >
+                                        ×
+                                      </button>
+                                    </div>
+                                  ),
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="col-span-2 sm:col-span-4 mt-2">
+                              <div className="flex items-center justify-between mb-1">
+                                <label className="block text-[10px] font-bold text-gray-400">
+                                  What's Not Included
+                                </label>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const n = [...discountForm.customOffers];
+                                    n[i] = {
+                                      ...n[i],
+                                      excludes: [...(n[i].excludes || []), ""],
+                                    };
+                                    setDiscountForm({
+                                      ...discountForm,
+                                      customOffers: n,
+                                    });
+                                  }}
+                                  className="text-[#1a84ff] text-[10px] font-bold hover:underline"
+                                >
+                                  + Add Exclusion
+                                </button>
+                              </div>
+                              <div className="space-y-1">
+                                {co.excludes?.map(
+                                  (exc: string, idx: number) => (
+                                    <div key={idx} className="flex gap-2">
+                                      <input
+                                        type="text"
+                                        value={exc}
+                                        onChange={(e) => {
+                                          const n = [
+                                            ...discountForm.customOffers,
+                                          ];
+                                          const newExcludes = [
+                                            ...(n[i].excludes || []),
+                                          ];
+                                          newExcludes[idx] = e.target.value;
+                                          n[i] = {
+                                            ...n[i],
+                                            excludes: newExcludes,
+                                          };
+                                          setDiscountForm({
+                                            ...discountForm,
+                                            customOffers: n,
+                                          });
+                                        }}
+                                        className={inputCls}
+                                        placeholder="e.g. Travel insurance"
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const n = [
+                                            ...discountForm.customOffers,
+                                          ];
+                                          const newExcludes = [
+                                            ...(n[i].excludes || []),
+                                          ];
+                                          newExcludes.splice(idx, 1);
+                                          n[i] = {
+                                            ...n[i],
+                                            excludes: newExcludes,
+                                          };
+                                          setDiscountForm({
+                                            ...discountForm,
+                                            customOffers: n,
+                                          });
+                                        }}
+                                        className="text-rose-400 hover:text-rose-600 px-2 font-bold"
+                                      >
+                                        ×
+                                      </button>
+                                    </div>
+                                  ),
                                 )}
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center justify-between mt-1">
                             <div className="text-[10px] text-gray-400 font-bold uppercase flex gap-2">
-                              <span>Actual: <span className="line-through">${actualPrice}</span></span>
+                              <span>
+                                Actual:{" "}
+                                <span className="line-through">
+                                  ${actualPrice}
+                                </span>
+                              </span>
                             </div>
                           </div>
-                          
+
                           <div className="pt-2 border-t border-[#e8edf4]">
-                            <label className="block text-[10px] font-bold text-gray-400 mb-1">Offer Specific Poster</label>
+                            <label className="block text-[10px] font-bold text-gray-400 mb-1">
+                              Offer Specific Poster
+                            </label>
                             <div className="scale-[0.85] origin-top-left w-[117%]">
                               <ImageUpload
                                 value={co.posterUrl || ""}
-                                onChange={(url, publicId) => { const n = [...discountForm.customOffers]; n[i] = {...n[i], posterUrl: url, posterPublicId: publicId}; setDiscountForm({...discountForm, customOffers: n}); }}
-                                onRemove={() => { const n = [...discountForm.customOffers]; n[i] = {...n[i], posterUrl: undefined, posterPublicId: undefined}; setDiscountForm({...discountForm, customOffers: n}); }}
+                                onChange={(url, publicId) => {
+                                  const n = [...discountForm.customOffers];
+                                  n[i] = {
+                                    ...n[i],
+                                    posterUrl: url,
+                                    posterPublicId: publicId,
+                                  };
+                                  setDiscountForm({
+                                    ...discountForm,
+                                    customOffers: n,
+                                  });
+                                }}
+                                onRemove={() => {
+                                  const n = [...discountForm.customOffers];
+                                  n[i] = {
+                                    ...n[i],
+                                    posterUrl: undefined,
+                                    posterPublicId: undefined,
+                                  };
+                                  setDiscountForm({
+                                    ...discountForm,
+                                    customOffers: n,
+                                  });
+                                }}
                                 folder="simplifly/offers"
                               />
                             </div>
@@ -1340,14 +3180,24 @@ export default function AdminResorts() {
                 </div>
               </div>
               <div className="flex gap-3 pt-1">
-                <button type="button" onClick={() => setDiscountModalId(null)} className="flex-1 py-3 bg-[#f4f7fb] text-gray-600 text-[12.5px] font-bold rounded-[12px] hover:bg-gray-200 transition-colors">Cancel</button>
-                <button type="submit" className="flex-1 py-3 bg-[#1a84ff] text-white text-[12.5px] font-bold rounded-[12px] hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/25">Apply Changes</button>
+                <button
+                  type="button"
+                  onClick={() => setDiscountModalId(null)}
+                  className="flex-1 py-3 bg-[#f4f7fb] text-gray-600 text-[12.5px] font-bold rounded-[12px] hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-3 bg-[#1a84ff] text-white text-[12.5px] font-bold rounded-[12px] hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/25"
+                >
+                  Apply Changes
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
     </div>
   );
 }
