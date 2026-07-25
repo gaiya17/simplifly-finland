@@ -221,7 +221,7 @@ export default function SpecialOffers() {
                     Package
                   </span>
                   <span className="text-rose-500 text-[15px] font-black">
-                    ${pkg.customOffers[0].offerPrice}
+                    €{pkg.customOffers[0].offerPrice}
                   </span>
                 </div>
               </div>

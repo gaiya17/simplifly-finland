@@ -747,12 +747,12 @@ export function ResortPackageClient({
 
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-gray-400 text-[18px] font-bold line-through">
-                      $
+                      €
                       {(Number(resort.price) || 0) *
                         (Number(resort.customOffers[offerIndex].nights) || 0)}
                     </span>
                     <span className="text-[#ff245b] text-[36px] font-black leading-none">
-                      ${resort.customOffers[offerIndex].offerPrice}
+                      €{resort.customOffers[offerIndex].offerPrice}
                     </span>
                   </div>
                   <p className="text-gray-500 text-[13px] font-medium mb-6">
@@ -763,7 +763,7 @@ export function ResortPackageClient({
                     const co = resort.customOffers[offerIndex];
                     const adults = co.adults ?? 2;
                     const children = co.children ?? 0;
-                    const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ""}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(" or ")}` : ""} at ${resort.title} for $${co.offerPrice}. Can you check availability?`;
+                    const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ""}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(" or ")}` : ""} at ${resort.title} for €${co.offerPrice}. Can you check availability?`;
                     return (
                       <div className="flex flex-col gap-2 w-full">
                         <button
