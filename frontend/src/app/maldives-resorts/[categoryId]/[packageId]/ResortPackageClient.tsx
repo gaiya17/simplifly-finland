@@ -1554,284 +1554,287 @@ export function ResortPackageClient({
                       return (
                         <div
                           key={i}
-                          className={`bg-white border-2 border-rose-100 rounded-[24px] overflow-hidden shadow-sm relative group hover:border-rose-300 transition-colors ${hasAnyInclusions ? "flex flex-col lg:flex-row" : "flex flex-col max-w-2xl"}`}
+                          className="bg-white border-2 border-rose-100 rounded-[24px] overflow-hidden shadow-sm relative group hover:border-rose-300 transition-colors flex flex-col w-full"
                         >
-                          {/* Left Side: Details */}
-                          <div
-                            className={`flex flex-col flex-1 ${hasAnyInclusions ? "lg:border-r-2 lg:border-rose-100 lg:max-w-md xl:max-w-xl" : ""}`}
-                          >
-                            {co.posterUrl && (
-                              <div className="w-full aspect-[2/1] relative overflow-hidden bg-gray-100">
-                                <img
-                                  src={co.posterUrl}
-                                  alt={`${co.nights} Nights Offer`}
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                />
-                              </div>
-                            )}
-                            <div className="p-6 relative z-10 flex flex-col items-center text-center flex-1">
-                              <span className="bg-rose-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full mb-4 inline-block">
-                                Special Package
-                              </span>
-                              <h4 className="text-[#041d3c] text-[22px] font-black mb-5">
-                                {co.nights} Nights Offer
-                              </h4>
+                          <div className="flex flex-col lg:flex-row w-full flex-1">
+                            {/* Left Column */}
+                            <div className="w-full lg:w-1/2 flex flex-col border-b lg:border-b-0 lg:border-r border-[#e4eaf2]">
+                              {/* Top: Poster */}
+                              {co.posterUrl && (
+                                <div className="w-full relative bg-gray-100 overflow-hidden">
+                                  <img
+                                    src={co.posterUrl}
+                                    alt={`${co.nights} Nights Offer`}
+                                    className="w-full h-auto max-h-[400px] object-cover group-hover:scale-105 transition-transform duration-700"
+                                  />
+                                </div>
+                              )}
 
-                              <div className="flex flex-col gap-3 w-full mb-6 bg-[#f8fafc] border border-[#e4eaf2] p-4 rounded-[16px]">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2 text-gray-500">
+                              {/* Bottom: Inclusions */}
+                              {hasAnyInclusions && (
+                                <div className="flex flex-col flex-1 border-t border-[#e4eaf2] bg-gray-50">
+                                  {co.includes?.length > 0 && (
+                                    <div
+                                      className={`p-6 lg:p-8 bg-emerald-50/40 flex-1 ${co.excludes?.length > 0 ? "border-b border-rose-100/50" : ""}`}
+                                    >
+                                      <h5 className="text-[#041d3c] font-black text-[16px] mb-5 flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                        </div>
+                                        What's Included
+                                      </h5>
+                                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {co.includes.map(
+                                          (inc: string, idx: number) => (
+                                            <li
+                                              key={idx}
+                                              className="flex items-start gap-3 text-[14px] text-gray-700 font-medium"
+                                            >
+                                              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-[6px] shrink-0" />
+                                              <span className="leading-snug">
+                                                {inc}
+                                              </span>
+                                            </li>
+                                          ),
+                                        )}
+                                      </ul>
+                                    </div>
+                                  )}
+
+                                  {co.excludes?.length > 0 && (
+                                    <div className="p-6 lg:p-8 bg-rose-50/40 flex-1">
+                                      <h5 className="text-[#041d3c] font-black text-[16px] mb-5 flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                                          <XCircle className="w-3.5 h-3.5 text-rose-600" />
+                                        </div>
+                                        What's Not Included
+                                      </h5>
+                                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {co.excludes.map(
+                                          (exc: string, idx: number) => (
+                                            <li
+                                              key={idx}
+                                              className="flex items-start gap-3 text-[14px] text-gray-500 font-medium"
+                                            >
+                                              <div className="w-1.5 h-1.5 rounded-full bg-rose-300 mt-[6px] shrink-0" />
+                                              <span className="leading-snug">
+                                                {exc}
+                                              </span>
+                                            </li>
+                                          ),
+                                        )}
+                                      </ul>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Right Column: Details, Price & Buttons */}
+                            <div className="p-6 lg:p-8 flex flex-col w-full lg:w-1/2 bg-white">
+                              {/* Title & Pill */}
+                              <div className="flex flex-col mb-8">
+                                <span className="bg-rose-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full mb-3 w-fit">
+                                  Special Package
+                                </span>
+                                <h4 className="text-[#041d3c] text-[24px] lg:text-[28px] font-black leading-tight">
+                                  {co.nights} Nights Offer
+                                </h4>
+                              </div>
+
+                              {/* Details Grid */}
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6 mb-8 w-full flex-1 content-start">
+                                <div className="flex flex-col items-start text-left truncate">
+                                  <div className="flex items-center gap-1.5 text-gray-500 mb-1">
                                     <Moon className="w-4 h-4 text-[#1a84ff]" />
-                                    <span className="text-[13px] font-bold">
+                                    <span className="text-[11px] font-bold uppercase tracking-wider">
                                       Duration
                                     </span>
                                   </div>
-                                  <span className="text-[#041d3c] font-black text-[14px]">
+                                  <span className="text-[#041d3c] font-black text-[14px] truncate w-full">
                                     {co.nights} Nights
                                   </span>
                                 </div>
-                                <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2 text-gray-500">
+                                <div className="flex flex-col items-start text-left truncate">
+                                  <div className="flex items-center gap-1.5 text-gray-500 mb-1">
                                     <Users className="w-4 h-4 text-[#1a84ff]" />
-                                    <span className="text-[13px] font-bold">
+                                    <span className="text-[11px] font-bold uppercase tracking-wider">
                                       Guests
                                     </span>
                                   </div>
-                                  <span className="text-[#041d3c] font-black text-[14px]">
+                                  <span className="text-[#041d3c] font-black text-[14px] truncate w-full">
                                     {adults} Adults
                                     {children > 0
                                       ? `, ${children} Children`
                                       : ""}
                                   </span>
                                 </div>
+
                                 {co.villas && co.villas.length > 0 && (
-                                  <>
-                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                                    <div className="flex items-center justify-between text-left gap-4">
-                                      <div className="flex items-center gap-2 text-gray-500 shrink-0">
-                                        <BedDouble className="w-4 h-4 text-[#1a84ff]" />
-                                        <span className="text-[13px] font-bold">
-                                          Room/Villa
-                                        </span>
-                                      </div>
-                                      <span className="text-[#041d3c] font-black text-[14px] leading-tight text-right">
-                                        {co.villas.join(", ")}
+                                  <div className="flex flex-col items-start text-left truncate">
+                                    <div className="flex items-center gap-1.5 text-gray-500 mb-1">
+                                      <BedDouble className="w-4 h-4 text-[#1a84ff]" />
+                                      <span className="text-[11px] font-bold uppercase tracking-wider">
+                                        Room/Villa
                                       </span>
                                     </div>
-                                  </>
+                                    <span className="text-[#041d3c] font-black text-[14px] leading-tight line-clamp-2 w-full">
+                                      {co.villas.join(", ")}
+                                    </span>
+                                  </div>
                                 )}
+
                                 {co.flightIncluded && (
-                                  <>
-                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2 text-gray-500">
-                                        <Plane className="w-4 h-4 text-[#1a84ff]" />
-                                        <span className="text-[13px] font-bold">
-                                          Flight
-                                        </span>
-                                      </div>
-                                      <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[13px] font-black flex items-center gap-1">
-                                        <CheckCircle2 className="w-3.5 h-3.5" />{" "}
-                                        Included
+                                  <div className="flex flex-col items-start text-left truncate">
+                                    <div className="flex items-center gap-1.5 text-gray-500 mb-1">
+                                      <Plane className="w-4 h-4 text-[#1a84ff]" />
+                                      <span className="text-[11px] font-bold uppercase tracking-wider">
+                                        Flight
                                       </span>
                                     </div>
-                                  </>
+                                    <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[12px] font-black flex items-center gap-1 w-fit">
+                                      <CheckCircle2 className="w-3.5 h-3.5" />{" "}
+                                      Included
+                                    </span>
+                                  </div>
                                 )}
+
                                 {co.mealPlan && (
-                                  <>
-                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2 text-gray-500">
-                                        <UtensilsCrossed className="w-4 h-4 text-[#1a84ff]" />
-                                        <span className="text-[13px] font-bold">
-                                          Meal Plan
-                                        </span>
-                                      </div>
-                                      <span className="text-[#041d3c] font-black text-[14px]">
-                                        {co.mealPlan === "BB"
-                                          ? "Bed and Breakfast"
-                                          : co.mealPlan === "HB"
-                                            ? "Half Board"
-                                            : co.mealPlan === "FB"
-                                              ? "Full Board"
-                                              : co.mealPlan === "AI"
-                                                ? "All Inclusive"
-                                                : co.mealPlan}
+                                  <div className="flex flex-col items-start text-left truncate">
+                                    <div className="flex items-center gap-1.5 text-gray-500 mb-1">
+                                      <UtensilsCrossed className="w-4 h-4 text-[#1a84ff]" />
+                                      <span className="text-[11px] font-bold uppercase tracking-wider">
+                                        Meal Plan
                                       </span>
                                     </div>
-                                  </>
+                                    <span className="text-[#041d3c] font-black text-[14px] truncate w-full">
+                                      {co.mealPlan === "BB"
+                                        ? "Bed and Breakfast"
+                                        : co.mealPlan === "HB"
+                                          ? "Half Board"
+                                          : co.mealPlan === "FB"
+                                            ? "Full Board"
+                                            : co.mealPlan === "AI"
+                                              ? "All Inclusive"
+                                              : co.mealPlan}
+                                    </span>
+                                  </div>
                                 )}
+
                                 {co.transfer && (
-                                  <>
-                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2 text-gray-500">
-                                        <Plane className="w-4 h-4 text-[#1a84ff]" />
-                                        <span className="text-[13px] font-bold">
-                                          Transfer
-                                        </span>
-                                      </div>
-                                      <span className="text-[#041d3c] font-black text-[14px]">
-                                        {co.transfer}
+                                  <div className="flex flex-col items-start text-left truncate">
+                                    <div className="flex items-center gap-1.5 text-gray-500 mb-1">
+                                      <Plane className="w-4 h-4 text-[#1a84ff]" />
+                                      <span className="text-[11px] font-bold uppercase tracking-wider">
+                                        Transfer
                                       </span>
                                     </div>
-                                  </>
+                                    <span className="text-[#041d3c] font-black text-[14px] truncate w-full">
+                                      {co.transfer}
+                                    </span>
+                                  </div>
                                 )}
+
                                 {co.validFrom && co.validTo && (
-                                  <>
-                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2 text-gray-500">
-                                        <Calendar className="w-4 h-4 text-[#1a84ff]" />
-                                        <span className="text-[13px] font-bold">
-                                          Travel Period
-                                        </span>
-                                      </div>
-                                      <span className="text-[#041d3c] font-black text-[13px]">
-                                        {new Date(
-                                          co.validFrom + "T00:00:00Z",
-                                        ).toLocaleDateString("en-GB", {
-                                          day: "numeric",
-                                          month: "short",
-                                          timeZone: "UTC",
-                                        })}{" "}
-                                        -{" "}
-                                        {new Date(
-                                          co.validTo + "T00:00:00Z",
-                                        ).toLocaleDateString("en-GB", {
-                                          day: "numeric",
-                                          month: "short",
-                                          year: "numeric",
-                                          timeZone: "UTC",
-                                        })}
+                                  <div className="flex flex-col items-start text-left truncate">
+                                    <div className="flex items-center gap-1.5 text-gray-500 mb-1">
+                                      <Calendar className="w-4 h-4 text-[#1a84ff]" />
+                                      <span className="text-[11px] font-bold uppercase tracking-wider">
+                                        Travel Period
                                       </span>
                                     </div>
-                                  </>
+                                    <span className="text-[#041d3c] font-black text-[13px] truncate w-full">
+                                      {new Date(
+                                        co.validFrom + "T00:00:00Z",
+                                      ).toLocaleDateString("en-GB", {
+                                        day: "numeric",
+                                        month: "short",
+                                        timeZone: "UTC",
+                                      })}{" "}
+                                      -{" "}
+                                      {new Date(
+                                        co.validTo + "T00:00:00Z",
+                                      ).toLocaleDateString("en-GB", {
+                                        day: "numeric",
+                                        month: "short",
+                                        year: "numeric",
+                                        timeZone: "UTC",
+                                      })}
+                                    </span>
+                                  </div>
                                 )}
+
                                 {co.bookBefore && (
-                                  <>
-                                    <div className="h-[1px] w-full bg-[#e4eaf2]" />
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2 text-gray-500">
-                                        <Clock className="w-4 h-4 text-rose-500" />
-                                        <span className="text-[13px] font-bold text-rose-500">
-                                          Book Before
-                                        </span>
-                                      </div>
-                                      <span className="text-rose-500 font-black text-[13px]">
-                                        {new Date(
-                                          co.bookBefore + "T00:00:00Z",
-                                        ).toLocaleDateString("en-GB", {
-                                          day: "numeric",
-                                          month: "short",
-                                          year: "numeric",
-                                          timeZone: "UTC",
-                                        })}
+                                  <div className="flex flex-col items-start text-left truncate">
+                                    <div className="flex items-center gap-1.5 text-rose-500 mb-1">
+                                      <Clock className="w-4 h-4 text-rose-500" />
+                                      <span className="text-[11px] font-bold uppercase tracking-wider">
+                                        Book Before
                                       </span>
                                     </div>
-                                  </>
+                                    <span className="text-rose-500 font-black text-[14px] truncate w-full">
+                                      {new Date(
+                                        co.bookBefore + "T00:00:00Z",
+                                      ).toLocaleDateString("en-GB", {
+                                        day: "numeric",
+                                        month: "short",
+                                        year: "numeric",
+                                        timeZone: "UTC",
+                                      })}
+                                    </span>
+                                  </div>
                                 )}
                               </div>
 
-                              <div className="flex items-center justify-center gap-2 mt-auto pt-2 mb-1">
-                                <span className="text-gray-400 text-[14px] font-bold line-through">
-                                  ${actualPrice}
-                                </span>
-                                <span className="text-rose-500 text-[28px] font-black leading-none">
-                                  ${co.offerPrice}
-                                </span>
-                              </div>
-                              <p className="text-gray-500 text-[12px] font-medium mb-6">
-                                Total package price
-                              </p>
-
-                              <div className="flex flex-col gap-2 w-full">
-                                <button
-                                  onClick={() => {
-                                    const adults = co.adults ?? 2;
-                                    const children = co.children ?? 0;
-                                    const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · $${co.offerPrice}`;
-                                    setValue("selectedOffer", valString);
-                                    document
-                                      .getElementById("inquire-form")
-                                      ?.scrollIntoView({ behavior: "smooth" });
-                                  }}
-                                  className="w-full bg-[#041d3c] text-white rounded-[12px] py-3 font-extrabold text-[14px] flex items-center justify-center transition-all duration-300 hover:bg-[#1a84ff] hover:-translate-y-0.5"
-                                >
-                                  Book Now
-                                </button>
-                                <a
-                                  href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
-                                >
-                                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
-                                  <WaIcon />
-                                  <span className="relative z-10">
-                                    WhatsApp Us
+                              {/* Price and Buttons */}
+                              <div className="mt-auto flex flex-col pt-6 border-t border-[#e4eaf2]">
+                                <div className="flex flex-wrap items-center justify-center mb-6 gap-3">
+                                  <span className="text-[#041d3c] text-[16px] font-black uppercase tracking-widest mt-1">
+                                    Price:
                                   </span>
-                                </a>
+                                  <div className="flex items-center gap-2.5">
+                                    <span className="text-gray-400 text-[18px] font-bold line-through">
+                                      ${actualPrice}
+                                    </span>
+                                    <span className="text-rose-500 text-[36px] font-black leading-none">
+                                      ${co.offerPrice}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full">
+                                  <button
+                                    onClick={() => {
+                                      const adults = co.adults ?? 2;
+                                      const children = co.children ?? 0;
+                                      const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · $${co.offerPrice}`;
+                                      setValue("selectedOffer", valString);
+                                      document
+                                        .getElementById("inquire-form")
+                                        ?.scrollIntoView({
+                                          behavior: "smooth",
+                                        });
+                                    }}
+                                    className="flex-1 px-4 bg-[#041d3c] text-white rounded-[12px] py-4 font-extrabold text-[15px] flex items-center justify-center transition-all duration-300 hover:bg-[#1a84ff] hover:-translate-y-0.5 whitespace-nowrap"
+                                  >
+                                    Book Now
+                                  </button>
+                                  <a
+                                    href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-1 px-4 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-4 font-extrabold text-[14px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden whitespace-nowrap"
+                                  >
+                                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
+                                    <WaIcon />
+                                    <span className="relative z-10">
+                                      WhatsApp Us
+                                    </span>
+                                  </a>
+                                </div>
                               </div>
                             </div>
                           </div>
-
-                          {/* Right Side: Inclusions/Exclusions (if any) */}
-                          {hasAnyInclusions && (
-                            <div className="p-6 lg:p-8 bg-rose-50/20 flex-1 flex flex-col gap-8">
-                              {co.includes?.length > 0 && (
-                                <div>
-                                  <h5 className="text-[#041d3c] font-black text-[16px] mb-4 flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                                    </div>
-                                    What's Included
-                                  </h5>
-                                  <ul className="space-y-3">
-                                    {co.includes.map(
-                                      (inc: string, idx: number) => (
-                                        <li
-                                          key={idx}
-                                          className="flex items-start gap-3 text-[14px] text-gray-700 font-medium"
-                                        >
-                                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-[6px] shrink-0" />
-                                          <span className="leading-snug">
-                                            {inc}
-                                          </span>
-                                        </li>
-                                      ),
-                                    )}
-                                  </ul>
-                                </div>
-                              )}
-
-                              {co.excludes?.length > 0 && (
-                                <div>
-                                  <h5 className="text-[#041d3c] font-black text-[16px] mb-4 flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
-                                      <XCircle className="w-3.5 h-3.5 text-rose-600" />
-                                    </div>
-                                    What's Not Included
-                                  </h5>
-                                  <ul className="space-y-3">
-                                    {co.excludes.map(
-                                      (exc: string, idx: number) => (
-                                        <li
-                                          key={idx}
-                                          className="flex items-start gap-3 text-[14px] text-gray-500 font-medium"
-                                        >
-                                          <div className="w-1.5 h-1.5 rounded-full bg-rose-300 mt-[6px] shrink-0" />
-                                          <span className="leading-snug">
-                                            {exc}
-                                          </span>
-                                        </li>
-                                      ),
-                                    )}
-                                  </ul>
-                                </div>
-                              )}
-                            </div>
-                          )}
                         </div>
                       );
                     })}
