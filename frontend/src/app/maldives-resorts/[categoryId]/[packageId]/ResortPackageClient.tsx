@@ -1093,7 +1093,7 @@ export function ResortPackageClient({
                       {resort.customOffers?.map((co: any, i: number) => {
                         const adults = co.adults ?? 2;
                         const children = co.children ?? 0;
-                        const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · $${co.offerPrice}`;
+                        const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · €${co.offerPrice}`;
                         return (
                           <option key={`co-${i}`} value={valString}>
                             {valString}
@@ -1550,7 +1550,7 @@ export function ResortPackageClient({
                         (co.includes && co.includes.length > 0) ||
                         (co.excludes && co.excludes.length > 0);
 
-                      const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ""}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(" or ")}` : ""} at ${resort.title} for $${co.offerPrice}. Can you check availability?`;
+                      const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ""}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(" or ")}` : ""} at ${resort.title} for €${co.offerPrice}. Can you check availability?`;
                       return (
                         <div
                           key={i}
@@ -1794,10 +1794,10 @@ export function ResortPackageClient({
                                   </span>
                                   <div className="flex items-center gap-2.5">
                                     <span className="text-gray-400 text-[18px] font-bold line-through">
-                                      ${actualPrice}
+                                      €{actualPrice}
                                     </span>
                                     <span className="text-rose-500 text-[36px] font-black leading-none">
-                                      ${co.offerPrice}
+                                      €{co.offerPrice}
                                     </span>
                                   </div>
                                 </div>
@@ -1807,7 +1807,7 @@ export function ResortPackageClient({
                                     onClick={() => {
                                       const adults = co.adults ?? 2;
                                       const children = co.children ?? 0;
-                                      const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · $${co.offerPrice}`;
+                                      const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · €${co.offerPrice}`;
                                       setValue("selectedOffer", valString);
                                       document
                                         .getElementById("inquire-form")
