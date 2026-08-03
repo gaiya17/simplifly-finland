@@ -167,33 +167,43 @@ export function ResortPackageClient({
   const watchedCountry = watch("country");
   const watchedCheckIn = watch("checkIn");
   const watchedNights = watch("nights");
-  const watchedSelectedOffer = watch("selectedOffer");
 
-  const isCustomOfferSelected = resort.customOffers?.some((co: any) => {
-    return (
-      watchedSelectedOffer?.includes(`${co.nights} Nights`) &&
-      watchedSelectedOffer?.includes(`$${co.offerPrice}`)
-    );
-  });
+  // ── Offer locking state ───────────────────────────────────────────────────
+  // Tracks which customOffer index is currently "locked" into the form.
+  // null = no offer locked (free-form mode)
+  const [lockedOfferIndex, setLockedOfferIndex] = useState<number | null>(null);
+  const isCustomOfferSelected = lockedOfferIndex !== null;
+  const lockedOffer =
+    lockedOfferIndex !== null
+      ? resort.customOffers?.[lockedOfferIndex] ?? null
+      : null;
 
-  // Auto-fill form when a package offer is selected
-  useEffect(() => {
-    if (!watchedSelectedOffer) return;
-    const match = resort.customOffers?.find((co: any) => {
-      return (
-        watchedSelectedOffer.includes(`${co.nights} Nights`) &&
-        watchedSelectedOffer.includes(`$${co.offerPrice}`)
-      );
-    });
-    if (match) {
-      setValue("nights", String(match.nights));
-      setValue("adults", String(match.adults ?? 2));
-      setValue("children", String(match.children ?? 0));
-      if (match.villas && match.villas.length > 0) {
-        setValue("roomType", match.villas.join(" or "));
+  /** Lock a specific offer into the form and auto-fill all its fields. */
+  const lockOffer = useCallback(
+    (idx: number) => {
+      const co = resort.customOffers?.[idx];
+      if (!co) return;
+      setLockedOfferIndex(idx);
+      setValue("nights", String(co.nights));
+      setValue("adults", String(co.adults ?? 2));
+      setValue("children", String(co.children ?? 0));
+      if (co.villas && co.villas.length > 0) {
+        setValue("roomType", co.villas.join(" or "));
       }
-    }
-  }, [watchedSelectedOffer, resort.customOffers, setValue]);
+      // Also store in selectedOffer field so it appears in the submission payload
+      const adults = co.adults ?? 2;
+      const children = co.children ?? 0;
+      const valString = `${co.nights} Nights \u00b7 ${adults} Adults${children > 0 ? ` \u00b7 ${children} Children` : ""}${co.villas?.length > 0 ? ` \u00b7 ${co.villas.join(" or ")}` : ""} \u00b7 \u20ac${co.offerPrice}`;
+      setValue("selectedOffer", valString);
+    },
+    [resort.customOffers, setValue],
+  );
+
+  /** Clear the locked offer and restore free-form mode. */
+  const clearLockedOffer = useCallback(() => {
+    setLockedOfferIndex(null);
+    setValue("selectedOffer", "");
+  }, [setValue]);
 
   // Auto-fill phone code when country changes
   useEffect(() => {
@@ -1086,7 +1096,19 @@ export function ResortPackageClient({
                   (resort.offers && resort.offers.length > 0)) && (
                   <div>
                     <select
-                      {...register("selectedOffer")}
+                      value={isCustomOfferSelected ? (lockedOffer ? `${lockedOffer.nights} Nights · ${lockedOffer.adults ?? 2} Adults${(lockedOffer.children ?? 0) > 0 ? ` · ${lockedOffer.children} Children` : ""}${lockedOffer.villas?.length > 0 ? ` · ${lockedOffer.villas.join(" or ")}` : ""} · €${lockedOffer.offerPrice}` : "") : ""}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (!val) { clearLockedOffer(); return; }
+                        const idx = resort.customOffers?.findIndex((co: any) => {
+                          const adults = co.adults ?? 2;
+                          const children = co.children ?? 0;
+                          const v = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · €${co.offerPrice}`;
+                          return v === val;
+                        });
+                        if (idx !== undefined && idx >= 0) lockOffer(idx);
+                        else clearLockedOffer();
+                      }}
                       className="w-full appearance-none bg-[#f8fafc] border border-[#e4eaf2] rounded-[12px] px-4 py-3 text-[#041d3c] font-medium text-[13px] focus:outline-none focus:border-[#1a84ff] transition-colors cursor-pointer"
                     >
                       <option value="">Select Package Offer (Optional)</option>
@@ -1107,6 +1129,37 @@ export function ResortPackageClient({
                       ))}
                     </select>
                   </div>
+                )}
+
+                {/* Locked Offer Banner — shows when an offer is selected via Book Now or dropdown */}
+                {isCustomOfferSelected && lockedOffer && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="bg-rose-50 border border-rose-200 rounded-[14px] px-4 py-3 flex items-center justify-between gap-3"
+                  >
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <span className="text-rose-600 font-black text-[10px] uppercase tracking-widest">
+                        Selected Offer — Fields Locked
+                      </span>
+                      <span className="text-[#041d3c] font-bold text-[13px] truncate">
+                        {lockedOffer.nights} Nights &middot; {lockedOffer.adults ?? 2} Adults
+                        {(lockedOffer.children ?? 0) > 0 && ` · ${lockedOffer.children} Children`}
+                        {lockedOffer.villas?.length > 0 && ` · ${lockedOffer.villas.join(" or ")}`}
+                        &nbsp;&mdash;&nbsp;
+                        <span className="text-rose-500 font-black">€{lockedOffer.offerPrice}</span>
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={clearLockedOffer}
+                      className="shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-white border border-rose-200 text-rose-400 hover:text-rose-600 hover:border-rose-400 transition-colors"
+                      title="Clear offer selection"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </motion.div>
                 )}
 
                 {/* Number of Guests */}
@@ -1206,7 +1259,7 @@ export function ResortPackageClient({
                       <option value="Standard Room">Standard Room</option>
                     )}
                     {/* Add dynamic option if custom offer has multiple villas that don't match exactly */}
-                    {watchedSelectedOffer &&
+                    {isCustomOfferSelected &&
                       watch("roomType") &&
                       !resort.villas?.some(
                         (v: any) => v.title === watch("roomType"),
@@ -1805,10 +1858,8 @@ export function ResortPackageClient({
                                 <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full">
                                   <button
                                     onClick={() => {
-                                      const adults = co.adults ?? 2;
-                                      const children = co.children ?? 0;
-                                      const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · €${co.offerPrice}`;
-                                      setValue("selectedOffer", valString);
+                                      // Lock this specific offer by its index
+                                      lockOffer(i);
                                       document
                                         .getElementById("inquire-form")
                                         ?.scrollIntoView({
