@@ -436,14 +436,14 @@ export default function AdminResorts() {
                       Price
                     </p>
                     <p className="text-[15px] font-black leading-none">
-                      $
+                      €
                       {resort.discount
                         ? Math.round(resort.price * (1 - resort.discount / 100))
                         : resort.price}
                     </p>
                     {resort.discount && (
                       <p className="text-[10px] line-through text-white/50">
-                        ${resort.price}
+                        €{resort.price}
                       </p>
                     )}
                   </div>
@@ -676,7 +676,7 @@ export default function AdminResorts() {
                       />
                     </div>
                     <div>
-                      <label className={labelCls}>Starting Price ($)</label>
+                      <label className={labelCls}>Starting Price (€)</label>
                       <input
                         type="number"
                         placeholder="e.g. 1500"
@@ -932,7 +932,7 @@ export default function AdminResorts() {
                                 </div>
                                 <div>
                                   <label className="block text-[10px] font-bold text-gray-400 mb-1">
-                                    Offer Price ($)
+                                    Offer Price (€)
                                   </label>
                                   <input
                                     type="number"
@@ -1286,7 +1286,7 @@ export default function AdminResorts() {
                                   <span>
                                     Actual:{" "}
                                     <span className="line-through">
-                                      ${actualPrice}
+                                      €{actualPrice}
                                     </span>
                                   </span>
                                 </div>
@@ -2758,7 +2758,7 @@ export default function AdminResorts() {
                             </div>
                             <div>
                               <label className="block text-[10px] font-bold text-gray-400 mb-1">
-                                Offer Price ($)
+                                Offer Price (€)
                               </label>
                               <input
                                 type="number"
@@ -3132,7 +3132,7 @@ export default function AdminResorts() {
                               <span>
                                 Actual:{" "}
                                 <span className="line-through">
-                                  ${actualPrice}
+                                  €{actualPrice}
                                 </span>
                               </span>
                             </div>
