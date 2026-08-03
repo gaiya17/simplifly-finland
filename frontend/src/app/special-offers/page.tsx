@@ -51,8 +51,16 @@ export default function SpecialOffers() {
           }
         });
 
-        setTours(Array.isArray(toursData) ? toursData : []);
-        setResorts(flattenedResorts);
+        const sortedTours = (Array.isArray(toursData) ? toursData : [])
+          .slice()
+          .sort((a: any, b: any) => (a.title || '').localeCompare(b.title || ''));
+
+        const sortedResorts = flattenedResorts
+          .slice()
+          .sort((a: any, b: any) => (a.title || '').localeCompare(b.title || ''));
+
+        setTours(sortedTours);
+        setResorts(sortedResorts);
       } catch {
       } finally {
         setIsLoading(false);

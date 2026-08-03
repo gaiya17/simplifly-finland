@@ -26,7 +26,7 @@ export default function AllMaldivesResorts() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<number>(15000); // max price
   const [maxAvailablePrice, setMaxAvailablePrice] = useState<number>(15000);
-  const [sortOrder, setSortOrder] = useState<string>('price-asc');
+  const [sortOrder, setSortOrder] = useState<string>('a-z');
 
   // Resort specific filters
   const [starRating, setStarRating] = useState<string>('all');

@@ -93,6 +93,10 @@ export default async function MaldivesResortsCategory({ params }: { params: Prom
   try {
     dbCategory = await resortApi.getCategory(categoryId).catch(() => null);
     liveResorts = await resortApi.getPublicResorts(categoryId);
+    // Sort A-Z by title
+    liveResorts = [...liveResorts].sort((a: any, b: any) =>
+      (a.title || '').localeCompare(b.title || '')
+    );
   } catch {
     // Render with static fallback data if live API unavailable
   }

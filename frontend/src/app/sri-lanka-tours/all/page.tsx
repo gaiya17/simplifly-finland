@@ -21,7 +21,7 @@ export default function AllSriLankaTours() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<number>(10000); // max price
   const [maxAvailablePrice, setMaxAvailablePrice] = useState<number>(10000);
-  const [sortOrder, setSortOrder] = useState<string>('price-asc');
+  const [sortOrder, setSortOrder] = useState<string>('a-z');
 
   useEffect(() => {
     const fetchData = async () => {

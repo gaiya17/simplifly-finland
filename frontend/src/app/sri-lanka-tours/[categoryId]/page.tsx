@@ -100,7 +100,9 @@ export default async function SriLankaTourCategory({ params }: { params: Promise
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 items-stretch">
-              {data.packages.map((pkg: any) => {
+              {[...data.packages]
+                .sort((a: any, b: any) => (a.title || '').localeCompare(b.title || ''))
+                .map((pkg: any) => {
                 const discountedPrice = pkg.discount
                   ? Math.round(pkg.price * (1 - pkg.discount / 100))
                   : null;
