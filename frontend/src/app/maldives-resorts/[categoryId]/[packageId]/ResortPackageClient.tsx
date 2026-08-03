@@ -205,6 +205,18 @@ export function ResortPackageClient({
     setValue("selectedOffer", "");
   }, [setValue]);
 
+  /**
+   * Scrolls to the inquiry form with a precise pixel offset so the form
+   * is never hidden behind the sticky navbar (clears ~100px).
+   * More reliable than scrollIntoView across all browsers and screen sizes.
+   */
+  const scrollToForm = useCallback(() => {
+    const el = document.getElementById("inquire-form");
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 100;
+    window.scrollTo({ top, behavior: "smooth" });
+  }, []);
+
   // Auto-fill phone code when country changes
   useEffect(() => {
     if (!watchedCountry) return;
@@ -510,11 +522,7 @@ export function ResortPackageClient({
           </a>
 
           <button
-            onClick={() =>
-              document
-                .getElementById("inquire-form")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
+            onClick={scrollToForm}
             className="w-full mt-3 bg-[#041d3c] hover:bg-[#1a84ff] text-white rounded-[14px] py-3.5 font-extrabold text-[14px] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(26,132,255,0.25)] hover:-translate-y-0.5"
           >
             Book Now
@@ -590,7 +598,20 @@ export function ResortPackageClient({
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
               <div className="flex-1 min-w-0">{overviewHeader}</div>
               <div className="w-full lg:w-[420px] shrink-0">
-                <div className="w-full rounded-[24px] bg-white shadow-[0_16px_48px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 p-8 flex flex-col items-center text-center relative group">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    lockOffer(offerIndex);
+                    scrollToForm();
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      lockOffer(offerIndex);
+                      scrollToForm();
+                    }
+                  }}
+                  className="w-full rounded-[24px] bg-white shadow-[0_16px_48px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 p-8 flex flex-col items-center text-center relative group cursor-pointer hover:border-[#1a84ff]/30 hover:shadow-[0_20px_56px_rgba(26,132,255,0.12)] hover:-translate-y-0.5 transition-all duration-300">
                   <span className="bg-[#ff245b] text-white text-[11px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full mb-5">
                     Special Package
                   </span>
@@ -777,12 +798,10 @@ export function ResortPackageClient({
                     return (
                       <div className="flex flex-col gap-2 w-full">
                         <button
-                          onClick={() => {
-                            const valString = `${co.nights} Nights · ${adults} Adults${children > 0 ? ` · ${children} Children` : ""}${co.villas?.length > 0 ? ` · ${co.villas.join(" or ")}` : ""} · $${co.offerPrice}`;
-                            setValue("selectedOffer", valString);
-                            document
-                              .getElementById("inquire-form")
-                              ?.scrollIntoView({ behavior: "smooth" });
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            lockOffer(offerIndex);
+                            scrollToForm();
                           }}
                           className="w-full py-3.5 bg-[#041d3c] text-white rounded-[12px] font-extrabold text-[14px] hover:bg-[#1a84ff] hover:-translate-y-0.5 transition-all duration-300 shadow-[0_8px_24px_rgba(4,29,60,0.12)]"
                         >
@@ -1860,11 +1879,7 @@ export function ResortPackageClient({
                                     onClick={() => {
                                       // Lock this specific offer by its index
                                       lockOffer(i);
-                                      document
-                                        .getElementById("inquire-form")
-                                        ?.scrollIntoView({
-                                          behavior: "smooth",
-                                        });
+                                      scrollToForm();
                                     }}
                                     className="flex-1 px-4 bg-[#041d3c] text-white rounded-[12px] py-4 font-extrabold text-[15px] flex items-center justify-center transition-all duration-300 hover:bg-[#1a84ff] hover:-translate-y-0.5 whitespace-nowrap"
                                   >
