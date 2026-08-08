@@ -6,7 +6,7 @@ import Script from "next/script";
 export const MetaPixel = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const PIXEL_ID = "1094569052893397";
 
   useEffect(() => {
     if (!PIXEL_ID) return;
