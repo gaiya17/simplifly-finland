@@ -47,6 +47,7 @@ services:
         # Baked into the JS bundle at build time.
         # /api means browser calls go through the Next.js rewrite proxy.
         NEXT_PUBLIC_API_URL: /api
+        NEXT_PUBLIC_META_PIXEL_ID: 1094569052893397
     environment:
       # Server-side (SSR/RSC) calls go directly to the backend container.
       # This avoids an unnecessary round-trip through Caddy.
