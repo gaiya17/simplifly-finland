@@ -11,6 +11,9 @@ WORKDIR /app
 ARG NEXT_PUBLIC_API_URL=/api
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
+ARG NEXT_PUBLIC_META_PIXEL_ID
+ENV NEXT_PUBLIC_META_PIXEL_ID=$NEXT_PUBLIC_META_PIXEL_ID
+
 # Copy dependency manifests and install
 COPY package.json package-lock.json ./
 RUN npm install --legacy-peer-deps
