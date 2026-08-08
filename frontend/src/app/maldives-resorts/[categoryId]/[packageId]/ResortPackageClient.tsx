@@ -308,6 +308,11 @@ export function ResortPackageClient({
           icon: "✉️",
         },
       );
+      // @ts-ignore
+      if (typeof window !== 'undefined' && window.fbq) {
+        // @ts-ignore
+        window.fbq('track', 'Lead');
+      }
       reset();
       setPhoneCode("");
       setPhoneNumber("");

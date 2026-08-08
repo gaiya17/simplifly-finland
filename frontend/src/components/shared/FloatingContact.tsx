@@ -338,6 +338,11 @@ export const FloatingContact = () => {
     const next = flow[option.next];
     if (next) {
       if (next.action === 'whatsapp' && next.whatsappText) {
+        // @ts-ignore
+        if (typeof window !== 'undefined' && window.fbq) {
+          // @ts-ignore
+          window.fbq('track', 'Contact');
+        }
         window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(next.whatsappText)}`, '_blank');
       }
       triggerBot(next, 600);
@@ -364,6 +369,13 @@ export const FloatingContact = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="WhatsApp Us"
+            onClick={() => {
+              // @ts-ignore
+              if (typeof window !== 'undefined' && window.fbq) {
+                // @ts-ignore
+                window.fbq('track', 'Contact');
+              }
+            }}
             className="w-[52px] h-[52px] bg-gradient-to-br from-[#25D366] to-[#128c7e] text-white flex items-center justify-center rounded-full shadow-[0_8px_24px_rgba(37,211,102,0.4)] hover:-translate-y-1 transition-all duration-300"
           >
             <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
