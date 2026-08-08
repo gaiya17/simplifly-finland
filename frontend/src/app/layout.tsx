@@ -20,6 +20,7 @@ import NextTopLoader from 'nextjs-toploader';
 
 import { SiteAssetsProvider } from '../components/providers/SiteAssetsProvider';
 import TawkToTracker from '../components/shared/TawkToTracker';
+import { MetaPixel } from '../components/shared/MetaPixel';
 
 // ─── Font Loading ──────────────────────────────────────────────────────────────
 // next/font automatically downloads and self-hosts Poppins at build time.
@@ -247,7 +248,10 @@ export default function RootLayout({
            * page (/admin, /login) or a public page and renders the appropriate
            * shell (Header + Footer vs. bare main).
            */}
-          <ClientLayout>{children}</ClientLayout>
+          <ClientLayout>
+            <MetaPixel />
+            {children}
+          </ClientLayout>
           
           {/* Tawk.to background tracking — invisible, no performance impact */}
           <TawkToTracker />
