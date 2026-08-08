@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import nodemailer from 'nodemailer';
+import bizSdk from 'facebook-nodejs-business-sdk';
+import crypto from 'crypto';
 
 // Modern HTML Template for Admin Notification
 const generateAdminEmailHtml = (data: any) => `
@@ -163,6 +165,50 @@ export const submitInquiry = async (req: Request, res: Response): Promise<void> 
       transporter.sendMail(adminMailOptions),
       transporter.sendMail(customerMailOptions)
     ]);
+
+    // Meta Conversions API (CAPI) Integration
+    try {
+      const access_token = process.env.META_ACCESS_TOKEN;
+      const pixel_id = process.env.META_PIXEL_ID;
+      
+      if (access_token && pixel_id) {
+        bizSdk.FacebookAdsApi.init(access_token);
+        
+        const EventRequest = bizSdk.EventRequest;
+        const UserData = bizSdk.UserData;
+        const ServerEvent = bizSdk.ServerEvent;
+
+        const current_timestamp = Math.floor(new Date().getTime() / 1000);
+        const hashData = (val: string) => crypto.createHash('sha256').update((val || '').toLowerCase().trim()).digest('hex');
+
+        const userData = (new UserData())
+          .setEmails([hashData(data.email)])
+          .setPhones([hashData(data.phone)])
+          .setClientIpAddress(req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || '')
+          .setClientUserAgent(data.userAgent || req.headers['user-agent'] || '');
+
+        if (data.fbp) userData.setFbp(data.fbp);
+        if (data.fbc) userData.setFbc(data.fbc);
+
+        const serverEvent = (new ServerEvent())
+          .setEventName('Lead')
+          .setEventTime(current_timestamp)
+          .setUserData(userData)
+          .setEventSourceUrl('https://simpliflyfinland.com')
+          .setActionSource('website');
+
+        const eventRequest = (new EventRequest(access_token, pixel_id)).setEvents([serverEvent]);
+          
+        eventRequest.execute().then(
+          (response: any) => console.log('CAPI Event Sent:', response),
+          (err: any) => console.error('CAPI Error:', err)
+        );
+      } else {
+        console.warn('CAPI skipped: META_ACCESS_TOKEN or META_PIXEL_ID is missing in .env');
+      }
+    } catch (capiError) {
+      console.error('Failed to execute CAPI:', capiError);
+    }
 
     res.status(200).json({ message: 'Inquiry submitted successfully' });
   } catch (error) {
