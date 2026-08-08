@@ -287,10 +287,20 @@ export function ResortPackageClient({
 
     setIsSubmitting(true);
     try {
+      const getCookie = (name: string) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop()?.split(';').shift();
+        return undefined;
+      };
+
       const payload = {
         ...formData,
         phone: `${phoneCode} ${phoneNumber}`,
         packageTitle: resort.title,
+        fbp: typeof document !== 'undefined' ? getCookie('_fbp') : undefined,
+        fbc: typeof document !== 'undefined' ? getCookie('_fbc') : undefined,
+        userAgent: typeof window !== 'undefined' ? navigator.userAgent : undefined,
       };
 
       const res = await fetch("/api/inquiries", {
