@@ -249,7 +249,9 @@ export default function RootLayout({
            * shell (Header + Footer vs. bare main).
            */}
           <ClientLayout>
-            <MetaPixel />
+            <React.Suspense fallback={null}>
+              <MetaPixel />
+            </React.Suspense>
             {children}
           </ClientLayout>
           
