@@ -21,6 +21,7 @@ import NextTopLoader from 'nextjs-toploader';
 import { SiteAssetsProvider } from '../components/providers/SiteAssetsProvider';
 import TawkToTracker from '../components/shared/TawkToTracker';
 import { MetaPixel } from '../components/shared/MetaPixel';
+import { Suspense } from 'react';
 
 // ─── Font Loading ──────────────────────────────────────────────────────────────
 // next/font automatically downloads and self-hosts Poppins at build time.
@@ -249,9 +250,9 @@ export default function RootLayout({
            * shell (Header + Footer vs. bare main).
            */}
           <ClientLayout>
-            <React.Suspense fallback={null}>
+            <Suspense fallback={null}>
               <MetaPixel />
-            </React.Suspense>
+            </Suspense>
             {children}
           </ClientLayout>
           
