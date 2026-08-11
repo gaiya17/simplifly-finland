@@ -301,7 +301,7 @@ export function TourPackageClient({ data }: { data: any }) {
           </div>
 
           {/* ── RIGHT SIDEBAR ── */}
-          <div className="w-full lg:w-[400px] shrink-0">
+          <div id="inquire-form" className="w-full lg:w-[400px] shrink-0 scroll-mt-32">
             <div className="sticky top-28 space-y-6">
 
               {/* Booking card */}

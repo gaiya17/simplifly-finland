@@ -612,7 +612,7 @@ export function ResortPackageClient({
           <div className="flex flex-col gap-12 lg:gap-16">
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 lg:items-start">
               <div className="flex-1 min-w-0">{overviewHeader}</div>
-              <div className="w-full lg:w-[420px] shrink-0">
+              <div id="special-package" className="w-full lg:w-[420px] shrink-0 scroll-mt-32">
                 <div
                   role="button"
                   tabIndex={0}
