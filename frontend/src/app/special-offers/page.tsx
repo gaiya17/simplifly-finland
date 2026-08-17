@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ImageWithFallback } from "../../components/shared/ImageWithFallback";
 import {
   Clock,
@@ -17,14 +18,24 @@ import { generateOfferSlug } from "../../lib/utils/offerSlug";
 import { useSiteAssets } from "../../components/providers/SiteAssetsProvider";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function SpecialOffers() {
+export function SpecialOffersContent({ defaultTab = "resorts" }: { defaultTab?: "tours" | "resorts" }) {
+  const router = useRouter();
   const { getAssetUrl } = useSiteAssets();
   const heroAsset = getAssetUrl("sri_lanka_tours_hero", "/images/sltours.webp");
 
   const [tours, setTours] = useState<any[]>([]);
   const [resorts, setResorts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"tours" | "resorts">("tours");
+  const [activeTab, setActiveTab] = useState<"tours" | "resorts">(defaultTab);
+
+  const handleTabChange = (tab: "tours" | "resorts") => {
+    setActiveTab(tab);
+    if (tab === "tours") {
+      router.push("/special-offers/sri-lanka", { scroll: false });
+    } else {
+      router.push("/special-offers/maldives", { scroll: false });
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -408,9 +419,9 @@ export default function SpecialOffers() {
       <section className="w-full py-16 lg:py-24 relative overflow-hidden">
         <div className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 relative z-10 flex flex-col items-center">
           {/* TABS */}
-          <div className="flex p-1.5 bg-white border border-[#e2e8f0] rounded-[16px] shadow-sm mb-6">
+          <div className="flex p-1.5 bg-white border border-[#e2e8f0] rounded-[16px] shadow-sm mb-12">
             <button
-              onClick={() => setActiveTab("tours")}
+              onClick={() => handleTabChange("tours")}
               className={`px-8 py-3 rounded-[12px] text-[14px] font-bold transition-all duration-300 ${
                 activeTab === "tours"
                   ? "bg-[#1a84ff] text-white shadow-md"
@@ -420,7 +431,7 @@ export default function SpecialOffers() {
               Sri Lanka Tours
             </button>
             <button
-              onClick={() => setActiveTab("resorts")}
+              onClick={() => handleTabChange("resorts")}
               className={`px-8 py-3 rounded-[12px] text-[14px] font-bold transition-all duration-300 ${
                 activeTab === "resorts"
                   ? "bg-[#1a84ff] text-white shadow-md"
@@ -429,24 +440,6 @@ export default function SpecialOffers() {
             >
               Maldives Resorts
             </button>
-          </div>
-
-          {/* Direct page links */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
-            <Link
-              href="/special-offers/sri-lanka"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-[#e2e8f0] text-[#041d3c] text-[12px] font-bold hover:border-[#1a84ff]/40 hover:shadow-[0_4px_12px_rgba(26,132,255,0.1)] hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <span>🇱🇰</span> View Sri Lanka Offers Page
-              <ArrowRight className="w-3.5 h-3.5 text-[#1a84ff]" />
-            </Link>
-            <Link
-              href="/special-offers/maldives"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-[#e2e8f0] text-[#041d3c] text-[12px] font-bold hover:border-[#1a84ff]/40 hover:shadow-[0_4px_12px_rgba(26,132,255,0.1)] hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <span>🇲🇻</span> View Maldives Offers Page
-              <ArrowRight className="w-3.5 h-3.5 text-[#1a84ff]" />
-            </Link>
           </div>
 
           {isLoading ? (
@@ -520,4 +513,8 @@ export default function SpecialOffers() {
       </section>
     </div>
   );
+}
+
+export default function SpecialOffers() {
+  return <SpecialOffersContent defaultTab="resorts" />;
 }
