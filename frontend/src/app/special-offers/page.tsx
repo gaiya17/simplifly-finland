@@ -408,7 +408,7 @@ export default function SpecialOffers() {
       <section className="w-full py-16 lg:py-24 relative overflow-hidden">
         <div className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 relative z-10 flex flex-col items-center">
           {/* TABS */}
-          <div className="flex p-1.5 bg-white border border-[#e2e8f0] rounded-[16px] shadow-sm mb-12">
+          <div className="flex p-1.5 bg-white border border-[#e2e8f0] rounded-[16px] shadow-sm mb-6">
             <button
               onClick={() => setActiveTab("tours")}
               className={`px-8 py-3 rounded-[12px] text-[14px] font-bold transition-all duration-300 ${
@@ -429,6 +429,24 @@ export default function SpecialOffers() {
             >
               Maldives Resorts
             </button>
+          </div>
+
+          {/* Direct page links */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
+            <Link
+              href="/special-offers/sri-lanka"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-[#e2e8f0] text-[#041d3c] text-[12px] font-bold hover:border-[#1a84ff]/40 hover:shadow-[0_4px_12px_rgba(26,132,255,0.1)] hover:-translate-y-0.5 transition-all duration-300"
+            >
+              <span>🇱🇰</span> View Sri Lanka Offers Page
+              <ArrowRight className="w-3.5 h-3.5 text-[#1a84ff]" />
+            </Link>
+            <Link
+              href="/special-offers/maldives"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-[#e2e8f0] text-[#041d3c] text-[12px] font-bold hover:border-[#1a84ff]/40 hover:shadow-[0_4px_12px_rgba(26,132,255,0.1)] hover:-translate-y-0.5 transition-all duration-300"
+            >
+              <span>🇲🇻</span> View Maldives Offers Page
+              <ArrowRight className="w-3.5 h-3.5 text-[#1a84ff]" />
+            </Link>
           </div>
 
           {isLoading ? (
