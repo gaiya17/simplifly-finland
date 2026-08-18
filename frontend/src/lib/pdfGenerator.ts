@@ -1360,21 +1360,20 @@ export async function generateTourBrochure(tour: any) {
       });
     }
     
-    let metaLines: string[] = [];
-    let metaH = 0;
-    let metaW = 0;
-    if (day.stay || day.mealPlan) {
-      const meta = [];
-      if (day.stay) meta.push(`🛌 ${day.stay}`);
-      if (day.mealPlan) meta.push(`🍽️ ${day.mealPlan}`);
-      metaLines = doc.splitTextToSize(meta.join('   •   '), pW - margin - 49);
-      metaH = metaLines.length * 4.5 + 1; // reduced padding for tighter box
-      doc.setFontSize(7.5); doc.setFont('Poppins','normal');
-      metaLines.forEach((l: string) => {
-        const w = doc.getTextWidth(l);
-        if (w > metaW) metaW = w;
-      });
-    }
+    // Expand meal plan abbreviations to full names
+    const expandMealPlan = (code: string): string => {
+      const map: Record<string, string> = {
+        'BB': 'Bed & Breakfast', 'HB': 'Half Board',
+        'FB': 'Full Board', 'AI': 'All Inclusive',
+      };
+      return map[code?.toUpperCase()] || code || '';
+    };
+
+    let hasStayMeta = !!(day.stay || day.mealPlan);
+    let metaH = hasStayMeta ? 10 : 0; // fixed height for the two-field row
+    // Keep metaLines/metaW for backward compat with chunk sizing logic
+    let metaLines: string[] = hasStayMeta ? ['meta'] : [];
+    let metaW = hasStayMeta ? (pW - margin - 49) : 0;
     
     let currentLineIndex = 0;
     let isFirstChunk = true;
@@ -1469,13 +1468,30 @@ export async function generateTourBrochure(tour: any) {
 
       currentLineIndex += linesThatFit;
       if (currentLineIndex >= descLines.length) {
-        if (metaLines.length > 0) {
+        if (hasStayMeta) {
           const metaBoxY = y + chunkH - metaH - 4;
-          const metaBoxW = metaW + 12; // tighter box around text
-          setFill(doc, [238, 245, 252]); doc.roundedRect(margin + 20, metaBoxY, metaBoxW, metaH, 1.5, 1.5, 'F');
-          doc.setFontSize(7.5); doc.setFont('Poppins','normal');
-          setTxt(doc, NAVY);
-          doc.text(metaLines, margin + 20 + metaBoxW / 2, metaBoxY + (metaH / 2) + 0.5, { align: 'center', baseline: 'middle' });
+          const metaBoxW = cardW - 6; // span nearly the full card width
+          const metaBoxX = margin + 20;
+          setFill(doc, [238, 245, 252]); doc.roundedRect(metaBoxX, metaBoxY, metaBoxW, metaH, 1.5, 1.5, 'F');
+
+          const fieldY = metaBoxY + (metaH / 2) + 1;
+          // Left field: Over Night Stay
+          if (day.stay) {
+            doc.setFontSize(7.5); doc.setFont('Poppins','bold');
+            setTxt(doc, NAVY); doc.text('Over Night Stay:', metaBoxX + 4, fieldY);
+            const labelW = doc.getTextWidth('Over Night Stay: ');
+            doc.setFont('Poppins','normal');
+            setTxt(doc, [70, 80, 100]); doc.text(day.stay, metaBoxX + 4 + labelW, fieldY);
+          }
+          // Right field: Meal Plan (at midpoint of box)
+          if (day.mealPlan) {
+            const rightX = metaBoxX + metaBoxW / 2 + 2;
+            doc.setFontSize(7.5); doc.setFont('Poppins','bold');
+            setTxt(doc, NAVY); doc.text('Meal Plan:', rightX, fieldY);
+            const labelW2 = doc.getTextWidth('Meal Plan: ');
+            doc.setFont('Poppins','normal');
+            setTxt(doc, [70, 80, 100]); doc.text(expandMealPlan(day.mealPlan), rightX + labelW2, fieldY);
+          }
         }
         y += chunkH + 6;
         break; 
@@ -1498,19 +1514,30 @@ export async function generateTourBrochure(tour: any) {
   y = 35; // Start a bit lower
 
   const DEFAULT_INCLUDED = [
-    "All transportation and guided excursions as per the program, including entrance fees",
-    "Flight taxes, tourist taxes, and all mandatory government fees",
-    "Tips for local guides and bus drivers included",
-    "Experienced English-speaking tour guide for added comfort and clear communication",
-    "Optional late check-out: on additional charge"
+    "Meet & assistance at the Airport.",
+    "Map of Sri Lanka",
+    "Free upgrades on availability",
+    "Accommodation on HB Basis",
+    "Transfers on a private basis in an A/C Vehicle – Car, Van, Bus",
+    "English Speaking Chauffer Driver",
+    "One bottle of Mineral Water per person per day (For round tour clients only).",
+    "Sightseeing visits and Entrance Fees"
   ];
   
   const DEFAULT_NOT_INCLUDED = [
-    "International Flights Charges to Sri Lanka",
-    "No meals are included unless specifically stated in the tour itinerary.",
-    "Alcoholic and soft drinks (available to purchase)",
-    "Tips & porterage.",
-    "VISA Fee"
+    "Airfare and VISA charges.",
+    "Lunches.",
+    "Any compulsory room supplements during the tour.",
+    "Video and Camera permits at sights.",
+    "Meals outside of the stated meal plan.",
+    "Use of vehicles other than the specified itinerary.",
+    "Expenses of a personal nature.",
+    "Any other services not specified above.",
+    "Early check-in & Late check out at the hotels (Check in & check out time 14.00 to 12.00 Noon)",
+    "Tips of any personal nature.",
+    "Any compulsory supplements",
+    "Sights mentioned as optional",
+    "Travel Insurance"
   ];
   
   const DEFAULT_INSIGHTFUL_TIPS = [
@@ -1534,45 +1561,45 @@ export async function generateTourBrochure(tour: any) {
   ];
   
   const PAYMENT_SCHEDULE = [
-    '30% deposit required at the time of booking to secure your reservation.',
-    'Remaining 70% balance must be paid at least 30 days prior to your arrival.',
-    'For bookings made within 30 days of arrival, full payment is required immediately.',
+    '50% deposit required at the time of booking to secure your reservation.',
+    'Remaining 50% balance must be paid at least 60 days prior to your arrival.',
+    'For bookings made within 60 days of arrival, full payment is required immediately.',
   ];
   
   const CANCELLATION_TERMS = [
-    { period: '31+ days before arrival', charge: 'Full Refund (minus processing fees)' },
-    { period: '15 – 30 days before arrival', charge: '50% Cancellation Fee' },
-    { period: '14 days or less / No Shows', charge: '100% No Refund' },
+    { period: '61+ days before arrival', charge: 'Full Refund (minus processing fees)' },
+    { period: '30 – 60 days before arrival', charge: '50% Cancellation Fee' },
+    { period: '29 days or less / No Shows', charge: '100% No Refund' },
   ];
 
   const half = (contentW - 6) / 2;
   const incMaxY = [y, y];
 
   let incY = sectionHeader(doc, 'WHAT\'S INCLUDED', margin, y, half);
-  incY += 3; // spacing after header
+  incY += 2;
   DEFAULT_INCLUDED.forEach((inc: any) => {
-    setFill(doc, GREEN); doc.circle(margin + 3, incY - 1, 1.4, 'F');
-    doc.setFontSize(8.5); doc.setFont('Poppins','normal'); setTxt(doc, [50, 60, 80]);
+    setFill(doc, GREEN); doc.circle(margin + 3, incY - 1, 1.2, 'F');
+    doc.setFontSize(7.5); doc.setFont('Poppins','normal'); setTxt(doc, [50, 60, 80]);
     const txtLines = doc.splitTextToSize(inc, half - 8);
     doc.text(txtLines, margin + 7, incY);
-    incY += txtLines.length * 5.5 + 4; // increased line height and gap
+    incY += txtLines.length * 4.5 + 2;
   });
   incMaxY[0] = incY;
 
   const excX = margin + half + 6;
   let excY = sectionHeader(doc, 'WHAT\'S NOT INCLUDED', excX, y, half);
-  excY += 3;
+  excY += 2;
   DEFAULT_NOT_INCLUDED.forEach((exc: any) => {
-    setFill(doc, RED); doc.circle(excX + 3, excY - 1, 1.4, 'F');
-    doc.setFontSize(8.5); doc.setFont('Poppins','normal'); setTxt(doc, [50, 60, 80]);
+    setFill(doc, RED); doc.circle(excX + 3, excY - 1, 1.2, 'F');
+    doc.setFontSize(7.5); doc.setFont('Poppins','normal'); setTxt(doc, [50, 60, 80]);
     const txtLines = doc.splitTextToSize(exc, half - 8);
     doc.text(txtLines, excX + 7, excY);
-    excY += txtLines.length * 5.5 + 4;
+    excY += txtLines.length * 4.5 + 2;
   });
   incMaxY[1] = excY;
 
   // Push Tips box further down to distribute space
-  y = Math.max(incMaxY[0], incMaxY[1]) + 15; 
+  y = Math.max(incMaxY[0], incMaxY[1]) + 10; 
 
   y = sectionHeader(doc, 'INSIGHTFUL TIPS', margin, y, contentW);
   y += 3;
