@@ -160,8 +160,8 @@ export function TourPackageClient({ data }: { data: any }) {
     }
   };
 
-  const included = [...DEFAULT_INCLUDED, ...(data.included || [])];
-  const notIncluded = [...DEFAULT_NOT_INCLUDED, ...(data.notIncluded || [])];
+  const included = (data.included && data.included.length > 0) ? data.included : DEFAULT_INCLUDED;
+  const notIncluded = (data.notIncluded && data.notIncluded.length > 0) ? data.notIncluded : DEFAULT_NOT_INCLUDED;
 
   return (
     <div className="w-full bg-[#f8fafc] flex flex-col font-poppins min-h-screen">
