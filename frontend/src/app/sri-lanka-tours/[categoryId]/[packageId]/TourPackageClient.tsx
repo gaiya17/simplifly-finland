@@ -15,24 +15,30 @@ import { CountrySelect } from '@/components/ui/CountrySelect';
 import { COUNTRIES } from '@/lib/countries';
 
 const DEFAULT_INCLUDED = [
-  "Transportation: A dedicated, English-speaking chauffeur guide for the entire duration of the tour in a private, air-conditioned vehicle.",
-  "Fuel & Taxes: All fuel costs, toll charges, parking fees, and local government taxes associated with the private transport.",
-  "Comfortable accommodation in double rooms at the hotels listed in the itinerary or similar quality hotels",
-  "Hotel service fees and carrier charges",
-  "Meals as mentioned in the tour itinerary throughout the trip",
-  "All transportation and guided excursions as per the program, including entrance fees",
-  "Flight taxes, tourist taxes, and all mandatory government fees",
-  "Tips for local guides and bus drivers included",
-  "Experienced English-speaking tour guide for added comfort and clear communication",
-  "Optional late check-out: on additional charge"
+  "Meet & assistance at the Airport.",
+  "Map of Sri Lanka",
+  "Free upgrades on availability",
+  "Accommodation on HB Basis",
+  "Transfers on a private basis in an A/C Vehicle – Car, Van, Bus",
+  "English Speaking Chauffer Driver",
+  "One bottle of Mineral Water per person per day (For round tour clients only).",
+  "Sightseeing visits and Entrance Fees"
 ];
 
 const DEFAULT_NOT_INCLUDED = [
-  "International Flights Charges to Sri Lanka",
-  "No meals are included unless specifically stated in the tour itinerary.",
-  "Alcoholic and soft drinks (available to purchase)",
-  "Tips & porterage.",
-  "VISA Fee"
+  "Airfare and VISA charges.",
+  "Lunches.",
+  "Any compulsory room supplements during the tour.",
+  "Video and Camera permits at sights.",
+  "Meals outside of the stated meal plan.",
+  "Use of vehicles other than the specified itinerary.",
+  "Expenses of a personal nature.",
+  "Any other services not specified above.",
+  "Early check-in & Late check out at the hotels (Check in & check out time 14.00 to 12.00 Noon)",
+  "Tips of any personal nature.",
+  "Any compulsory supplements",
+  "Sights mentioned as optional",
+  "Travel Insurance"
 ];
 
 const DEFAULT_INSIGHTFUL_TIPS = [
@@ -796,9 +802,9 @@ export function TourPackageClient({ data }: { data: any }) {
                         </h4>
                         <ul className="space-y-3">
                           {[
-                            '30% deposit required at the time of booking to secure your reservation.',
-                            'Remaining 70% balance must be paid at least 30 days prior to your arrival.',
-                            'For bookings made within 30 days of arrival, full payment is required immediately.',
+                            '50% deposit required at the time of booking to secure your reservation.',
+                            'Remaining 50% balance must be paid at least 60 days prior to your arrival.',
+                            'For bookings made within 60 days of arrival, full payment is required immediately.',
                           ].map((item, i) => (
                             <li key={i} className="flex items-start gap-3">
                               <CheckCircle2 className="w-4 h-4 text-[#1a84ff] shrink-0 mt-0.5" />
@@ -813,9 +819,9 @@ export function TourPackageClient({ data }: { data: any }) {
                         <h4 className="text-[#041d3c] font-extrabold text-[16px] mb-4">Cancellation Terms</h4>
                         <div className="border border-[#041d3c]/8 rounded-[16px] overflow-hidden">
                           {[
-                            { period: '31+ days before arrival', charge: 'Full Refund (minus processing fees)', color: 'text-green-600' },
-                            { period: '15 – 30 days before arrival', charge: '50% Cancellation Fee', color: 'text-amber-600' },
-                            { period: '14 days or less / No Shows', charge: '100% No Refund', color: 'text-red-500' },
+                            { period: '61+ days before arrival', charge: 'Full Refund (minus processing fees)', color: 'text-green-600' },
+                            { period: '30 – 60 days before arrival', charge: '50% Cancellation Fee', color: 'text-amber-600' },
+                            { period: '29 days or less / No Shows', charge: '100% No Refund', color: 'text-red-500' },
                           ].map((row, i, arr) => (
                             <div
                               key={i}

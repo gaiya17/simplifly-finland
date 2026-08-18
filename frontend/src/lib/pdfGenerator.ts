@@ -1475,22 +1475,52 @@ export async function generateTourBrochure(tour: any) {
           setFill(doc, [238, 245, 252]); doc.roundedRect(metaBoxX, metaBoxY, metaBoxW, metaH, 1.5, 1.5, 'F');
 
           const fieldY = metaBoxY + (metaH / 2) + 1;
+
+          // Compute meal plan width first so we can right-align it to the corner and constrain the left field
+          let totalMealW = 0;
+          let mealPlanStr = '';
+          const mealLabel = 'Meal Plan: ';
+
+          if (day.mealPlan) {
+            mealPlanStr = expandMealPlan(day.mealPlan);
+            doc.setFontSize(7.5);
+            doc.setFont('Poppins', 'bold');
+            const labelW2 = doc.getTextWidth(mealLabel);
+            doc.setFont('Poppins', 'normal');
+            const valW2 = doc.getTextWidth(mealPlanStr);
+            totalMealW = labelW2 + valW2;
+          }
+
           // Left field: Over Night Stay
           if (day.stay) {
             doc.setFontSize(7.5); doc.setFont('Poppins','bold');
             setTxt(doc, NAVY); doc.text('Over Night Stay:', metaBoxX + 4, fieldY);
             const labelW = doc.getTextWidth('Over Night Stay: ');
             doc.setFont('Poppins','normal');
-            setTxt(doc, [70, 80, 100]); doc.text(day.stay, metaBoxX + 4 + labelW, fieldY);
+            setTxt(doc, [70, 80, 100]);
+
+            const maxStayWidth = metaBoxW - 8 - labelW - (totalMealW > 0 ? totalMealW + 8 : 0);
+            let stayText = day.stay;
+            if (doc.getTextWidth(stayText) > maxStayWidth) {
+              while (doc.getTextWidth(stayText + '…') > maxStayWidth && stayText.length > 0) {
+                stayText = stayText.slice(0, -1);
+              }
+              stayText += '…';
+            }
+            doc.text(stayText, metaBoxX + 4 + labelW, fieldY);
           }
-          // Right field: Meal Plan (at midpoint of box)
-          if (day.mealPlan) {
-            const rightX = metaBoxX + metaBoxW / 2 + 2;
-            doc.setFontSize(7.5); doc.setFont('Poppins','bold');
-            setTxt(doc, NAVY); doc.text('Meal Plan:', rightX, fieldY);
-            const labelW2 = doc.getTextWidth('Meal Plan: ');
-            doc.setFont('Poppins','normal');
-            setTxt(doc, [70, 80, 100]); doc.text(expandMealPlan(day.mealPlan), rightX + labelW2, fieldY);
+
+          // Right field: Meal Plan (aligned to right-side corner of the box)
+          if (day.mealPlan && mealPlanStr) {
+            const rightX = metaBoxX + metaBoxW - totalMealW - 4;
+            doc.setFontSize(7.5);
+            doc.setFont('Poppins', 'bold');
+            setTxt(doc, NAVY);
+            doc.text(mealLabel, rightX, fieldY);
+            const labelW2 = doc.getTextWidth(mealLabel);
+            doc.setFont('Poppins', 'normal');
+            setTxt(doc, [70, 80, 100]);
+            doc.text(mealPlanStr, rightX + labelW2, fieldY);
           }
         }
         y += chunkH + 6;
@@ -1539,6 +1569,14 @@ export async function generateTourBrochure(tour: any) {
     "Sights mentioned as optional",
     "Travel Insurance"
   ];
+
+  const includedItems = Array.isArray(tour.included) && tour.included.length > 0
+    ? [...DEFAULT_INCLUDED, ...tour.included]
+    : DEFAULT_INCLUDED;
+
+  const notIncludedItems = Array.isArray(tour.notIncluded) && tour.notIncluded.length > 0
+    ? [...DEFAULT_NOT_INCLUDED, ...tour.notIncluded]
+    : DEFAULT_NOT_INCLUDED;
   
   const DEFAULT_INSIGHTFUL_TIPS = [
     "Climate: Warm tropical weather year-round, approx. 25 - 30°C during the day; brief afternoon showers possible",
@@ -1577,7 +1615,7 @@ export async function generateTourBrochure(tour: any) {
 
   let incY = sectionHeader(doc, 'WHAT\'S INCLUDED', margin, y, half);
   incY += 2;
-  DEFAULT_INCLUDED.forEach((inc: any) => {
+  includedItems.forEach((inc: any) => {
     setFill(doc, GREEN); doc.circle(margin + 3, incY - 1, 1.2, 'F');
     doc.setFontSize(7.5); doc.setFont('Poppins','normal'); setTxt(doc, [50, 60, 80]);
     const txtLines = doc.splitTextToSize(inc, half - 8);
@@ -1589,7 +1627,7 @@ export async function generateTourBrochure(tour: any) {
   const excX = margin + half + 6;
   let excY = sectionHeader(doc, 'WHAT\'S NOT INCLUDED', excX, y, half);
   excY += 2;
-  DEFAULT_NOT_INCLUDED.forEach((exc: any) => {
+  notIncludedItems.forEach((exc: any) => {
     setFill(doc, RED); doc.circle(excX + 3, excY - 1, 1.2, 'F');
     doc.setFontSize(7.5); doc.setFont('Poppins','normal'); setTxt(doc, [50, 60, 80]);
     const txtLines = doc.splitTextToSize(exc, half - 8);
