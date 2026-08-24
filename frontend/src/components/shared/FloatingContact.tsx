@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { X, ChevronRight, RotateCcw } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { chatbotApi } from '../../lib/chatbotApi';
+import { trackWhatsAppClick } from '@/lib/tracking';
 
 // ── FLOW DEFINITION ────────────────────────────────────────────────────────────
 interface FlowNode {
@@ -375,6 +376,7 @@ export const FloatingContact = () => {
                 // @ts-ignore
                 window.fbq('track', 'Contact');
               }
+              trackWhatsAppClick("Chatbot WhatsApp Bubble");
             }}
             className="w-[52px] h-[52px] bg-gradient-to-br from-[#25D366] to-[#128c7e] text-white flex items-center justify-center rounded-full shadow-[0_8px_24px_rgba(37,211,102,0.4)] hover:-translate-y-1 transition-all duration-300"
           >
@@ -523,6 +525,7 @@ export const FloatingContact = () => {
                       href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(currentNode.whatsappText || '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackWhatsAppClick("Chatbot Window Flow")}
                       className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3 font-extrabold text-[12px] uppercase tracking-wider transition-all duration-300 hover:shadow-[0_8px_20px_rgba(7,94,84,0.3)]"
                     >
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">

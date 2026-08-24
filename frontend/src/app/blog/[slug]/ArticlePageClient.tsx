@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { trackWhatsAppClick } from '@/lib/tracking';
 import {
   ArrowLeft,
   Calendar,
@@ -377,6 +379,7 @@ export function ArticlePageClient({ initialPost, initialRelated }: { initialPost
                   href={`https://wa.me/358408192758?text=Hi! I just read your article "${encodeURIComponent(post.title)}" and would like to learn more.`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackWhatsAppClick("Article Sidebar", post.title)}
                   className="flex items-center gap-3 px-4 py-3 bg-[#075e54]/8 hover:bg-[#075e54]/14 border border-[#075e54]/15 text-[#075e54] rounded-[12px] text-[13px] font-bold transition-all duration-200 group"
                 >
                   <MessageCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -434,6 +437,7 @@ export function ArticlePageClient({ initialPost, initialRelated }: { initialPost
                 href={`https://wa.me/358408192758?text=Hi! I just read your article "${encodeURIComponent(post.title)}" and would like to learn more.`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackWhatsAppClick("Article Sidebar Bottom", post.title)}
                 className="block w-full text-center bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-[13px] py-2.5 rounded-[12px] transition-colors duration-200"
               >
                 +358 40 819 2758

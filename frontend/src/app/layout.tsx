@@ -204,12 +204,51 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="overflow-x-hidden w-full max-w-[100vw]">
       <head>
-        {/* CookieYes Consent Management */}
+        {/* Google Consent Mode v2 Defaults */}
+        <Script
+          id="consent-mode"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'wait_for_update': 500
+              });
+            `,
+          }}
+        />
+        
+        {/* CookieYes Consent Management (MUST load after consent defaults) */}
         <Script
           id="cookieyes"
           src="https://cdn-cookieyes.com/client_data/d3fe3f2de23f2de0bea89b5d775a7d45/script.js"
           strategy="beforeInteractive"
         />
+
+        {/* Google Analytics 4 (GA4) Tag */}
+        <Script
+          id="ga4-script"
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-ZGWRHE7TZ2"
+        />
+        <Script
+          id="ga4-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-ZGWRHE7TZ2');
+            `,
+          }}
+        />
+
         {/* WebSite Schema */}
         <script
           type="application/ld+json"
