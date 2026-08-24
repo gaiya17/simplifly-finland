@@ -13,6 +13,7 @@ import { ImageWithFallback } from '../../../../components/shared/ImageWithFallba
 import { ReviewsSection } from '../../../../components/sections/ReviewsSection';
 import { CountrySelect } from '@/components/ui/CountrySelect';
 import { COUNTRIES } from '@/lib/countries';
+import { trackLeadGeneration, trackWhatsAppClick } from '@/lib/tracking';
 
 const DEFAULT_INCLUDED = [
   "Meet & assistance at the Airport.",
@@ -140,6 +141,8 @@ export function TourPackageClient({ data }: { data: any }) {
       });
 
       if (!res.ok) throw new Error('Failed to submit');
+
+      trackLeadGeneration("Sri Lanka Tour", data.title);
 
       toast.success('Inquiry sent successfully! Please check your email for confirmation.', {
         duration: 6000,
@@ -360,6 +363,7 @@ export function TourPackageClient({ data }: { data: any }) {
                     href={`https://wa.me/358408192758?text=Hi! I'm interested in the ${encodeURIComponent(data.title)} tour package.`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick("Tour Package Sidebar", data.title)}
                     className="w-full flex items-center justify-center gap-2.5 bg-[#128c7e] hover:bg-[#075e54] text-white rounded-[14px] py-4 font-extrabold text-[13px] tracking-wider uppercase transition-colors shadow-sm"
                   >
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">

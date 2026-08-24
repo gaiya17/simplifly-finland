@@ -37,6 +37,7 @@ import { CountrySelect } from "@/components/ui/CountrySelect";
 import { COUNTRIES } from "@/lib/countries";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { trackLeadGeneration, trackWhatsAppClick } from "@/lib/tracking";
 
 const TABS = [
   { id: "villas", label: "Villas" },
@@ -311,6 +312,8 @@ export function ResortPackageClient({
 
       if (!res.ok) throw new Error("Failed to submit");
 
+      trackLeadGeneration("Maldives Resort", resort.title);
+
       toast.success(
         "Inquiry sent successfully! Please check your email for confirmation.",
         {
@@ -529,6 +532,7 @@ export function ResortPackageClient({
             href={`https://wa.me/358408192758?text=Hi! I'm interested in the ${encodeURIComponent(resort.title)} resort. Can you help me check availability?`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackWhatsAppClick("Resort Package Sidebar", resort.title)}
             className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[14px] py-3.5 font-extrabold text-[14px] flex items-center justify-center gap-2.5 hover:shadow-[0_12px_28px_rgba(7,94,84,0.30)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
@@ -826,6 +830,7 @@ export function ResortPackageClient({
                           href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => trackWhatsAppClick("Resort Offer List", resort.title)}
                           className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3.5 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
                         >
                           <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
@@ -1469,6 +1474,7 @@ export function ResortPackageClient({
                           href={`https://wa.me/358408192758?text=Hi! I'm interested in the ${encodeURIComponent(resort.title)} resort. Can you help me check availability?`}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => trackWhatsAppClick("Resort Villa View", resort.title)}
                           className="flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[14px] font-extrabold text-[13px] uppercase tracking-wider transition-all duration-300 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 group relative overflow-hidden"
                         >
                           <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
@@ -1904,6 +1910,7 @@ export function ResortPackageClient({
                                     href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    onClick={() => trackWhatsAppClick("Resort Selected Offer CTA", resort.title)}
                                     className="flex-1 px-4 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-4 font-extrabold text-[14px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden whitespace-nowrap"
                                   >
                                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
@@ -1954,6 +1961,7 @@ export function ResortPackageClient({
                               href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
                               target="_blank"
                               rel="noopener noreferrer"
+                              onClick={() => trackWhatsAppClick("Resort Other Offer List", resort.title)}
                               className="flex-1 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
                             >
                               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />

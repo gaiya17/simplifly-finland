@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { tourApi } from '../../lib/tourApi';
 import { resortApi } from '../../lib/resortApi';
 import { generateOfferSlug } from '../../lib/utils/offerSlug';
+import { trackWhatsAppClick } from '../../lib/tracking';
 import Link from 'next/link';
 
 export function SupportCTA() {
@@ -113,6 +114,7 @@ export function SupportCTA() {
                 href="https://wa.me/358408192758?text=Hi%20Simplifly!%20I'm%20looking%20to%20plan%20a%20trip%20and%20would%20like%20some%20assistance."
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackWhatsAppClick("Support CTA Section")}
                 className="group relative flex items-center justify-center gap-2.5 px-6 py-2.5 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] shadow-[0_8px_20px_rgba(7,94,84,0.2)] hover:shadow-[0_12px_28px_rgba(7,94,84,0.3)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 w-fit overflow-hidden"
               >
                 <span className="absolute inset-0 w-full h-full rounded-[12px] border border-[#128c7e] animate-pulse opacity-60 group-hover:opacity-0 transition-opacity duration-300"></span>
