@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { tourApi } from '../../lib/tourApi';
 import { resortApi } from '../../lib/resortApi';
-import { generateOfferSlug } from '../../lib/utils/offerSlug';
 import { trackWhatsAppClick } from '../../lib/tracking';
 import Link from 'next/link';
 
@@ -31,7 +30,7 @@ export function SupportCTA() {
               categorySlug: tour.category?.slug || 'all',
               title: tour.title,
               displayPoster: tour.offerPoster,
-              url: `/special-offers/${tour.slug}/special-offer`
+              url: `/special-offers/${tour.slug}`
             });
           }
         });
@@ -49,7 +48,7 @@ export function SupportCTA() {
                   categorySlug: resort.categories?.[0]?.slug || 'all',
                   title: resort.title,
                   displayPoster: co.posterUrl,
-                  url: `/special-offers/${resort.slug}/${generateOfferSlug(co)}`
+                  url: `/special-offers/${resort.slug}`
                 });
               }
             });
@@ -62,7 +61,7 @@ export function SupportCTA() {
               categorySlug: resort.categories?.[0]?.slug || 'all',
               title: resort.title,
               displayPoster: resort.offerPoster,
-              url: `/special-offers/${resort.slug}/special-offer`
+              url: `/special-offers/${resort.slug}`
             });
           }
         });

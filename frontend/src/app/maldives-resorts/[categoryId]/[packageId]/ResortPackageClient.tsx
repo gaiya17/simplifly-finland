@@ -40,11 +40,11 @@ import { usePathname } from "next/navigation";
 import { trackLeadGeneration, trackWhatsAppClick } from "@/lib/tracking";
 
 const TABS = [
+  { id: "deals", label: "Deals & Offers" },
   { id: "villas", label: "Villas" },
   { id: "restaurants", label: "Restaurants" },
   { id: "facilities", label: "Facilities" },
   { id: "fact-sheet", label: "FACT Sheet" },
-  { id: "deals", label: "Deals & Offers" },
 ];
 
 // ── WhatsApp button helper ────────────────────────────────────────────────────
@@ -134,6 +134,22 @@ export function ResortPackageClient({
   const hasOffers =
     (resort.offers && resort.offers.length > 0) ||
     (resort.customOffers && resort.customOffers.length > 0);
+  
+  // ── Sidebar Carousel State ────────────────────────────────────────────────
+  const [sidebarOfferIndex, setSidebarOfferIndex] = useState(offerIndex);
+  const [isCarouselHovered, setIsCarouselHovered] = useState(false);
+
+  useEffect(() => {
+    if (!resort.customOffers || resort.customOffers.length <= 1) return;
+    if (isCarouselHovered) return;
+
+    const interval = setInterval(() => {
+      setSidebarOfferIndex((prev) => (prev + 1) % resort.customOffers.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [resort.customOffers, isCarouselHovered]);
+
   const [activeTab, setActiveTab] = useState(hasOffers ? "deals" : TABS[0].id);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -211,11 +227,13 @@ export function ResortPackageClient({
    * is never hidden behind the sticky navbar (clears ~100px).
    * More reliable than scrollIntoView across all browsers and screen sizes.
    */
-  const scrollToForm = useCallback(() => {
-    const el = document.getElementById("inquire-form");
-    if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - 100;
-    window.scrollTo({ top, behavior: "smooth" });
+  const scrollToForm = useCallback((delay = 120) => {
+    setTimeout(() => {
+      const el = document.getElementById("inquire-form");
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - 100;
+      window.scrollTo({ top, behavior: "smooth" });
+    }, delay);
   }, []);
 
   // Auto-fill phone code when country changes
@@ -231,6 +249,31 @@ export function ResortPackageClient({
       });
     }
   }, [watchedCountry]);
+
+  // Auto-scroll when navigating from special offers
+  useEffect(() => {
+    if (isSpecialOffer) {
+      const timer = setTimeout(() => {
+        if (window.innerWidth < 1024) {
+          // Mobile: scroll to special package box
+          const el = document.getElementById("special-package");
+          if (el) {
+            const top = el.getBoundingClientRect().top + window.scrollY - 100;
+            window.scrollTo({ top, behavior: "smooth" });
+          }
+        } else {
+          // Desktop: scroll to deals tab section
+          const el = document.getElementById("resort-details-tabs");
+          if (el) {
+            const top = el.getBoundingClientRect().top + window.scrollY - 100;
+            window.scrollTo({ top, behavior: "smooth" });
+            setActiveTab("deals");
+          }
+        }
+      }, 500); // 500ms delay to allow images and layout to settle
+      return () => clearTimeout(timer);
+    }
+  }, [isSpecialOffer]);
 
   // Compute check-out date for display
   const checkOutDate = (() => {
@@ -541,7 +584,7 @@ export function ResortPackageClient({
           </a>
 
           <button
-            onClick={scrollToForm}
+            onClick={() => scrollToForm()}
             className="w-full mt-3 bg-[#041d3c] hover:bg-[#1a84ff] text-white rounded-[14px] py-3.5 font-extrabold text-[14px] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(26,132,255,0.25)] hover:-translate-y-0.5"
           >
             Book Now
@@ -585,7 +628,7 @@ export function ResortPackageClient({
             <span>{resort.starRating || 5}-Star Resort</span>
           </div>
 
-          <h1 className="text-white font-black text-2xl sm:text-2xl sm:text-3xl lg:text-[42px] leading-tight  drop-shadow-lg mb-4 max-w-3xl">
+          <h1 className="text-white font-bold text-2xl sm:text-2xl sm:text-3xl lg:text-[42px] leading-tight drop-shadow-lg mb-4 max-w-3xl">
             {resort.title}
           </h1>
           <div className="w-20 h-1.5 bg-[#D4AF37] rounded-full mb-5" />
@@ -618,137 +661,162 @@ export function ResortPackageClient({
               <div className="flex-1 min-w-0">{overviewHeader}</div>
               <div id="special-package" className="w-full lg:w-[420px] shrink-0 scroll-mt-32">
                 <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    lockOffer(offerIndex);
-                    scrollToForm();
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      lockOffer(offerIndex);
-                      scrollToForm();
-                    }
-                  }}
-                  className="w-full rounded-[24px] bg-white shadow-[0_16px_48px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 p-8 flex flex-col items-center text-center relative group cursor-pointer hover:border-[#1a84ff]/30 hover:shadow-[0_20px_56px_rgba(26,132,255,0.12)] hover:-translate-y-0.5 transition-all duration-300">
-                  <span className="bg-[#ff245b] text-white text-[11px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full mb-5">
+                  className="w-full rounded-[24px] bg-white shadow-[0_16px_48px_rgba(4,29,60,0.06)] border border-[#041d3c]/5 p-8 flex flex-col items-center text-center relative group"
+                  onMouseEnter={() => setIsCarouselHovered(true)}
+                  onMouseLeave={() => setIsCarouselHovered(false)}
+                >
+                  <span className="bg-[#ff245b] text-white text-[11px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full mb-5 relative z-10">
                     Special Package
                   </span>
-                  <div className="flex flex-col gap-3 w-full mb-6 bg-[#f8fafc] border border-[#e4eaf2] p-4 rounded-[16px]">
+                  
+                  {resort.customOffers.length > 1 && (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSidebarOfferIndex((prev) => (prev - 1 + resort.customOffers.length) % resort.customOffers.length);
+                        }}
+                        className="absolute left-4 top-[250px] -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-[0_4px_12px_rgba(0,0,0,0.08)] border border-gray-100 text-gray-400 hover:text-[#1a84ff] hover:border-[#1a84ff]/20 hover:scale-110 transition-all duration-300 z-20 opacity-100 lg:opacity-0 group-hover:opacity-100"
+                      >
+                        <ChevronLeft className="w-5 h-5 ml-[-1px]" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSidebarOfferIndex((prev) => (prev + 1) % resort.customOffers.length);
+                        }}
+                        className="absolute right-4 top-[250px] -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-[0_4px_12px_rgba(0,0,0,0.08)] border border-gray-100 text-gray-400 hover:text-[#1a84ff] hover:border-[#1a84ff]/20 hover:scale-110 transition-all duration-300 z-20 opacity-100 lg:opacity-0 group-hover:opacity-100"
+                      >
+                        <ChevronRight className="w-5 h-5 mr-[-1px]" />
+                      </button>
+                    </>
+                  )}
+
+                  <div className="w-full relative">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={sidebarOfferIndex}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="w-full"
+                      >
+                        <div className="flex flex-col gap-3 w-full bg-[#f8fafc] border border-[#e4eaf2] p-4 rounded-[16px]">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-gray-500">
                         <Moon className="w-4 h-4 text-[#1a84ff]" />
-                        <span className="text-[13px] font-bold">Duration</span>
+                        <span className="text-[13px] font-medium uppercase tracking-wider">Duration</span>
                       </div>
-                      <span className="text-[#041d3c] font-black text-[14px]">
-                        {resort.customOffers[offerIndex].nights} Nights
+                      <span className="text-[#041d3c] font-bold text-[14px]">
+                        {resort.customOffers[sidebarOfferIndex].nights} Nights
                       </span>
                     </div>
                     <div className="h-[1px] w-full bg-[#e4eaf2]" />
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-gray-500">
                         <Users className="w-4 h-4 text-[#1a84ff]" />
-                        <span className="text-[13px] font-bold">Guests</span>
+                        <span className="text-[13px] font-medium uppercase tracking-wider">Guests</span>
                       </div>
-                      <span className="text-[#041d3c] font-black text-[14px]">
-                        {resort.customOffers[offerIndex].adults ?? 2} Adults
-                        {resort.customOffers[offerIndex].children
-                          ? `, ${resort.customOffers[offerIndex].children} Children`
+                      <span className="text-[#041d3c] font-bold text-[14px]">
+                        {resort.customOffers[sidebarOfferIndex].adults ?? 2} Adults
+                        {resort.customOffers[sidebarOfferIndex].children
+                          ? `, ${resort.customOffers[sidebarOfferIndex].children} Children`
                           : ""}
                       </span>
                     </div>
-                    {resort.customOffers[offerIndex].villas &&
-                      resort.customOffers[offerIndex].villas.length > 0 && (
+                    {resort.customOffers[sidebarOfferIndex].villas &&
+                      resort.customOffers[sidebarOfferIndex].villas.length > 0 && (
                         <>
                           <div className="h-[1px] w-full bg-[#e4eaf2]" />
                           <div className="flex items-center justify-between text-left gap-4">
                             <div className="flex items-center gap-2 text-gray-500 shrink-0">
                               <BedDouble className="w-4 h-4 text-[#1a84ff]" />
-                              <span className="text-[13px] font-bold">
+                              <span className="text-[13px] font-medium uppercase tracking-wider">
                                 Room/Villa
                               </span>
                             </div>
-                            <span className="text-[#041d3c] font-black text-[13px] leading-tight text-right line-clamp-2">
-                              {resort.customOffers[offerIndex].villas.join(
+                            <span className="text-[#041d3c] font-bold text-[13px] leading-tight text-right line-clamp-2">
+                              {resort.customOffers[sidebarOfferIndex].villas.join(
                                 ", ",
                               )}
                             </span>
                           </div>
                         </>
                       )}
-                    {resort.customOffers[offerIndex].flightIncluded && (
+                    {resort.customOffers[sidebarOfferIndex].flightIncluded && (
                       <>
                         <div className="h-[1px] w-full bg-[#e4eaf2]" />
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-gray-500">
                             <Plane className="w-4 h-4 text-[#1a84ff]" />
-                            <span className="text-[13px] font-bold">
+                            <span className="text-[13px] font-medium uppercase tracking-wider">
                               Flight
                             </span>
                           </div>
-                          <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[13px] font-black flex items-center gap-1">
+                          <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[13px] font-bold flex items-center gap-1">
                             <CheckCircle2 className="w-3.5 h-3.5" /> Included
                           </span>
                         </div>
                       </>
                     )}
-                    {resort.customOffers[offerIndex].mealPlan && (
+                    {resort.customOffers[sidebarOfferIndex].mealPlan && (
                       <>
                         <div className="h-[1px] w-full bg-[#e4eaf2]" />
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-gray-500">
                             <UtensilsCrossed className="w-4 h-4 text-[#1a84ff]" />
-                            <span className="text-[13px] font-bold">
+                            <span className="text-[13px] font-medium uppercase tracking-wider">
                               Meal Plan
                             </span>
                           </div>
-                          <span className="text-[#041d3c] font-black text-[14px]">
-                            {resort.customOffers[offerIndex].mealPlan === "BB"
+                          <span className="text-[#041d3c] font-bold text-[14px]">
+                            {resort.customOffers[sidebarOfferIndex].mealPlan === "BB"
                               ? "Bed and Breakfast"
-                              : resort.customOffers[offerIndex].mealPlan ===
+                              : resort.customOffers[sidebarOfferIndex].mealPlan ===
                                   "HB"
                                 ? "Half Board"
-                                : resort.customOffers[offerIndex].mealPlan ===
+                                : resort.customOffers[sidebarOfferIndex].mealPlan ===
                                     "FB"
                                   ? "Full Board"
-                                  : resort.customOffers[offerIndex].mealPlan ===
+                                  : resort.customOffers[sidebarOfferIndex].mealPlan ===
                                       "AI"
                                     ? "All Inclusive"
-                                    : resort.customOffers[offerIndex].mealPlan}
+                                    : resort.customOffers[sidebarOfferIndex].mealPlan}
                           </span>
                         </div>
                       </>
                     )}
-                    {resort.customOffers[offerIndex].transfer && (
+                    {resort.customOffers[sidebarOfferIndex].transfer && (
                       <>
                         <div className="h-[1px] w-full bg-[#e4eaf2]" />
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-gray-500">
                             <Plane className="w-4 h-4 text-[#1a84ff]" />
-                            <span className="text-[13px] font-bold">
+                            <span className="text-[13px] font-medium uppercase tracking-wider">
                               Transfer
                             </span>
                           </div>
-                          <span className="text-[#041d3c] font-black text-[14px]">
-                            {resort.customOffers[offerIndex].transfer}
+                          <span className="text-[#041d3c] font-bold text-[14px]">
+                            {resort.customOffers[sidebarOfferIndex].transfer}
                           </span>
                         </div>
                       </>
                     )}
-                    {resort.customOffers[offerIndex].validFrom &&
-                      resort.customOffers[offerIndex].validTo && (
+                    {resort.customOffers[sidebarOfferIndex].validFrom &&
+                      resort.customOffers[sidebarOfferIndex].validTo && (
                         <>
                           <div className="h-[1px] w-full bg-[#e4eaf2]" />
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 text-gray-500">
                               <Calendar className="w-4 h-4 text-[#1a84ff]" />
-                              <span className="text-[13px] font-bold">
+                              <span className="text-[13px] font-medium uppercase tracking-wider">
                                 Travel Period
                               </span>
                             </div>
-                            <span className="text-[#041d3c] font-black text-[13px]">
+                            <span className="text-[#041d3c] font-bold text-[13px]">
                               {new Date(
-                                resort.customOffers[offerIndex].validFrom +
+                                resort.customOffers[sidebarOfferIndex].validFrom +
                                   "T00:00:00Z",
                               ).toLocaleDateString("en-GB", {
                                 day: "numeric",
@@ -757,7 +825,7 @@ export function ResortPackageClient({
                               })}{" "}
                               -{" "}
                               {new Date(
-                                resort.customOffers[offerIndex].validTo +
+                                resort.customOffers[sidebarOfferIndex].validTo +
                                   "T00:00:00Z",
                               ).toLocaleDateString("en-GB", {
                                 day: "numeric",
@@ -769,19 +837,19 @@ export function ResortPackageClient({
                           </div>
                         </>
                       )}
-                    {resort.customOffers[offerIndex].bookBefore && (
+                    {resort.customOffers[sidebarOfferIndex].bookBefore && (
                       <>
                         <div className="h-[1px] w-full bg-[#e4eaf2]" />
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-gray-500">
-                            <Clock className="w-4 h-4 text-rose-500" />
-                            <span className="text-[13px] font-bold text-rose-500">
+                            <Clock className="w-4 h-4 text-[#1a84ff]" />
+                            <span className="text-[13px] font-medium uppercase tracking-wider text-gray-500">
                               Book Before
                             </span>
                           </div>
-                          <span className="text-rose-500 font-black text-[13px]">
+                          <span className="text-rose-500 font-bold text-[13px]">
                             {new Date(
-                              resort.customOffers[offerIndex].bookBefore +
+                              resort.customOffers[sidebarOfferIndex].bookBefore +
                                 "T00:00:00Z",
                             ).toLocaleDateString("en-GB", {
                               day: "numeric",
@@ -793,53 +861,92 @@ export function ResortPackageClient({
                         </div>
                       </>
                     )}
-                  </div>
+                    
+                    <div className="h-[1px] w-full bg-[#e4eaf2] my-2" />
 
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-gray-400 text-[18px] font-bold line-through">
-                      €
-                      {(Number(resort.price) || 0) *
-                        (Number(resort.customOffers[offerIndex].nights) || 0)}
-                    </span>
-                    <span className="text-[#ff245b] text-[36px] font-black leading-none">
-                      €{resort.customOffers[offerIndex].offerPrice}
-                    </span>
-                  </div>
-                  <p className="text-gray-500 text-[13px] font-medium mb-6">
-                    Total package price
-                  </p>
-
-                  {(() => {
-                    const co = resort.customOffers[offerIndex];
-                    const adults = co.adults ?? 2;
-                    const children = co.children ?? 0;
-                    const waText = `Hi! I'm interested in the ${co.nights} Nights offer for ${adults} Adults${children > 0 ? ` and ${children} Children` : ""}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(" or ")}` : ""} at ${resort.title} for €${co.offerPrice}. Can you check availability?`;
-                    return (
-                      <div className="flex flex-col gap-2 w-full">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            lockOffer(offerIndex);
-                            scrollToForm();
-                          }}
-                          className="w-full py-3.5 bg-[#041d3c] text-white rounded-[12px] font-extrabold text-[14px] hover:bg-[#1a84ff] hover:-translate-y-0.5 transition-all duration-300 shadow-[0_8px_24px_rgba(4,29,60,0.12)]"
-                        >
-                          Book Now
-                        </button>
-                        <a
-                          href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => trackWhatsAppClick("Resort Offer List", resort.title)}
-                          className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3.5 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
-                        >
-                          <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
-                          <WaIcon />
-                          <span className="relative z-10">WhatsApp Us</span>
-                        </a>
+                    <div className="flex flex-col items-center justify-center w-full mb-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-gray-500 text-[11px] font-bold uppercase tracking-widest mt-0.5">
+                          {resort.customOffers[sidebarOfferIndex].offerType === 'fixed' ? 'Package Price' : 'Starting From'}
+                        </span>
+                        {(resort.customOffers[sidebarOfferIndex].offerType === 'starting'
+                          ? (resort.customOffers[sidebarOfferIndex].discountPercentage || 0) > 0
+                          : ((Number(resort.price) || 0) * (Number(resort.customOffers[sidebarOfferIndex].nights) || 0)) > resort.customOffers[sidebarOfferIndex].offerPrice
+                        ) && (
+                          <span className="bg-rose-100 text-rose-600 text-[10px] font-black px-1.5 py-0.5 rounded-[4px]">
+                            {resort.customOffers[sidebarOfferIndex].offerType === 'starting'
+                              ? resort.customOffers[sidebarOfferIndex].discountPercentage
+                              : Math.round(((((Number(resort.price) || 0) * (Number(resort.customOffers[sidebarOfferIndex].nights) || 0)) - resort.customOffers[sidebarOfferIndex].offerPrice) / ((Number(resort.price) || 0) * (Number(resort.customOffers[sidebarOfferIndex].nights) || 0))) * 100)}% OFF
+                          </span>
+                        )}
                       </div>
-                    );
-                  })()}
+                      <div className="flex items-end gap-2">
+                        {((Number(resort.price) || 0) * (Number(resort.customOffers[sidebarOfferIndex].nights) || 0)) > resort.customOffers[sidebarOfferIndex].offerPrice && (
+                          <span className="text-gray-400 text-[16px] font-bold line-through mb-0.5">
+                            €{(Number(resort.price) || 0) * (Number(resort.customOffers[sidebarOfferIndex].nights) || 0)}
+                          </span>
+                        )}
+                        <span className="text-[#041d3c] text-[36px] font-black leading-none">
+                          €{resort.customOffers[sidebarOfferIndex].offerPrice}
+                        </span>
+                      </div>
+                    </div>
+
+                    {(() => {
+                      const co = resort.customOffers[sidebarOfferIndex];
+                      const adults = co.adults ?? 2;
+                      const children = co.children ?? 0;
+                      const waText = `Hi! I'm interested in the ${co.offerName || `${co.nights} Nights offer`} for ${adults} Adults${children > 0 ? ` and ${children} Children` : ""}${co.villas?.length > 0 ? ` staying in a ${co.villas.join(" or ")}` : ""} at ${resort.title} for €${co.offerPrice}. Can you check availability?`;
+                      return (
+                        <div className="flex flex-col gap-2 w-full mt-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              lockOffer(sidebarOfferIndex);
+                              scrollToForm();
+                            }}
+                            className="w-full py-3.5 bg-[#041d3c] text-white rounded-[12px] font-extrabold text-[14px] hover:bg-[#1a84ff] hover:-translate-y-0.5 transition-all duration-300 shadow-[0_8px_24px_rgba(4,29,60,0.12)]"
+                          >
+                            Book Now
+                          </button>
+                          <a
+                            href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => trackWhatsAppClick("Resort Offer List", resort.title)}
+                            className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3.5 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
+                          >
+                            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
+                            <WaIcon />
+                            <span className="relative z-10">WhatsApp Us</span>
+                          </a>
+                        </div>
+                      );
+                    })()}
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {/* Carousel Indicators */}
+                    {resort.customOffers.length > 1 && (
+                      <div className="flex justify-center gap-1.5 mt-5">
+                        {resort.customOffers.map((_: any, i: number) => (
+                          <button
+                            key={i}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSidebarOfferIndex(i);
+                            }}
+                            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                              i === sidebarOfferIndex
+                                ? "bg-[#1a84ff] w-3"
+                                : "bg-[#041d3c]/20 hover:bg-[#041d3c]/40"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1338,7 +1445,7 @@ export function ResortPackageClient({
       </section>
 
       {/* ── TABS ── */}
-      <section className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 pb-[100px]">
+      <section id="resort-details-tabs" className="w-full max-w-screen-2xl mx-auto px-6 sm:px-12 lg:px-24 pb-[100px] scroll-mt-32">
         {/* Section header */}
         <div className="flex flex-col items-center text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1a84ff]/8 text-[#1a84ff] font-extrabold text-[10px] lg:text-[11px] tracking-wider uppercase mb-4 border border-[#1a84ff]/10">
@@ -1633,7 +1740,7 @@ export function ResortPackageClient({
                   </div>
                 )}
                 {resort.customOffers && resort.customOffers.length > 0 && (
-                  <div className="flex flex-col gap-5 mb-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8 mb-8">
                     {resort.customOffers.map((co: any, i: number) => {
                       const actualPrice =
                         (Number(resort.price) || 0) * (Number(co.nights) || 0);
@@ -1647,280 +1754,240 @@ export function ResortPackageClient({
                       return (
                         <div
                           key={i}
-                          className="bg-white border-2 border-rose-100 rounded-[24px] overflow-hidden shadow-sm relative group hover:border-rose-300 transition-colors flex flex-col w-full"
+                          className="bg-white border border-[#e4eaf2] rounded-[24px] overflow-hidden shadow-[0_16px_48px_rgba(4,29,60,0.06)] relative group hover:border-[#1a84ff]/30 hover:shadow-[0_20px_56px_rgba(26,132,255,0.12)] transition-all duration-300 flex flex-col w-full h-full p-6 lg:p-8"
                         >
-                          <div className="flex flex-col lg:flex-row w-full flex-1">
-                            {/* Left Column */}
-                            <div className="w-full lg:w-1/2 flex flex-col border-b lg:border-b-0 lg:border-r border-[#e4eaf2]">
-                              {/* Top: Poster */}
-                              {co.posterUrl && (
-                                <div className="w-full relative bg-gray-100 overflow-hidden">
-                                  <img
-                                    src={co.posterUrl}
-                                    alt={`${co.nights} Nights Offer`}
-                                    className="w-full h-auto max-h-[400px] object-cover group-hover:scale-105 transition-transform duration-700"
-                                  />
-                                </div>
-                              )}
+                          <div className="flex flex-col items-center text-center mb-6">
+                            <span className="bg-[#ff245b] text-white text-[10px] font-black uppercase tracking-[0.15em] px-3 py-1.5 rounded-full mb-4 w-fit mx-auto">
+                              Special Package
+                            </span>
+                            <h4 className="text-[#041d3c] text-[22px] font-black leading-tight">
+                              {co.offerName || `${co.nights} Nights Offer`}
+                            </h4>
+                          </div>
 
-                              {/* Bottom: Inclusions */}
-                              {hasAnyInclusions && (
-                                <div className="flex flex-col flex-1 border-t border-[#e4eaf2] bg-gray-50">
-                                  {co.includes?.length > 0 && (
-                                    <div
-                                      className={`p-6 lg:p-8 bg-emerald-50/40 flex-1 ${co.excludes?.length > 0 ? "border-b border-rose-100/50" : ""}`}
-                                    >
-                                      <h5 className="text-[#041d3c] font-black text-[16px] mb-5 flex items-center gap-2">
-                                        <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                                        </div>
-                                        What's Included
-                                      </h5>
-                                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        {co.includes.map(
-                                          (inc: string, idx: number) => (
-                                            <li
-                                              key={idx}
-                                              className="flex items-start gap-3 text-[14px] text-gray-700 font-medium"
-                                            >
-                                              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-[6px] shrink-0" />
-                                              <span className="leading-snug">
-                                                {inc}
-                                              </span>
-                                            </li>
-                                          ),
-                                        )}
-                                      </ul>
-                                    </div>
-                                  )}
-
-                                  {co.excludes?.length > 0 && (
-                                    <div className="p-6 lg:p-8 bg-rose-50/40 flex-1">
-                                      <h5 className="text-[#041d3c] font-black text-[16px] mb-5 flex items-center gap-2">
-                                        <div className="w-6 h-6 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
-                                          <XCircle className="w-3.5 h-3.5 text-rose-600" />
-                                        </div>
-                                        What's Not Included
-                                      </h5>
-                                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        {co.excludes.map(
-                                          (exc: string, idx: number) => (
-                                            <li
-                                              key={idx}
-                                              className="flex items-start gap-3 text-[14px] text-gray-500 font-medium"
-                                            >
-                                              <div className="w-1.5 h-1.5 rounded-full bg-rose-300 mt-[6px] shrink-0" />
-                                              <span className="leading-snug">
-                                                {exc}
-                                              </span>
-                                            </li>
-                                          ),
-                                        )}
-                                      </ul>
-                                    </div>
-                                  )}
-                                </div>
-                              )}
+                          <div className="mb-6 flex flex-col w-full flex-1 bg-[#f8fafc] border border-[#e4eaf2] p-4 rounded-[16px] space-y-1 divide-y divide-[#e4eaf2]">
+                            <div className="flex items-center justify-between py-2">
+                              <div className="flex items-center gap-2 text-gray-500">
+                                <Moon className="w-4 h-4 text-[#1a84ff]" />
+                                <span className="text-[12px] font-medium uppercase tracking-wider">
+                                  Duration
+                                </span>
+                              </div>
+                              <span className="text-[#041d3c] font-bold text-[13px] text-right">
+                                {co.nights} Nights
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between py-2">
+                              <div className="flex items-center gap-2 text-gray-500">
+                                <Users className="w-4 h-4 text-[#1a84ff]" />
+                                <span className="text-[12px] font-medium uppercase tracking-wider">
+                                  Guests
+                                </span>
+                              </div>
+                              <span className="text-[#041d3c] font-bold text-[13px] text-right">
+                                {adults} Adults
+                                {children > 0
+                                  ? `, ${children} Children`
+                                  : ""}
+                              </span>
                             </div>
 
-                            {/* Right Column: Details, Price & Buttons */}
-                            <div className="p-6 lg:p-8 flex flex-col w-full lg:w-1/2 bg-white">
-                              {/* Title & Pill */}
-                              <div className="flex flex-col mb-8">
-                                <span className="bg-rose-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full mb-3 w-fit">
-                                  Special Package
+                            {co.villas && co.villas.length > 0 && (
+                              <div className="flex items-center justify-between py-2">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                  <BedDouble className="w-4 h-4 text-[#1a84ff]" />
+                                  <span className="text-[12px] font-medium uppercase tracking-wider">
+                                    Room/Villa
+                                  </span>
+                                </div>
+                                <span className="text-[#041d3c] font-bold text-[13px] text-right line-clamp-2 max-w-[60%]">
+                                  {co.villas.join(", ")}
                                 </span>
-                                <h4 className="text-[#041d3c] text-[24px] lg:text-[28px] font-black leading-tight">
-                                  {co.nights} Nights Offer
-                                </h4>
                               </div>
+                            )}
 
-                              {/* Details Grid */}
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6 mb-8 w-full flex-1 content-start">
-                                <div className="flex flex-col items-start text-left truncate">
-                                  <div className="flex items-center gap-1.5 text-gray-500 mb-1">
-                                    <Moon className="w-4 h-4 text-[#1a84ff]" />
-                                    <span className="text-[11px] font-bold uppercase tracking-wider">
-                                      Duration
-                                    </span>
-                                  </div>
-                                  <span className="text-[#041d3c] font-black text-[14px] truncate w-full">
-                                    {co.nights} Nights
+                            {co.flightIncluded && (
+                              <div className="flex items-center justify-between py-2">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                  <Plane className="w-4 h-4 text-[#1a84ff]" />
+                                  <span className="text-[12px] font-medium uppercase tracking-wider">
+                                    Flight
                                   </span>
                                 </div>
-                                <div className="flex flex-col items-start text-left truncate">
-                                  <div className="flex items-center gap-1.5 text-gray-500 mb-1">
-                                    <Users className="w-4 h-4 text-[#1a84ff]" />
-                                    <span className="text-[11px] font-bold uppercase tracking-wider">
-                                      Guests
-                                    </span>
-                                  </div>
-                                  <span className="text-[#041d3c] font-black text-[14px] truncate w-full">
-                                    {adults} Adults
-                                    {children > 0
-                                      ? `, ${children} Children`
-                                      : ""}
+                                <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-[4px] text-[11px] font-bold flex items-center gap-1">
+                                  <CheckCircle2 className="w-3.5 h-3.5" /> Included
+                                </span>
+                              </div>
+                            )}
+
+                            {co.mealPlan && (
+                              <div className="flex items-center justify-between py-2">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                  <UtensilsCrossed className="w-4 h-4 text-[#1a84ff]" />
+                                  <span className="text-[12px] font-medium uppercase tracking-wider">
+                                    Meal Plan
                                   </span>
                                 </div>
+                                <span className="text-[#041d3c] font-bold text-[13px] text-right">
+                                  {co.mealPlan === "BB"
+                                    ? "Bed and Breakfast"
+                                    : co.mealPlan === "HB"
+                                      ? "Half Board"
+                                      : co.mealPlan === "FB"
+                                        ? "Full Board"
+                                        : co.mealPlan === "AI"
+                                          ? "All Inclusive"
+                                          : co.mealPlan}
+                                </span>
+                              </div>
+                            )}
 
-                                {co.villas && co.villas.length > 0 && (
-                                  <div className="flex flex-col items-start text-left truncate">
-                                    <div className="flex items-center gap-1.5 text-gray-500 mb-1">
-                                      <BedDouble className="w-4 h-4 text-[#1a84ff]" />
-                                      <span className="text-[11px] font-bold uppercase tracking-wider">
-                                        Room/Villa
-                                      </span>
-                                    </div>
-                                    <span className="text-[#041d3c] font-black text-[14px] leading-tight line-clamp-2 w-full">
-                                      {co.villas.join(", ")}
+                            {co.transfer && (
+                              <div className="flex items-center justify-between py-2">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                  <Plane className="w-4 h-4 text-[#1a84ff]" />
+                                  <span className="text-[12px] font-medium uppercase tracking-wider">
+                                    Transfer
+                                  </span>
+                                </div>
+                                <span className="text-[#041d3c] font-bold text-[13px] text-right">
+                                  {co.transfer}
+                                </span>
+                              </div>
+                            )}
+
+                            {co.validFrom && co.validTo && (
+                              <div className="flex items-center justify-between py-2">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                  <Calendar className="w-4 h-4 text-[#1a84ff]" />
+                                  <span className="text-[12px] font-medium uppercase tracking-wider">
+                                    Travel Period
+                                  </span>
+                                </div>
+                                <span className="text-[#041d3c] font-bold text-[13px] text-right">
+                                  {new Date(
+                                    co.validFrom + "T00:00:00Z",
+                                  ).toLocaleDateString("en-GB", {
+                                    day: "numeric",
+                                    month: "short",
+                                    timeZone: "UTC",
+                                  })}{" "}
+                                  -{" "}
+                                  {new Date(
+                                    co.validTo + "T00:00:00Z",
+                                  ).toLocaleDateString("en-GB", {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                    timeZone: "UTC",
+                                  })}
+                                </span>
+                              </div>
+                            )}
+
+                            {co.bookBefore && (
+                              <div className="flex items-center justify-between py-2">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                  <Clock className="w-4 h-4 text-[#1a84ff]" />
+                                  <span className="text-[12px] font-medium uppercase tracking-wider">
+                                    Book Before
+                                  </span>
+                                </div>
+                                <span className="text-rose-500 font-bold text-[13px] text-right">
+                                  {new Date(
+                                    co.bookBefore + "T00:00:00Z",
+                                  ).toLocaleDateString("en-GB", {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                    timeZone: "UTC",
+                                  })}
+                                </span>
+                              </div>
+                            )}
+                            
+                            {hasAnyInclusions && (
+                              <div className="pt-4 pb-2 border-t border-[#e4eaf2] flex flex-col gap-3">
+                                {co.includes?.length > 0 && (
+                                  <div className="flex flex-col gap-1.5">
+                                    <span className="text-[12px] font-bold text-[#041d3c] uppercase tracking-wider flex items-center gap-1.5">
+                                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                                      What's Included
                                     </span>
+                                    <ul className="flex flex-col gap-1 pl-5">
+                                      {co.includes.map((inc: string, idx: number) => (
+                                        <li key={idx} className="list-disc text-[12px] text-gray-600 font-medium">
+                                          {inc}
+                                        </li>
+                                      ))}
+                                    </ul>
                                   </div>
                                 )}
-
-                                {co.flightIncluded && (
-                                  <div className="flex flex-col items-start text-left truncate">
-                                    <div className="flex items-center gap-1.5 text-gray-500 mb-1">
-                                      <Plane className="w-4 h-4 text-[#1a84ff]" />
-                                      <span className="text-[11px] font-bold uppercase tracking-wider">
-                                        Flight
-                                      </span>
-                                    </div>
-                                    <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[12px] font-black flex items-center gap-1 w-fit">
-                                      <CheckCircle2 className="w-3.5 h-3.5" />{" "}
-                                      Included
+                                {co.excludes?.length > 0 && (
+                                  <div className="flex flex-col gap-1.5">
+                                    <span className="text-[12px] font-bold text-[#041d3c] uppercase tracking-wider flex items-center gap-1.5">
+                                      <XCircle className="w-3.5 h-3.5 text-rose-500" />
+                                      Not Included
                                     </span>
-                                  </div>
-                                )}
-
-                                {co.mealPlan && (
-                                  <div className="flex flex-col items-start text-left truncate">
-                                    <div className="flex items-center gap-1.5 text-gray-500 mb-1">
-                                      <UtensilsCrossed className="w-4 h-4 text-[#1a84ff]" />
-                                      <span className="text-[11px] font-bold uppercase tracking-wider">
-                                        Meal Plan
-                                      </span>
-                                    </div>
-                                    <span className="text-[#041d3c] font-black text-[14px] truncate w-full">
-                                      {co.mealPlan === "BB"
-                                        ? "Bed and Breakfast"
-                                        : co.mealPlan === "HB"
-                                          ? "Half Board"
-                                          : co.mealPlan === "FB"
-                                            ? "Full Board"
-                                            : co.mealPlan === "AI"
-                                              ? "All Inclusive"
-                                              : co.mealPlan}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {co.transfer && (
-                                  <div className="flex flex-col items-start text-left truncate">
-                                    <div className="flex items-center gap-1.5 text-gray-500 mb-1">
-                                      <Plane className="w-4 h-4 text-[#1a84ff]" />
-                                      <span className="text-[11px] font-bold uppercase tracking-wider">
-                                        Transfer
-                                      </span>
-                                    </div>
-                                    <span className="text-[#041d3c] font-black text-[14px] truncate w-full">
-                                      {co.transfer}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {co.validFrom && co.validTo && (
-                                  <div className="flex flex-col items-start text-left truncate">
-                                    <div className="flex items-center gap-1.5 text-gray-500 mb-1">
-                                      <Calendar className="w-4 h-4 text-[#1a84ff]" />
-                                      <span className="text-[11px] font-bold uppercase tracking-wider">
-                                        Travel Period
-                                      </span>
-                                    </div>
-                                    <span className="text-[#041d3c] font-black text-[13px] truncate w-full">
-                                      {new Date(
-                                        co.validFrom + "T00:00:00Z",
-                                      ).toLocaleDateString("en-GB", {
-                                        day: "numeric",
-                                        month: "short",
-                                        timeZone: "UTC",
-                                      })}{" "}
-                                      -{" "}
-                                      {new Date(
-                                        co.validTo + "T00:00:00Z",
-                                      ).toLocaleDateString("en-GB", {
-                                        day: "numeric",
-                                        month: "short",
-                                        year: "numeric",
-                                        timeZone: "UTC",
-                                      })}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {co.bookBefore && (
-                                  <div className="flex flex-col items-start text-left truncate">
-                                    <div className="flex items-center gap-1.5 text-rose-500 mb-1">
-                                      <Clock className="w-4 h-4 text-rose-500" />
-                                      <span className="text-[11px] font-bold uppercase tracking-wider">
-                                        Book Before
-                                      </span>
-                                    </div>
-                                    <span className="text-rose-500 font-black text-[14px] truncate w-full">
-                                      {new Date(
-                                        co.bookBefore + "T00:00:00Z",
-                                      ).toLocaleDateString("en-GB", {
-                                        day: "numeric",
-                                        month: "short",
-                                        year: "numeric",
-                                        timeZone: "UTC",
-                                      })}
-                                    </span>
+                                    <ul className="flex flex-col gap-1 pl-5">
+                                      {co.excludes.map((exc: string, idx: number) => (
+                                        <li key={idx} className="list-disc text-[12px] text-gray-500 font-medium">
+                                          {exc}
+                                        </li>
+                                      ))}
+                                    </ul>
                                   </div>
                                 )}
                               </div>
+                            )}
+                          </div>
 
-                              {/* Price and Buttons */}
-                              <div className="mt-auto flex flex-col pt-6 border-t border-[#e4eaf2]">
-                                <div className="flex flex-wrap items-center justify-center mb-6 gap-3">
-                                  <span className="text-[#041d3c] text-[16px] font-black uppercase tracking-widest mt-1">
-                                    Price:
+                          <div className="mt-auto flex flex-col">
+                            <div className="flex flex-col items-center justify-center w-full mb-4">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-gray-500 text-[11px] font-bold uppercase tracking-widest mt-0.5">
+                                  {co.offerType === 'fixed' ? 'Package Price' : 'Starting From'}
+                                </span>
+                                {(co.offerType === 'starting' ? (co.discountPercentage || 0) > 0 : actualPrice > co.offerPrice) && (
+                                  <span className="bg-rose-100 text-rose-600 text-[10px] font-black px-1.5 py-0.5 rounded-[4px]">
+                                    {co.offerType === 'starting' ? co.discountPercentage : Math.round(((actualPrice - co.offerPrice) / actualPrice) * 100)}% OFF
                                   </span>
-                                  <div className="flex items-center gap-2.5">
-                                    <span className="text-gray-400 text-[18px] font-bold line-through">
-                                      €{actualPrice}
-                                    </span>
-                                    <span className="text-rose-500 text-[36px] font-black leading-none">
-                                      €{co.offerPrice}
-                                    </span>
-                                  </div>
-                                </div>
-
-                                <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full">
-                                  <button
-                                    onClick={() => {
-                                      // Lock this specific offer by its index
-                                      lockOffer(i);
-                                      scrollToForm();
-                                    }}
-                                    className="flex-1 px-4 bg-[#041d3c] text-white rounded-[12px] py-4 font-extrabold text-[15px] flex items-center justify-center transition-all duration-300 hover:bg-[#1a84ff] hover:-translate-y-0.5 whitespace-nowrap"
-                                  >
-                                    Book Now
-                                  </button>
-                                  <a
-                                    href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={() => trackWhatsAppClick("Resort Selected Offer CTA", resort.title)}
-                                    className="flex-1 px-4 bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-4 font-extrabold text-[14px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden whitespace-nowrap"
-                                  >
-                                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
-                                    <WaIcon />
-                                    <span className="relative z-10">
-                                      WhatsApp Us
-                                    </span>
-                                  </a>
-                                </div>
+                                )}
                               </div>
+                              <div className="flex items-end gap-2">
+                                {actualPrice > co.offerPrice && (
+                                  <span className="text-gray-400 text-[16px] font-bold line-through mb-0.5">
+                                    €{actualPrice}
+                                  </span>
+                                )}
+                                <span className="text-[#041d3c] text-[32px] font-black leading-none">
+                                  €{co.offerPrice}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col gap-2 w-full">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  lockOffer(i);
+                                  scrollToForm();
+                                }}
+                                className="w-full py-3.5 bg-[#041d3c] text-white rounded-[12px] font-extrabold text-[14px] hover:bg-[#1a84ff] hover:-translate-y-0.5 transition-all duration-300 shadow-[0_8px_24px_rgba(4,29,60,0.12)]"
+                              >
+                                Book Now
+                              </button>
+                              <a
+                                href={`https://wa.me/358408192758?text=${encodeURIComponent(waText)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => trackWhatsAppClick("Resort Selected Offer CTA", resort.title)}
+                                className="w-full bg-gradient-to-r from-[#075e54] to-[#128c7e] text-white rounded-[12px] py-3.5 font-extrabold text-[13px] uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_8px_24px_rgba(7,94,84,0.25)] hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
+                              >
+                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700" />
+                                <WaIcon />
+                                <span className="relative z-10">WhatsApp Us</span>
+                              </a>
                             </div>
                           </div>
                         </div>
