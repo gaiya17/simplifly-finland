@@ -11,10 +11,13 @@ import {
   BedDouble,
   Plane,
   CheckCircle2,
+  Moon,
+  Users,
+  UtensilsCrossed,
+  Calendar,
 } from "lucide-react";
 import { tourApi } from "../../lib/tourApi";
 import { resortApi } from "../../lib/resortApi";
-import { generateOfferSlug } from "../../lib/utils/offerSlug";
 import { useSiteAssets } from "../../components/providers/SiteAssetsProvider";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -92,7 +95,7 @@ export function SpecialOffersContent({ defaultTab = "resorts" }: { defaultTab?: 
         key={pkg.id}
         className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 active:scale-[0.98] active:opacity-90 transition-all duration-500 ease-out h-full group cursor-pointer block"
       >
-        <div className="relative h-[240px] w-full shrink-0 overflow-hidden bg-[#f4f7fb]">
+        <div className="relative h-[260px] w-full shrink-0 overflow-hidden bg-[#f4f7fb]">
           <ImageWithFallback
             src={pkg.packageImage || "https://via.placeholder.com/600"}
             alt={pkg.title}
@@ -116,13 +119,13 @@ export function SpecialOffersContent({ defaultTab = "resorts" }: { defaultTab?: 
         </div>
 
         <div className="p-6 flex flex-col flex-grow text-left">
-          <div className="mb-2">
+          <div className="mb-2 flex items-center justify-center text-center">
             <span className="text-[#1a84ff] font-extrabold text-[10px] uppercase tracking-widest block line-clamp-1">
               {pkg.category?.name || "Tour Package"}
             </span>
           </div>
 
-          <h3 className="text-[#041d3c] font-extrabold text-[18px] leading-[1.3] mb-3">
+          <h3 className="text-[#041d3c] font-extrabold text-[18px] leading-[1.3] mb-3 text-center">
             {pkg.title}
           </h3>
 
@@ -175,11 +178,11 @@ export function SpecialOffersContent({ defaultTab = "resorts" }: { defaultTab?: 
 
     return (
       <Link
-        href={`/special-offers/${pkg.slug}/${generateOfferSlug(pkg.customOffers?.[0])}`}
+        href={`/special-offers/${pkg.slug}`}
         key={pkg.uniqueKey || pkg.id}
         className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-[0_12px_40px_rgba(4,29,60,0.03)] hover:shadow-[0_24px_60px_rgba(26,132,255,0.12)] hover:-translate-y-1.5 active:scale-[0.98] active:opacity-90 transition-all duration-500 ease-out h-full group cursor-pointer block"
       >
-        <div className="relative h-[240px] w-full shrink-0 overflow-hidden bg-[#f4f7fb]">
+        <div className="relative h-[260px] w-full shrink-0 overflow-hidden bg-[#f4f7fb]">
           <ImageWithFallback
             src={pkg.packageImage || "https://via.placeholder.com/600"}
             alt={pkg.title}
@@ -203,176 +206,191 @@ export function SpecialOffersContent({ defaultTab = "resorts" }: { defaultTab?: 
           </div>
         </div>
 
-        <div className="p-6 flex flex-col flex-grow text-left">
-          <div className="mb-2 flex items-center justify-between">
+        <div className="p-5 flex flex-col flex-grow text-left">
+          <div className="mb-2 flex items-center justify-center text-center">
             <span className="text-[#1a84ff] font-extrabold text-[10px] uppercase tracking-widest block line-clamp-1">
               {pkg.categories?.[0]?.name || "Maldives Resort"}
             </span>
           </div>
 
-          <h3 className="text-[#041d3c] font-extrabold text-[18px] leading-[1.3] mb-3">
+          <h3 className="text-[#041d3c] font-extrabold text-[17px] sm:text-[19px] md:text-[21px] leading-[1.25] line-clamp-2 mb-1.5 min-h-[44px] text-center">
             {pkg.title}
           </h3>
 
           {pkg.customOffers && pkg.customOffers.length > 0 ? (
-            <div className="mb-5 mt-2 flex flex-col gap-2">
-              <div className="flex items-center justify-between bg-[#f8fafc] border border-[#e8edf4] rounded-[14px] p-3 shadow-sm shadow-[#041d3c]/5">
-                <div className="flex flex-col items-center flex-1">
-                  <span className="text-[#1a84ff] text-[9.5px] font-black uppercase tracking-widest mb-1">
-                    Duration
-                  </span>
-                  <span className="text-[#041d3c] text-[14px] font-bold">
-                    {pkg.customOffers[0].nights} Nights
-                  </span>
+            <div className="mb-4 mt-2 flex flex-col w-full flex-1 bg-[#f8fafc] border border-[#e4eaf2] p-4 rounded-[16px]">
+              <div className="flex flex-col space-y-1 divide-y divide-[#e4eaf2] mb-4">
+                <div className="flex items-center justify-between py-2.5">
+                  <div className="flex items-center gap-2.5 text-gray-500">
+                    <Moon className="w-4 h-4 text-[#1a84ff]" />
+                    <span className="text-[12px] font-medium uppercase tracking-wider">Duration</span>
+                  </div>
+                  <span className="text-[#041d3c] font-bold text-[14px] text-right">{pkg.customOffers[0].nights} Nights</span>
                 </div>
-                <div className="w-[1px] h-8 bg-[#e8edf4]" />
-                <div className="flex flex-col items-center flex-1">
-                  <span className="text-[#1a84ff] text-[9.5px] font-black uppercase tracking-widest mb-1">
-                    Guests
-                  </span>
-                  <span className="text-[#041d3c] text-[14px] font-bold">
+                <div className="flex items-center justify-between py-2.5">
+                  <div className="flex items-center gap-2.5 text-gray-500">
+                    <Users className="w-4 h-4 text-[#1a84ff]" />
+                    <span className="text-[12px] font-medium uppercase tracking-wider">Guests</span>
+                  </div>
+                  <span className="text-[#041d3c] font-bold text-[14px] text-right">
                     {pkg.customOffers[0].adults || 2} Adults
+                    {pkg.customOffers[0].children > 0 ? `, ${pkg.customOffers[0].children} Children` : ""}
                   </span>
                 </div>
-                <div className="w-[1px] h-8 bg-[#e8edf4]" />
-                <div className="flex flex-col items-center flex-1">
-                  <span className="text-[#1a84ff] text-[9.5px] font-black uppercase tracking-widest mb-1">
-                    Package
+                
+                {pkg.customOffers[0].villas && pkg.customOffers[0].villas.length > 0 && (
+                  <div className="flex items-center justify-between py-2.5">
+                    <div className="flex items-center gap-2.5 text-gray-500">
+                      <BedDouble className="w-4 h-4 text-[#1a84ff]" />
+                      <span className="text-[12px] font-medium uppercase tracking-wider">Room/Villa</span>
+                    </div>
+                    <span className="text-[#041d3c] font-bold text-[14px] text-right line-clamp-1 max-w-[60%]">
+                      {pkg.customOffers[0].villas.join(", ")}
+                    </span>
+                  </div>
+                )}
+
+                {pkg.customOffers[0].flightIncluded && (
+                  <div className="flex items-center justify-between py-2.5">
+                    <div className="flex items-center gap-2.5 text-gray-500">
+                      <Plane className="w-4 h-4 text-[#1a84ff]" />
+                      <span className="text-[12px] font-medium uppercase tracking-wider">Flight</span>
+                    </div>
+                    <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-[6px] text-[12px] font-bold flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Included
+                    </span>
+                  </div>
+                )}
+
+                {pkg.customOffers[0].mealPlan && (
+                  <div className="flex items-center justify-between py-2.5">
+                    <div className="flex items-center gap-2.5 text-gray-500">
+                      <UtensilsCrossed className="w-4 h-4 text-[#1a84ff]" />
+                      <span className="text-[12px] font-medium uppercase tracking-wider">Meal Plan</span>
+                    </div>
+                    <span className="text-[#041d3c] font-bold text-[14px] text-right">
+                      {pkg.customOffers[0].mealPlan === "BB" ? "Bed and Breakfast" : 
+                       pkg.customOffers[0].mealPlan === "HB" ? "Half Board" : 
+                       pkg.customOffers[0].mealPlan === "FB" ? "Full Board" : 
+                       pkg.customOffers[0].mealPlan === "AI" ? "All Inclusive" : 
+                       pkg.customOffers[0].mealPlan}
+                    </span>
+                  </div>
+                )}
+
+                {pkg.customOffers[0].transfer && (
+                  <div className="flex items-center justify-between py-2.5">
+                    <div className="flex items-center gap-2.5 text-gray-500">
+                      <Plane className="w-4 h-4 text-[#1a84ff]" />
+                      <span className="text-[12px] font-medium uppercase tracking-wider">Transfer</span>
+                    </div>
+                    <span className="text-[#041d3c] font-bold text-[14px] text-right line-clamp-1 max-w-[60%]">
+                      {pkg.customOffers[0].transfer}
+                    </span>
+                  </div>
+                )}
+
+                {pkg.customOffers[0].validFrom && pkg.customOffers[0].validTo && (
+                  <div className="flex items-center justify-between py-2.5">
+                    <div className="flex items-center gap-2.5 text-gray-500">
+                      <Calendar className="w-4 h-4 text-[#1a84ff]" />
+                      <span className="text-[12px] font-medium uppercase tracking-wider">Travel Period</span>
+                    </div>
+                    <span className="text-[#041d3c] font-bold text-[14px] text-right">
+                      {new Date(pkg.customOffers[0].validFrom + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" })} - {new Date(pkg.customOffers[0].validTo + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}
+                    </span>
+                  </div>
+                )}
+
+                {pkg.customOffers[0].bookBefore && (
+                  <div className="flex items-center justify-between py-2.5">
+                    <div className="flex items-center gap-2.5 text-gray-500">
+                      <Clock className="w-4 h-4 text-[#1a84ff]" />
+                      <span className="text-[12px] font-medium uppercase tracking-wider">Book Before</span>
+                    </div>
+                    <span className="text-rose-500 font-bold text-[14px] text-right">
+                      {new Date(pkg.customOffers[0].bookBefore + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="h-[1px] w-full bg-[#e4eaf2] mb-5" />
+
+              <div className="flex flex-col items-center justify-center w-full mb-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-gray-500 text-[11px] font-bold uppercase tracking-widest mt-0.5">
+                    {pkg.customOffers[0].offerType === 'fixed' ? 'Package Price' : 'Starting From'}
                   </span>
-                  <span className="text-rose-500 text-[15px] font-black">
+                  {(pkg.customOffers[0].offerType === 'starting'
+                    ? (pkg.customOffers[0].discountPercentage || 0) > 0
+                    : (pkg.price * pkg.customOffers[0].nights) > pkg.customOffers[0].offerPrice
+                  ) && (
+                    <span className="bg-rose-100 text-rose-600 text-[10px] font-black px-1.5 py-0.5 rounded-[4px]">
+                      {pkg.customOffers[0].offerType === 'starting'
+                        ? pkg.customOffers[0].discountPercentage
+                        : Math.round((((pkg.price * pkg.customOffers[0].nights) - pkg.customOffers[0].offerPrice) / (pkg.price * pkg.customOffers[0].nights)) * 100)}% OFF
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-end gap-2">
+                  {(pkg.price * pkg.customOffers[0].nights) > pkg.customOffers[0].offerPrice && (
+                    <span className="text-gray-400 text-[16px] font-bold line-through mb-0.5">
+                      €{pkg.price * pkg.customOffers[0].nights}
+                    </span>
+                  )}
+                  <span className="text-[#041d3c] text-[32px] font-black leading-none">
                     €{pkg.customOffers[0].offerPrice}
                   </span>
                 </div>
               </div>
 
-              {((pkg.customOffers[0].villas &&
-                pkg.customOffers[0].villas.length > 0) ||
-                pkg.customOffers[0].flightIncluded) && (
-                <div className="flex flex-col gap-2 mt-1 px-1">
-                  {pkg.customOffers[0].villas &&
-                    pkg.customOffers[0].villas.length > 0 && (
-                      <div className="flex items-center gap-2">
-                        <BedDouble className="w-4 h-4 text-[#1a84ff] shrink-0" />
-                        <span className="text-[#041d3c] text-[12px] font-bold line-clamp-1">
-                          {pkg.customOffers[0].villas.join(", ")}
-                        </span>
-                      </div>
-                    )}
-                  {pkg.customOffers[0].flightIncluded && (
-                    <div className="flex items-center gap-2">
-                      <Plane className="w-4 h-4 text-[#1a84ff] shrink-0" />
-                      <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[11px] font-black flex items-center gap-1 w-fit">
-                        <CheckCircle2 className="w-3 h-3" /> Flight Included
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {(pkg.customOffers[0].mealPlan ||
-                pkg.customOffers[0].transfer ||
-                pkg.customOffers[0].validFrom ||
-                pkg.customOffers[0].bookBefore) && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {pkg.customOffers[0].mealPlan && (
-                    <span className="bg-amber-100 text-amber-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full">
-                      {pkg.customOffers[0].mealPlan === "BB"
-                        ? "Bed and Breakfast"
-                        : pkg.customOffers[0].mealPlan === "HB"
-                          ? "Half Board"
-                          : pkg.customOffers[0].mealPlan === "FB"
-                            ? "Full Board"
-                            : pkg.customOffers[0].mealPlan === "AI"
-                              ? "All Inclusive"
-                              : pkg.customOffers[0].mealPlan}
-                    </span>
-                  )}
-                  {pkg.customOffers[0].transfer && (
-                    <span className="bg-[#e0f2fe] text-[#0369a1] text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full">
-                      {pkg.customOffers[0].transfer}
-                    </span>
-                  )}
-                  {pkg.customOffers[0].validFrom &&
-                    pkg.customOffers[0].validTo && (
-                      <span className="bg-emerald-100 text-emerald-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1">
-                        TRAVEL PERIOD:{" "}
-                        {new Date(pkg.customOffers[0].validFrom + "T00:00:00Z")
-                          .toLocaleDateString("en-GB", {
-                            day: "numeric",
-                            month: "short",
-                            timeZone: "UTC",
-                          })
-                          .toUpperCase()}{" "}
-                        -{" "}
-                        {new Date(pkg.customOffers[0].validTo + "T00:00:00Z")
-                          .toLocaleDateString("en-GB", {
-                            day: "numeric",
-                            month: "short",
-                            timeZone: "UTC",
-                          })
-                          .toUpperCase()}
-                      </span>
-                    )}
-                  {pkg.customOffers[0].bookBefore && (
-                    <span className="bg-rose-100 text-rose-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1">
-                      BOOK BY:{" "}
-                      {new Date(pkg.customOffers[0].bookBefore + "T00:00:00Z")
-                        .toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          timeZone: "UTC",
-                        })
-                        .toUpperCase()}
-                    </span>
-                  )}
-                </div>
-              )}
+              <div
+                className="bg-[#041d3c] group-hover:bg-[#1a84ff] text-white px-5 py-3 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-1.5 w-full shadow-md group-hover:shadow-[0_8px_20px_rgba(26,132,255,0.25)]"
+              >
+                <span>View Offer Details</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
             </div>
           ) : (
-            <div className="mb-5 mt-1">
-              <p className="text-gray-500 text-[13px] font-medium leading-relaxed line-clamp-2">
-                {pkg.summary || "Experience luxury and breathtaking views."}
-              </p>
-            </div>
-          )}
-
-          <div className="h-[1px] bg-[#041d3c]/5 w-full mb-5" />
-
-          <div
-            className={`mt-auto flex items-center gap-4 ${pkg.customOffers && pkg.customOffers.length > 0 ? "justify-center w-full" : "justify-between"}`}
-          >
-            {!(pkg.customOffers && pkg.customOffers.length > 0) && (
-              <div className="flex flex-col text-left">
-                <p className="text-gray-400 text-[9.5px] font-extrabold uppercase tracking-widest mb-0.5">
-                  Starting From
+            <>
+              <div className="mb-5 mt-1">
+                <p className="text-gray-500 text-[13px] font-medium leading-relaxed line-clamp-2">
+                  {pkg.summary || "Experience luxury and breathtaking views."}
                 </p>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-black font-black text-[22px] leading-none">
-                    €
-                    {discountedPrice
-                      ? discountedPrice.toLocaleString()
-                      : pkg.price.toLocaleString()}
-                  </span>
-                  {pkg.discount > 0 && (
-                    <span className="text-gray-400 line-through text-[12px] font-bold">
-                      €{pkg.price.toLocaleString()}
+              </div>
+
+              <div className="h-[1px] bg-[#041d3c]/5 w-full mb-4 mt-auto" />
+
+              <div className="flex items-center gap-4 justify-between mt-auto">
+                <div className="flex flex-col text-left">
+                  <p className="text-gray-400 text-[9.5px] font-extrabold uppercase tracking-widest mb-0.5">
+                    Starting From
+                  </p>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-black font-black text-[22px] leading-none">
+                      €
+                      {discountedPrice
+                        ? discountedPrice.toLocaleString()
+                        : pkg.price.toLocaleString()}
                     </span>
-                  )}
+                    {pkg.discount > 0 && (
+                      <span className="text-gray-400 line-through text-[12px] font-bold">
+                        €{pkg.price.toLocaleString()}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div
+                  className="bg-[#041d3c] group-hover:bg-[#1a84ff] text-white px-5 py-3 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-1.5 shrink-0 shadow-md group-hover:shadow-[0_8px_20px_rgba(26,132,255,0.25)]"
+                >
+                  <span>View</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </div>
-            )}
-
-            <div
-              className={`bg-[#041d3c] group-hover:bg-[#1a84ff] text-white px-5 py-3 rounded-[12px] font-extrabold text-[12px] tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-1.5 shrink-0 shadow-md group-hover:shadow-[0_8px_20px_rgba(26,132,255,0.25)] ${pkg.customOffers && pkg.customOffers.length > 0 ? "w-full" : ""}`}
-            >
-              <span>
-                {pkg.customOffers && pkg.customOffers.length > 0
-                  ? "View Offer Details"
-                  : "View"}
-              </span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </Link>
     );
@@ -443,13 +461,13 @@ export function SpecialOffersContent({ defaultTab = "resorts" }: { defaultTab?: 
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch w-full">
-              {Array.from({ length: 8 }).map((_, i) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch w-full">
+              {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
                   className="bg-white rounded-[24px] overflow-hidden flex flex-col shadow-sm border border-gray-100 h-full animate-pulse"
                 >
-                  <div className="h-[240px] w-full bg-gray-200" />
+                  <div className="h-[200px] w-full bg-gray-200" />
                   <div className="p-6 flex flex-col flex-grow">
                     <div className="h-3 w-1/3 bg-gray-200 rounded mb-4" />
                     <div className="h-5 w-3/4 bg-gray-200 rounded mb-4" />
@@ -488,7 +506,7 @@ export function SpecialOffersContent({ defaultTab = "resorts" }: { defaultTab?: 
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch w-full">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch w-full max-w-7xl mx-auto">
                       {tours.map(renderTourCard)}
                     </div>
                   )
@@ -502,7 +520,7 @@ export function SpecialOffersContent({ defaultTab = "resorts" }: { defaultTab?: 
                     </p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch w-full">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch w-full max-w-7xl mx-auto">
                     {resorts.map(renderResortCard)}
                   </div>
                 )}
